@@ -43,5 +43,13 @@ class UserModel {
 	public function logout() {
 		$this->user->destroy();
 	}
+
+	public function findById($id) {
+		return $this->table->findOne(null, [
+			'where' => [
+				['id', '=', $id]
+			]
+		]);
+	}
 	
 }
