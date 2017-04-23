@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<?php foreach ($view->getScripts() as $script): ?>
+		<script type="text/javascript" src="<?= $script ?>"></script>
+	<?php endforeach ?>
+	<?php foreach ($view->getStyles() as $style): ?>
+		<link rel="stylesheet" type="text/css" href="<?= $style ?>">
+	<?php endforeach ?>
+</head>
+<body>
+	<div>
+		<a href="<?= $config->get('router.base') ?>">Home</a> |
+		<?php if ($user->isLoggedIn()): ?>
+			<a href="<?= $router->getUrl('logout') ?>">Logout</a> |
+			<a href="<?= $router->getUrl('profile/'.$user->get('id')) ?>">Profile</a>
+		<?php else: ?>
+			<a href="<?= $router->getUrl('login') ?>">Login</a> |
+			<a href="<?= $router->getUrl('signup') ?>">Sign Up</a>
+		<?php endif ?>
+	</div>
+	<?php echo $content ?>
+</body>
+</html>
