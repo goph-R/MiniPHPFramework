@@ -2,7 +2,18 @@
 
 include_once "autoload.php";
 
-$config = new Config();
+$im = new InstanceManager();
+$im->add('config', new Config($im));
+$im->add('request', new Request($im));
+$im->add('response', new Response($im));
+$im->add('router', new Router($im));
+$im->add('db', new DB($im));
+$im->add('view', new View($im));
+$im->add('user', new User($im));
+$im->add('app', new WebApplication($im));
+
+$config = $im->get('config');
+$config->set('db.config', 'default');
 $config->set('db.default.host', 'localhost');
 $config->set('db.default.name', 'a');
 $config->set('db.default.user', 'root');
@@ -16,19 +27,13 @@ $config->set('router.default.method', 'index');
 $config->set('view.template.extension', 'phtml');
 $config->set('user.salt', '!#user%$salt');
 
-$request = new Request();
-$response = new Response();
-$db = new DB($config);
-$view = new View($config);
-$user = new User($config, $request);
-$router = new Router($config, $request);
+$im->init();
 
+$router = $im->get('router');
 $router->add('index', 'WelcomeController', 'index');
 $router->add('login', 'LoginController', 'index');
 $router->add('logout', 'LogoutController', 'index');
 $router->add('profile/:id', 'ProfileController', 'index');
 
-$app = new WebApplication($config, $router, $request, $response, $user, $db, $view);
-$app->run();
-
-$db->close();
+$im->get('app')->run();
+$im->get('db')->close();

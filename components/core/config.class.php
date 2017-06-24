@@ -3,6 +3,8 @@
 class Config {
 	
 	private $attributes = [];
+
+	public function __construct($im) {}
 	
 	public function set($name, $value) {
 		$this->attributes[$name] = $value;

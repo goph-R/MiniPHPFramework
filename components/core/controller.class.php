@@ -2,28 +2,13 @@
 
 abstract class Controller {
 	
-	protected $application;
-	protected $config;
-	protected $response;
-	protected $request;
-	protected $view;
-	protected $router;
-	
-	public function __construct($application, $config, $router, $request, $response, $user, $db, $view) {
-		$this->application = $application;
-		$this->config = $config;
-		$this->request = $request;
-		$this->response = $response;
-		$this->router = $router;
-		$this->user = $user;
-		$this->view = $view;
-		$this->db = $db;
-		$this->view->set('config', $config);
-		$this->view->set('router', $router);
-		$this->view->set('request', $request);
-		$this->view->set('response', $response);
-		$this->view->set('user', $user);
-		$this->view->set('view', $view);
+	public function __construct($im) {
+		foreach ($im->getAll() as $name => $instance) {
+			$this->$name = $instance;
+		}
+		foreach ($im->getAll() as $name => $instance) {
+			$this->view->set($name, $instance);
+		}
 	}
 
 	public function responseView($template) {

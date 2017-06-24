@@ -8,10 +8,10 @@ class User {
 	private $name;
 	private $email;
 
-	public function __construct($config, $request) {
+	public function __construct($im) {
 		session_start();
-		$this->request = $request;
-		$this->config = $config;
+		$this->request = $im->get('request');
+		$this->config = $im->get('config');
 	}
 
 	public function get($name, $defaultValue = null) {

@@ -24,6 +24,14 @@ abstract class Input {
 		$this->error = $error;
 	}
 
+	public function getClasses() {
+		$classes = $this->classes;
+		if ($this->hasError()) {
+			$classes[] = 'error';
+		}
+		return join($classes, ' ');
+	}
+
 	public function hasError() {
 		return (boolean)$this->error;
 	}

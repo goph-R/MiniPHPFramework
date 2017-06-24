@@ -8,10 +8,13 @@ class Router {
 	private $config;
 	private $request;
 
-	public function __construct($config, $request) {
-		$this->config = $config;
-		$this->request = $request;
-		$this->add('', $this->config->get('router.default.controller'), $this->config->get('router.default.method'));
+	public function __construct($im) {
+		$this->config = $im->get('config');
+		$this->request = $im->get('request');
+	}
+
+	public function init() {
+		$this->add('', $this->config->get('router.default.controller'), $this->config->get('router.default.method'));		
 	}
 
 	public function add($route, $controller, $method) {
@@ -60,7 +63,9 @@ class Router {
 	}
 
 	public function queryCurrent() {
-		return $this->query($this->request->get($this->config->get('router.parameter', '')));
+		$param = $this->config->get('router.parameter', '');
+		$value = $this->request->get($param);
+		return $this->query($value);
 	}
 
 	public function getUrl($path) {

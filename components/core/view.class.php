@@ -7,8 +7,8 @@ class View {
 	private $scripts = [];
 	private $styles = [];
 
-	public function __construct($config) {
-		$this->config = $config;
+	public function __construct($im) {
+		$this->config = $im->get('config');
 	}
 
 	public function addScript($script) {

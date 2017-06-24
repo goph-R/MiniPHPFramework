@@ -2,8 +2,6 @@
 
 class LoginForm extends Form {
 	
-	private $loginValidator;
-
 	public function __construct($request, $view) {
 		parent::__construct($request, $view);
 	}

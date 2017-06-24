@@ -5,7 +5,7 @@ class Response {
 	private $headers = [];
 	private $content;
 
-	public function __construct() {
+	public function __construct($im) {
 	}
 
 	public function setHeader($name, $value) {

@@ -2,22 +2,13 @@
 
 class WebApplication {
 
-	protected $config;
+	protected $im;
 	protected $router;
-	protected $reponse;
-	protected $response;
-	protected $user;
-	protected $view;
-	protected $db;
 
-	public function __construct($config, $router, $request, $response, $user, $db, $view) {
-		$this->config = $config;
-		$this->request = $request;
-		$this->response = $response;
-		$this->router = $router;
-		$this->view = $view;
-		$this->user = $user;
-		$this->db = $db;
+	public function __construct($im) {
+		$this->im = $im;
+		$this->router = $im->get('router');
+		$this->response = $im->get('response');
 	}
 
 	public function run() {
@@ -26,19 +17,10 @@ class WebApplication {
 			die('404 (router)');
 		}
 		$controllerClass = $result['controller'];
-		if (!class_exists($controllerClass)) {
+		if (!class_exists($controllerClass)) {			
 			die('404 (class)');
 		}
-		$controller = new $controllerClass(
-			$this,
-			$this->config,
-			$this->router,
-			$this->request,
-			$this->response,			
-			$this->user,
-			$this->db,
-			$this->view
-		);
+		$controller = new $controllerClass($this->im);
 		$method = $result['method'];
 		if (!method_exists($controller, $method)) {
 			die('404 (method)');

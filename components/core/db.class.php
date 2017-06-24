@@ -7,10 +7,12 @@ class DB {
 	private $conn;
 	private $name;
 
+	public function __construct($im) {
+		$this->config = $im->get('config');
+	}
 
-	public function __construct($config, $name = 'default') {
-		$this->config = $config;
-		$this->name = $name;
+	public function init() {
+		$this->name = $this->config->get('db.config');
 	}
 
 	public function connect() {
