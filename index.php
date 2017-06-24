@@ -27,13 +27,12 @@ $config->set('router.default.method', 'index');
 $config->set('view.template.extension', 'phtml');
 $config->set('user.salt', '!#user%$salt');
 
-$im->init();
-
 $router = $im->get('router');
 $router->add('index', 'WelcomeController', 'index');
 $router->add('login', 'LoginController', 'index');
 $router->add('logout', 'LogoutController', 'index');
 $router->add('profile/:id', 'ProfileController', 'index');
 
+$im->init();
 $im->get('app')->run();
 $im->get('db')->close();
