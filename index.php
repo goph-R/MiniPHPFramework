@@ -28,12 +28,12 @@ $config->set('router.default.controller', 'WelcomeController');
 $config->set('router.default.method', 'index');
 $config->set('view.template.extension', 'phtml');
 $config->set('user.salt', '!#user%$salt');
-$config->set('mailer.host', 'mail.dynart.net');
-$config->set('mailer.port', '26');
-$config->set('mailer.username', 'info@dynart.net');
-$config->set('mailer.password', 'insert23');
-$config->set('mailer.from.email', 'info@dynart.net');
-$config->set('mailer.from.name', 'Dynart Support');
+$config->set('mailer.host', '');
+$config->set('mailer.port', '');
+$config->set('mailer.username', '');
+$config->set('mailer.password', '');
+$config->set('mailer.from.email', '');
+$config->set('mailer.from.name', '');
 $config->set('mailer.fake', true);
 
 // app specific
