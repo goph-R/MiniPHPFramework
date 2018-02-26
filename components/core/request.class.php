@@ -45,6 +45,13 @@ class Request {
 		    $ip = $this->headers['REMOTE_ADDR'];
 		}		
 		return $ip;
-	}	
+	}
+
+    public function getDefaultLocale() {
+        if (isset($this->headers['HTTP_ACCEPT_LANGUAGE'])) {
+            return substr($this->headers['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+        }
+        return 'en';
+    }
 
 }

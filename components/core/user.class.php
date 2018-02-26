@@ -4,9 +4,6 @@ class User {
 
 	private $request;
 	private $config;
-	private $id;
-	private $name;
-	private $email;
 
 	public function __construct($im) {
 		session_start();
@@ -14,15 +11,15 @@ class User {
 		$this->config = $im->get('config');
 	}
 
-	public function get($name, $defaultValue = null) {
-		return array_key_exists($name, $_SESSION) ? $_SESSION[$name] : $defaultValue;
+    public function get($name, $defaultValue = null) {
+		return isset($_SESSION[$name]) ? $_SESSION[$name] : $defaultValue;
 	}
 
 	public function set($name, $value) {
 		$_SESSION[$name] = $value;
 	}
 
-	private function getHash() {
+	public function getHash() {
 		return md5($this->request->getHeader('User-Agent').$this->request->getIp());
 	}
 
@@ -37,4 +34,19 @@ class User {
 	public function destroy() {
 		session_destroy();
 	}
+
+	public function setFlash($message) {
+	    $this->set('user.flash', $message);
+    }
+
+    public function hasFlash() {
+        return $this->get('user.flash', '') ? true : false;
+    }
+
+    public function getFlash() {
+        $result = $this->get('user.flash', '');
+        $this->set('user.flash', '');
+        return $result;
+    }
+
 }

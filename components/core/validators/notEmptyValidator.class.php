@@ -6,8 +6,8 @@ class NotEmptyValidator extends Validator {
 		$this->error = "{label} can't be empty";
 	}
 
-	public function doValidate($input) {
-		if (!$input->getValue()) {
+	public function doValidate($value) {
+		if (!$value) {
 			return false;
 		}
 		return true;

@@ -8,11 +8,12 @@ abstract class Table {
 	protected $primaryKeys = [];
 	protected $db;
 
-	public function __construct($db) {
-		$this->db = $db;
+	public function __construct($im) {
+		$this->db = $im->get('db');
 	}
 
-	public function addColumn($column, $isPrimaryKey = false) {
+	public function addColumn($column, $defaultValue = null, $isPrimaryKey = false) {
+	    $column->setDefaultValue($defaultValue);
 		$this->columns[$column->getName()] = $column;
 		if ($isPrimaryKey) {
 			$this->primaryKeys[] = $column->getName();
@@ -20,7 +21,7 @@ abstract class Table {
 	}
 
 	public function getColumn($name) {
-		return array_key_exists($name, $this->columns) ? $this->columns[$name] : null;
+		return isset($this->columns[$name]) ? $this->columns[$name] : null;
 	}
 
 	protected function preSave($record) {}
@@ -84,34 +85,30 @@ abstract class Table {
 	}
 
 	private function createOrder($query) {
-		$sql = '';
-		if (array_key_exists('order', $query)) {
-			$orders = $query['order'];
-			if (!is_array($orders)) {
-				$orders = [$orders, 'asc'];
-			}
-			if (!is_array($orders[0])) {
-				$orders = [$orders];
-			}
-			$sql = 'ORDER BY';
-			foreach ($orders as $order) {
-				$order[1] = $order[1] == 'asc' ? 'asc' : 'desc';
-				$sql .= ' '.$this->escapeName($order[0]).' '.$order[1];
-			}
-
-		}
-		return $sql;
+		if (!isset($query['order'])) {
+            return '';
+        }
+        $orders = $query['order'];
+        if (!is_array($orders)) {
+            $orders = [$orders => 'asc'];
+        }
+        $sqlOrders = [];
+        foreach ($orders as $orderName => $orderDir) {
+            $orderDir = $orderDir == 'asc' ? 'asc' : 'desc';
+            $sqlOrders[] = $this->escapeName($orderName).' '.$orderDir;
+        }
+		return 'ORDER BY '.join(', ', $sqlOrders);
 	}
 
 	private function createLimit($query) {
-		$sql = '';
-		if (array_key_exists('limit', $query)) {
-			if (is_array($query['limit'])) {
-				$sql .= ' LIMIT '.(int)$query['limit'][0].', '.(int)$query['limit'][1];
-			} else {
-				$sql .= ' LIMIT '.(int)$query['limit'];
-			}
-		}
+		if (!isset($query['limit'])) {
+            return '';
+        }
+        if (is_array($query['limit'])) {
+            $sql = ' LIMIT '.(int)$query['limit'][0].', '.(int)$query['limit'][1];
+        } else {
+            $sql = ' LIMIT '.(int)$query['limit'];
+        }
 		return $sql;
 	}
 
@@ -167,10 +164,10 @@ abstract class Table {
 	}
 
 	public function count($query) {
-		if (array_key_exists('order', $query)) {
+		if (isset($order['order'])) {
 			unset($query['order']);
 		}
-		if (array_key_exists('limit', $query)) {
+		if (isset($query['limit'])) {
 			unset($query['limit']);
 		}
 		$sql = $this->createSelect('COUNT(1) as c', $query);
@@ -184,10 +181,11 @@ abstract class Table {
 		$values = [];
 		$names = [];
 		$autoIncrement = null;
-		foreach ($record->getAttributes() as $name => $value) {
+		foreach ($this->columns as $name => $column) {
 			$names[] = $this->escapeName($name);
+            $value = $record->get($name);
 			$values[] = $this->escapeValue($value);
-			if ($this->column[$name]->isAutoIncrement() && $value === null) {
+			if ($column->isAutoIncrement() && $value === null) {
 				$autoIncrement = $name;
 			}
 		}
@@ -196,6 +194,7 @@ abstract class Table {
 		$sql .= ') VALUES (';
 		$sql .= join($values, ', ');
 		$sql .= ')';
+        print $sql;
 		$this->db->query($sql);
 		if ($autoIncrement) {
 			$record->set($autoIncrement, $this->db->lastId(), false);

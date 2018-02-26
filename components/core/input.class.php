@@ -2,6 +2,7 @@
 
 abstract class Input {
 
+    protected $im;
 	protected $view;
 	protected $name;
 	protected $error;
@@ -10,13 +11,19 @@ abstract class Input {
 	protected $styles = [];
 	protected $classes = [];
 	protected $value;
+    protected $trimValue = true;
 
-	public function __construct($view, $name, $defaultValue = '') {
-		$this->view = $view;
+	public function __construct($im, $name, $defaultValue = '') {
+	    $this->im = $im;
+		$this->view = $im->get('view');
 		$this->name = $name;
 		$this->defaultValue = $defaultValue;
 		$this->create();
 	}
+
+	public function setTrimValue($trimValue) {
+	    $this->trimValue = $trimValue;
+    }
 
 	public function create() {}
 
@@ -53,7 +60,7 @@ abstract class Input {
 	}
 
 	public function getValue() {
-		return $this->value;
+		return $this->trimValue ? trim($this->value) : $this->value;
 	}
 
 	public function setValue($value) {

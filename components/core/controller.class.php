@@ -1,14 +1,19 @@
 <?php
 
 abstract class Controller {
-	
+
+    const InstanceNames = ['config', 'request', 'response', 'router', 'db', 'view', 'user', 'app'];
+
+    protected $im;
+
 	public function __construct($im) {
-		foreach ($im->getAll() as $name => $instance) {
-			$this->$name = $instance;
+	    $this->im = $im;
+		foreach (self::InstanceNames as $name) {
+			$this->$name = $im->get($name);
 		}
-		foreach ($im->getAll() as $name => $instance) {
-			$this->view->set($name, $instance);
-		}
+        foreach (self::InstanceNames as $name) {
+            $this->view->set($name, $im->get($name));
+        }
 	}
 
 	public function responseView($template) {
@@ -24,7 +29,11 @@ abstract class Controller {
 		$this->response->setContent(json_encode($data));
 	}
 
-	public function redirect($url) {
+	public function redirect($route = '') {
+	    $this->redirectToUrl($this->router->getUrl($route));
+    }
+
+	public function redirectToUrl($url) {
 		$this->response->setHeader('Location', $url);
 		$this->response->setContent('');
 	}

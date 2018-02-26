@@ -28,7 +28,8 @@ class DB {
 		if ($this->conn->connect_errno) {
 			throw new DBException($this->conn->connect_errno.' '.$this->conn->connect_error);
 		}
-		$this->connected = true;		
+		$this->connected = true;
+        $this->query('SET NAMES utf8mb4');
 	}
 
 	public function query($sql) {

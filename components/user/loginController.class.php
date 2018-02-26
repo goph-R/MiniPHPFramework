@@ -2,24 +2,30 @@
 
 class LoginController extends Controller {
 
+    private $userService;
+
+    public function __construct($im) {
+        parent::__construct($im);
+        $this->userService = $im->get('userService');
+    }
+
 	public function index() {
 		if ($this->user->isLoggedIn()) {
-			return $this->redirect($this->config->get('router.base'));
+			return $this->redirect();
 		}		
-		$form = new LoginForm($this->request, $this->view);
+		$form = new LoginForm($this->im);
 		if ($this->request->isPost()) {
 			$form->bind();
 			if ($form->validate()) {
-				$model = new UserModel($this->config, $this->db, $this->user);				
-				if ($model->login($form->getValue('email'), $form->getValue('password'))) {
-					return $this->redirect($this->config->get('router.base'));
+				if ($this->userService->login($form->getValue('email'), $form->getValue('password'))) {
+					return $this->redirect();
 				} else {
-					$form->addError('No such email/password');
+					$form->addError('No such email or password');
 				}
 			}
 		}
 		$this->view->set('form', $form);
 		$this->responseLayout('components/core/templates/layout', 'components/user/templates/login');
 	}
-	
+
 }

@@ -19,12 +19,16 @@ class Record {
 	}
 
 	public function get($name) {
-		return $this->attributes[$name];
+        $column = $this->table->getColumn($name);
+        if (!$column) {
+            throw new DBException('Try to get a non existing column: '.$name);
+        }
+		return isset($this->attributes[$name]) ? $this->attributes[$name] : $column->getDefaultValue();
 	}
 
 	public function getAttributes() {
-		return $this->attributes;
-	}
+	    return $this->attributes;
+    }
 
 	public function set($name, $value, $modified = true) {
 		$column = $this->table->getColumn($name);
@@ -52,5 +56,11 @@ class Record {
 	public function delete() {
 		$this->table->delete($this);
 	}
+
+	public function setAll($fields, $values) {
+        foreach ($fields as $field) {
+            $this->set($field, $values[$field]);
+        }
+    }
 
 }

@@ -1,0 +1,14 @@
+<h1>Sign Up</h1>
+
+<?php if ($user->hasFlash()): ?>
+    <div class="error-box">
+        <?= $user->getFlash() ?>
+    </div>
+<?php endif ?>
+
+<form action="<?= $router->getUrl('register') ?>" method="post">
+    <?= $form->fetch() ?>
+    <div class="form-row">
+        <input type="submit">
+    </div>
+</form>

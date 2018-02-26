@@ -1,4 +1,6 @@
-<div>Name: <?= $record->get('name') ?></div>
+<h1>Profile</h1>
+<div>Firstname: <?= $record->get('firstname') ?></div>
+<div>Lastname: <?= $record->get('lastname') ?></div>
 <div>Email: <?= $record->get('email') ?></div>
 <div>Is active: <?= $record->get('active') ? 'yes' : 'no' ?></div>
 <div>Last login: <?= $record->get('last_login') ? date("Y-m-d H:i:s", $record->get('last_login')) : 'never' ?></div>

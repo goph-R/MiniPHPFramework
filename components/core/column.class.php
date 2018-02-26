@@ -5,13 +5,22 @@ abstract class Column {
 	protected $name;
 	protected $table;
 	protected $autoIncrement;
+    protected $defaultValue;
 	// TODO: current_timestamp
 
-	public function __construct($table, $name, $autoIncrement = false) {
-		$this->table = $table;
-		$this->name = $name;
+	public function __construct($table, $name)
+    {
+        $this->table = $table;
+        $this->name = $name;
+    }
+
+    public function setAutoIncrement($autoIncrement) {
 		$this->autoIncrement = $autoIncrement;
 	}
+
+	public function setDefaultValue($defaultValue) {
+        $this->defaultValue = $defaultValue;
+    }
 
 	public function getName() {
 		return $this->name;
@@ -24,4 +33,9 @@ abstract class Column {
 	public function convert($value) {
 		return $value;
 	}
+
+	public function getDefaultValue() {
+	    return $this->defaultValue;
+	}
+
 }

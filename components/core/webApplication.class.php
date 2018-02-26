@@ -14,7 +14,7 @@ class WebApplication {
 	public function run() {
 		$result = $this->router->queryCurrent();
 		if (!$result) {
-			die('404 (router)');
+            die('404 (router)');
 		}
 		$controllerClass = $result['controller'];
 		if (!class_exists($controllerClass)) {			

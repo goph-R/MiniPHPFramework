@@ -1,7 +1,8 @@
 <?php
 
 abstract class Form {
-	
+
+    protected $im;
 	protected $view;
 	protected $request;
 	protected $inputs = [];	
@@ -10,9 +11,10 @@ abstract class Form {
 	protected $postValidators = [];
 	protected $errors = [];
 
-	public function __construct($request, $view) {
-		$this->request = $request;
-		$this->view = $view;
+	public function __construct($im) {
+	    $this->im = $im;
+		$this->request = $im->get('request');
+		$this->view = $im->get('view');
 		$this->create();
 	}
 
@@ -23,12 +25,20 @@ abstract class Form {
 		$this->inputs[$input->getName()] = $input;
 	}
 
-	public function getInputs() {
-		return $this->inputs;
-	}
+	public function getValues() {
+	    $result = [];
+	    foreach ($this->inputs as $input) {
+	        $result[$input->getName()] = $input->getValue();
+        }
+        return $result;
+    }
+
+    public function getInputs() {
+        return $this->inputs;
+    }
 
 	public function getLabel($inputName) {
-		return array_key_exists($inputName, $this->labels) ? $this->labels[$inputName] : '';
+		return isset($this->labels[$inputName]) ? $this->labels[$inputName] : '';
 	}
 
 	public function hasErrors() {
@@ -44,7 +54,7 @@ abstract class Form {
 	}
 
 	public function addValidator($inputName, $validator) {
-		if (!array_key_exists($inputName, $this->validators)) {
+		if (!isset($this->validators[$inputName])) {
 			$this->validators[$inputName] = [];
 		}
 		$this->validators[$inputName][] = $validator;
@@ -62,7 +72,7 @@ abstract class Form {
 		$this->errors = [];
 		foreach ($this->inputs as $input) {
 			$input->setValue($this->request->get($input->getName(), $input->getDefaultValue()));
-		}		
+		}
 	}
 
 	public function validate() {
@@ -77,7 +87,7 @@ abstract class Form {
 		$result = true;
 		foreach ($this->validators as $inputName => $validatorList) {
 			foreach ($validatorList as $validator) {
-				$subResult = $validator->validate($this->labels[$inputName], $this->inputs[$inputName]);				
+				$subResult = $validator->validate($this->labels[$inputName], $this->inputs[$inputName]->getValue());
 				$result &= $subResult;
 				if (!$subResult) {
 					$this->inputs[$inputName]->setError($validator->getError());
@@ -92,8 +102,7 @@ abstract class Form {
 		$result = true;
 		foreach ($this->postValidators as $validator) {
 			$subResult = $validator->validate('', null);
-			$result &= $subResult;
-			if (!$subResult) {				
+			if (!$subResult) {
 				$this->errors[] = $validator->getError();
 				$result = false;
 			}

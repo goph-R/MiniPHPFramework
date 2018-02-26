@@ -1,3 +1,10 @@
+<?php if ($form->hasErrors()): ?>
+	<?php foreach ($form->getErrors() as $error): ?>
+		<div class="form-error">
+			<?= $error ?>
+		</div>
+	<?php endforeach ?>
+<?php endif ?>
 <?php foreach ($form->getInputs() as $input): ?>
 	<div class="form-row">
 		<label><?= $form->getLabel($input->getName()) ?></label>
@@ -9,10 +16,4 @@
 		<?php endif ?>
 	</div>
 <?php endforeach ?>
-<?php if ($form->hasErrors()): ?>
-	<?php foreach ($form->getErrors() as $error): ?>
-		<div class="form-error">
-			<?= $error ?>
-		</div>
-	<?php endforeach ?>
-<?php endif ?>
+
