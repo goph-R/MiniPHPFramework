@@ -2,40 +2,40 @@
 
 abstract class Column {
 
-	protected $name;
-	protected $table;
-	protected $autoIncrement;
+    protected $name;
+    protected $table;
+    protected $autoIncrement;
     protected $defaultValue;
-	// TODO: current_timestamp
+    // TODO: current_timestamp
 
-	public function __construct($table, $name)
+    public function __construct($table, $name)
     {
         $this->table = $table;
         $this->name = $name;
     }
 
     public function setAutoIncrement($autoIncrement) {
-		$this->autoIncrement = $autoIncrement;
-	}
+        $this->autoIncrement = $autoIncrement;
+    }
 
-	public function setDefaultValue($defaultValue) {
+    public function setDefaultValue($defaultValue) {
         $this->defaultValue = $defaultValue;
     }
 
-	public function getName() {
-		return $this->name;
-	}
+    public function getName() {
+        return $this->name;
+    }
 
-	public function isAutoIncrement() {
-		return $this->autoIncrement;
-	}
+    public function isAutoIncrement() {
+        return $this->autoIncrement;
+    }
 
-	public function convert($value) {
-		return $value;
-	}
+    public function convert($value) {
+        return $value;
+    }
 
-	public function getDefaultValue() {
-	    return $this->defaultValue;
-	}
+    public function getDefaultValue() {
+        return $this->defaultValue;
+    }
 
 }

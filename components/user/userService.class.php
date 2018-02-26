@@ -2,31 +2,31 @@
 
 class UserService {
 
-	private $config;
-	private $table;
-	private $user;
+    private $config;
+    private $table;
+    private $user;
     private $mailer;
 
-	public function __construct($im) {
-		$this->config = $im->get('config');
-		$this->table = $im->get('userTable');
-		$this->user = $im->get('user');
+    public function __construct($im) {
+        $this->config = $im->get('config');
+        $this->table = $im->get('userTable');
+        $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');
-	}
+    }
 
-	public function hash($value) {
-		return md5($this->config->get('user.salt').$value);
-	}
+    public function hash($value) {
+        return md5($this->config->get('user.salt').$value);
+    }
 
-	private function findByEmailAndPassword($email, $password) {
-		$record = $this->table->findOne(null, [
-			'where' => [
-				['email', '=', $email],
-				['password', '=', $this->hash($password)]
-			]
-		]);
-		return $record;
-	}
+    private function findByEmailAndPassword($email, $password) {
+        $record = $this->table->findOne(null, [
+            'where' => [
+                ['email', '=', $email],
+                ['password', '=', $this->hash($password)]
+            ]
+        ]);
+        return $record;
+    }
 
     public function findById($id) {
         return $this->table->findOne(null, [
@@ -75,12 +75,12 @@ class UserService {
     }
 
     public function logout() {
-		$this->user->destroy();
-	}
+        $this->user->destroy();
+    }
 
-	public function register($values) {
+    public function register($values) {
         $fields = ['email', 'city', 'country', 'zip', 'firstname', 'lastname'];
-	    $record = new Record($this->table);
+        $record = new Record($this->table);
         $record->setAll($fields, $values);
         $record->set('password', $this->hash($values['password']));
         $record->set('activation_hash', md5(time()));

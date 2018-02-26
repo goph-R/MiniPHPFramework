@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<?php foreach ($view->getStyles() as $style): ?>
-		<link rel="stylesheet" type="text/css" href="<?= $style ?>">
-	<?php endforeach ?>
+    <?php foreach ($view->getStyles() as $style): ?>
+        <link rel="stylesheet" type="text/css" href="<?= $style ?>">
+    <?php endforeach ?>
 </head>
 <body>
 
-	<div>
-		<a href="<?= $router->getUrl('') ?>">Home</a> |
-		<?php if ($user->isLoggedIn()): ?>
-			<a href="<?= $router->getUrl('logout') ?>">Logout</a> |
-			<a href="<?= $router->getUrl('profile/view/'.$user->get('id')) ?>">Profile</a>
-		<?php else: ?>
-			<a href="<?= $router->getUrl('login') ?>">Login</a> |
-			<a href="<?= $router->getUrl('register') ?>">Sign Up</a>
-		<?php endif ?>
-	</div>
-	<?= $content ?>
+    <div>
+        <a href="<?= $router->getUrl('') ?>">Home</a> |
+        <?php if ($user->isLoggedIn()): ?>
+            <a href="<?= $router->getUrl('logout') ?>">Logout</a> |
+            <a href="<?= $router->getUrl('profile/view/'.$user->get('id')) ?>">Profile</a>
+        <?php else: ?>
+            <a href="<?= $router->getUrl('login') ?>">Login</a> |
+            <a href="<?= $router->getUrl('register') ?>">Sign Up</a>
+        <?php endif ?>
+    </div>
+    <?= $content ?>
 
-	<?php foreach ($view->getScripts() as $script): ?>
-		<script type="text/javascript" src="<?= $script ?>"></script>
-	<?php endforeach ?>
+    <?php foreach ($view->getScripts() as $script): ?>
+        <script type="text/javascript" src="<?= $script ?>"></script>
+    <?php endforeach ?>
 
-	<!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
+    <!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
 
 </body>
 </html>

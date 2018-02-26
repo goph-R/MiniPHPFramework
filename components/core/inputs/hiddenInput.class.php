@@ -1,7 +1,7 @@
 <?php 
 
 class HiddenInput extends TextInput {
-	public function create() {
-		$this->type = 'hidden';
-	}
+    public function create() {
+        $this->type = 'hidden';
+    }
 }
