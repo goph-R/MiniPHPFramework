@@ -18,7 +18,7 @@ class Config {
     }
 
     public function load($path, $group) {
-        $iniData = parse_ini_file($path);
+        $iniData = parse_ini_file($path, true, INI_SCANNER_TYPED);
         $data = [];
         if ($iniData) {            
             if (isset($data['all'])) {
