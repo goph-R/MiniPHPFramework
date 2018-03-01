@@ -21,10 +21,10 @@ class Config {
         $iniData = parse_ini_file($path, true, INI_SCANNER_TYPED);
         $data = [];
         if ($iniData) {            
-            if (isset($data['all'])) {
+            if (isset($iniData['all'])) {
                 $data = array_merge($data, $iniData['all']);
             }
-            if (isset($data[$group])) {
+            if (isset($iniData[$group])) {
                 $data = array_merge($data, $iniData[$group]);
             }
         }
