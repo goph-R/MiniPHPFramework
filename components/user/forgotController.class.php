@@ -14,14 +14,11 @@ class ForgotController extends Controller {
             return $this->redirect();
         }
         $form = new ForgotForm($this->im);
-        if ($this->request->isPost()) {
-            $form->bind();
-            if ($form->validate()) {
-                if ($this->userService->sendForgotEmail($form->getValue('email'))) {
-                    return $this->redirect('forgot/sent');
-                } else {
-                    $form->addError("Couldn't send email.");
-                }
+        if ($form->bindAndValidate()) {
+            if ($this->userService->sendForgotEmail($form->getValue('email'))) {
+                return $this->redirect('forgot/sent');
+            } else {
+                $form->addError("Couldn't send email.");
             }
         }
         $this->view->set('form', $form);
@@ -42,12 +39,9 @@ class ForgotController extends Controller {
             return $this->message('error', 'Password changing', 'The activation was not found in our database.');
         }
         $form = new ForgotNewPasswordForm($this->im);
-        if ($this->request->isPost()) {
-            $form->bind();
-            if ($form->validate()) {
-                $this->userService->changeForgotPassword($record, $this->getValue('passsword'));
-                return $this->redirect('forgot/success');
-            }
+        if ($form->bindAndValidate()) {
+            $this->userService->changeForgotPassword($record, $this->getValue('passsword'));
+            return $this->redirect('forgot/success');
         }
         $this->view->set('hash', $hash);
         $this->view->set('form', $form);

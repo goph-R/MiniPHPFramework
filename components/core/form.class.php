@@ -75,6 +75,16 @@ abstract class Form {
         }
     }
 
+    public function bindAndValidate() {
+        if ($this->request->isPost()) {
+            $this->bind();
+            if ($this->validate()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function validate() {
         $result = $this->validateInputs();
         if ($result) {

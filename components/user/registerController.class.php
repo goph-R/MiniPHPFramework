@@ -14,14 +14,11 @@ class RegisterController extends Controller {
             return $this->redirect();
         }
         $form = new RegisterForm($this->im);
-        if ($this->request->isPost()) {
-            $form->bind();
-            if ($form->validate()) {
-                if ($this->userService->register($form->getValues())) {
-                    return $this->redirect('register/activation');
-                } else {
-                    $this->user->setFlash('Email sending was unsuccessful.');
-                }
+        if ($form->bindAndValidate()) {
+            if ($this->userService->register($form->getValues())) {
+                return $this->redirect('register/activation');
+            } else {
+                $this->user->setFlash('Email sending was unsuccessful.');
             }
         }
         $this->view->set('form', $form);
