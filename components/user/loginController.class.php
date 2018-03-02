@@ -14,7 +14,7 @@ class LoginController extends Controller {
             return $this->redirect();
         }
         $form = new LoginForm($this->im);
-        if ($form->bindAndValidate()) {
+        if ($form->processInput()) {
             if ($this->userService->login($form->getValue('email'), $form->getValue('password'))) {
                 return $this->redirect();
             } else {

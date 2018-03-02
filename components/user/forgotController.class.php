@@ -14,7 +14,7 @@ class ForgotController extends Controller {
             return $this->redirect();
         }
         $form = new ForgotForm($this->im);
-        if ($form->bindAndValidate()) {
+        if ($form->processInput()) {
             if ($this->userService->sendForgotEmail($form->getValue('email'))) {
                 return $this->redirect('forgot/sent');
             } else {
@@ -39,7 +39,7 @@ class ForgotController extends Controller {
             return $this->message('error', 'Password changing', 'The activation was not found in our database.');
         }
         $form = new ForgotNewPasswordForm($this->im);
-        if ($form->bindAndValidate()) {
+        if ($form->processInput()) {
             $this->userService->changeForgotPassword($record, $this->getValue('passsword'));
             return $this->redirect('forgot/success');
         }

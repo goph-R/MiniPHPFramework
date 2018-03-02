@@ -14,7 +14,7 @@ class RegisterController extends Controller {
             return $this->redirect();
         }
         $form = new RegisterForm($this->im);
-        if ($form->bindAndValidate()) {
+        if ($form->processInput()) {
             if ($this->userService->register($form->getValues())) {
                 return $this->redirect('register/activation');
             } else {

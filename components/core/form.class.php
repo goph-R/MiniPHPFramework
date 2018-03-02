@@ -75,14 +75,12 @@ abstract class Form {
         }
     }
 
-    public function bindAndValidate() {
-        if ($this->request->isPost()) {
-            $this->bind();
-            if ($this->validate()) {
-                return true;
-            }
+    public function processInput() {
+        if (!$this->request->isPost()) {
+            return false;
         }
-        return false;
+        $this->bind();
+        return $this->validate();
     }
 
     public function validate() {
@@ -98,8 +96,8 @@ abstract class Form {
         foreach ($this->validators as $inputName => $validatorList) {
             foreach ($validatorList as $validator) {
                 $subResult = $validator->validate($this->labels[$inputName], $this->inputs[$inputName]->getValue());
-                $result &= $subResult;
                 if (!$subResult) {
+                    $result = false;
                     $this->inputs[$inputName]->setError($validator->getError());
                     break;
                 }
