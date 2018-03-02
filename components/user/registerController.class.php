@@ -18,7 +18,7 @@ class RegisterController extends Controller {
             if ($this->userService->register($form->getValues())) {
                 return $this->redirect('register/activation');
             } else {
-                $this->user->setFlash('Email sending was unsuccessful.');
+                $form->addError($this->translation->get('user', 'couldnt_send_email'));
             }
         }
         $this->view->set('form', $form);
@@ -26,18 +26,27 @@ class RegisterController extends Controller {
     }
 
     public function activation() {
-        $this->message('info', 'Activation', 'An activation email was sent.');
+        $this->message('info',
+            $this->translation->get('user', 'activation'),
+            $this->translation->get('user', 'activation_sent')
+        );
     }
 
     public function activate() {
         if ($this->userService->activate($this->request->get('hash'))) {
             return $this->redirect('register/success');
         }
-        $this->message('error', 'Activation', 'The activation was unsuccessful.');
+        $this->message('error',
+            $this->translation->get('user', 'activation'),
+            $this->translation->get('user', 'activation_unsuccessful')
+        );
     }
 
     public function success() {
-        $this->message('info', 'Sign Up', 'The registration was successful.');
+        $this->message('info',
+            $this->translation->get('user', 'registration'),
+            $this->translation->get('user', 'registration_successful')
+        );
     }
 
     private function message($type, $title, $message) {

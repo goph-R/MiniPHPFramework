@@ -3,7 +3,8 @@
 class ForgotNewPasswordForm extends Form {
 
     public function create() {
-        $notEmptyValidator = new NotEmptyValidator();
+        $translation = $this->im->get('translation');
+        $notEmptyValidator = new NotEmptyValidator($this->im);
         $password = new PasswordInput($this->im, 'password');
         $password->setTrimValue(false);
         $passwordAgain = new PasswordInput($this->im, 'password_again');
@@ -12,7 +13,9 @@ class ForgotNewPasswordForm extends Form {
         $this->addInput('Password again', $passwordAgain);
         $this->addValidator('password', $notEmptyValidator);
         $this->addValidator('password_again', $notEmptyValidator);
-        $this->addValidator('password_again', new SameValidator($password, 'Password'));
+        $this->addValidator('password_again',
+            new SameValidator($this->im, $password, $translation->get('user', 'password'))
+        );
     }
 
 }

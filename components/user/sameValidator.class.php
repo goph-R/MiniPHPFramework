@@ -4,8 +4,9 @@ class SameValidator extends Validator {
 
     private $otherInput;
 
-    public function __construct($otherInput, $otherLabel) {
-        $this->error = "{label} need to be the same as ".$otherLabel;
+    public function __construct($im, $otherInput, $otherLabel) {
+        parent::__construct($im);
+        $this->error = $this->translation->get('user', 'didnt_match');
         $this->otherInput = $otherInput;
     }
 

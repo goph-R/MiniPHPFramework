@@ -18,7 +18,7 @@ class ForgotController extends Controller {
             if ($this->userService->sendForgotEmail($form->getValue('email'))) {
                 return $this->redirect('forgot/sent');
             } else {
-                $form->addError("Couldn't send email.");
+                $form->addError($this->translator->get('user', 'couldnt_send_email'));
             }
         }
         $this->view->set('form', $form);
@@ -26,7 +26,10 @@ class ForgotController extends Controller {
     }
 
     public function sent() {
-        return $this->message('info', 'Password changing', 'An email was sent with the instructions.');
+        return $this->message('info',
+            $this->translator->get('user', 'password_changing'),
+            $this->translator->get('user', 'email_sent_with_instructions')
+        );
     }
 
     public function newPassword() {
@@ -36,7 +39,10 @@ class ForgotController extends Controller {
         $hash = $this->request->get('hash');
         $record = $this->userService->findByForgotHash($hash);
         if (!$record) {
-            return $this->message('error', 'Password changing', 'The activation was not found in our database.');
+            return $this->message('error',
+                $this->translator->get('user', 'password_changing'),
+                $this->translator->get('user', 'activation_not_found')
+            );
         }
         $form = new ForgotNewPasswordForm($this->im);
         if ($form->processInput()) {
@@ -49,7 +55,10 @@ class ForgotController extends Controller {
     }
 
     public function success() {
-        $this->message('info', 'Password changing', 'The password was changed successfully.');
+        $this->message('info',
+            $this->translator->get('user', 'password_changing'),
+            $this->translator->get('user', 'password_changed')
+        );
     }
 
     private function message($type, $title, $message) {

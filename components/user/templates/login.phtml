@@ -1,7 +1,7 @@
-<h1>Login</h1>
+<h1><?= $translation->get('user', 'login') ?></h1>
 <form action="<?= $router->getUrl('login') ?>" method="post">
     <?= $form->fetch() ?>
     <div class="form-row">
-        <input type="submit">
+        <input type="submit" value="<?= $translation->get('user', 'login') ?>">
     </div>
 </form>

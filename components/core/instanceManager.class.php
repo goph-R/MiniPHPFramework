@@ -11,6 +11,7 @@ class InstanceManager {
     }
 
     public function init() {
+        $this->get('translation')->add('core', 'components/core/translations');
         foreach ($this->order as $name) {
             $instance = $this->data[$name];
             if (method_exists($instance, 'init')) { // TODO: "Initiable" interface maybe?

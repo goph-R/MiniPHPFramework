@@ -1,1 +1,1 @@
-<?= $translation->get('hello', ['name' => $user->get('firstname', 'Anonymous')], 'welcome') ?>
+<?= $translation->get('welcome', 'hello', ['name' => $user->get('firstname', 'Anonymous')]) ?>

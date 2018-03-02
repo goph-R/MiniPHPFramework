@@ -7,16 +7,17 @@
 </head>
 <body>
 
-    <div>
-        <a href="<?= $router->getUrl('') ?>">Home</a> |
+    <nav>
+        <a href="<?= $router->getUrl('') ?>"><?= $translation->get('welcome', 'home') ?></a> |
         <?php if ($user->isLoggedIn()): ?>
-            <a href="<?= $router->getUrl('logout') ?>">Logout</a> |
-            <a href="<?= $router->getUrl('profile/view/'.$user->get('id')) ?>">Profile</a>
+            <a href="<?= $router->getUrl('logout') ?>"><?= $translation->get('user', 'logout') ?></a> |
+            <a href="<?= $router->getUrl('profile/view/'.$user->get('id')) ?>"><?= $translation->get('user', 'profile') ?></a>
         <?php else: ?>
-            <a href="<?= $router->getUrl('login') ?>">Login</a> |
-            <a href="<?= $router->getUrl('register') ?>">Sign Up</a>
+            <a href="<?= $router->getUrl('login') ?>"><?= $translation->get('user', 'login') ?></a> |
+            <a href="<?= $router->getUrl('register') ?>"><?= $translation->get('user', 'registration') ?></a>
         <?php endif ?>
-    </div>
+    </nav>
+
     <?= $content ?>
 
     <?php foreach ($view->getScripts() as $script): ?>
