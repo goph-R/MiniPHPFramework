@@ -22,38 +22,29 @@ class RegisterController extends Controller {
             }
         }
         $this->view->set('form', $form);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/register');
+        $this->responseLayout(':core/layout', ':user/register');
     }
 
     public function activation() {
-        $this->message('info',
-            $this->translation->get('user', 'activation'),
-            $this->translation->get('user', 'activation_sent')
-        );
+        $this->message('info', 'activation', 'activation_sent');
     }
 
     public function activate() {
         if ($this->userService->activate($this->request->get('hash'))) {
             return $this->redirect('register/success');
         }
-        $this->message('error',
-            $this->translation->get('user', 'activation'),
-            $this->translation->get('user', 'activation_unsuccessful')
-        );
+        $this->message('error', 'activation', 'activation_unsuccessful');
     }
 
     public function success() {
-        $this->message('info',
-            $this->translation->get('user', 'registration'),
-            $this->translation->get('user', 'registration_successful')
-        );
+        $this->message('info', 'registration', 'registration_successful');
     }
 
     private function message($type, $title, $message) {
-        $this->view->set('title', $title);
         $this->view->set('messageType', $type);
-        $this->view->set('message', $message);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/message');
+        $this->view->set('title', $this->translation->get('user', $title));
+        $this->view->set('message', $this->translation->get('user', $message));
+        $this->responseLayout(':core/layout', ':user/message');
     }
 
 }

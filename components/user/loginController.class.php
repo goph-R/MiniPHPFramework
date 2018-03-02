@@ -22,7 +22,7 @@ class LoginController extends Controller {
             }
         }
         $this->view->set('form', $form);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/login');
+        $this->responseLayout(':core/layout', ':user/login');
     }
 
 }

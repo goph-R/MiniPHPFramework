@@ -6,6 +6,7 @@ class View {
     private $config;
     private $scripts = [];
     private $styles = [];
+    private $paths = [];
 
     public function __construct($im) {
         $this->config = $im->get('config');
@@ -42,7 +43,28 @@ class View {
         return $this->config->get('application.path').$path.'.'.$this->config->get('view.template.extension');
     }
 
+    public function addPath($name, $path) {
+        $this->paths[$name] = $path;
+    }
+
+    private function findPath($path) {
+        if ($path[0] != ':') {
+            return $path;
+        }
+        if (isset($this->paths[$path])) {
+            return $this->paths[$path];
+        }
+        $perPos = mb_strpos($path, '/');
+        $pathName = mb_substr($path, 1, $perPos - 1);
+        if (isset($this->paths[$pathName])) {
+            $path = $this->paths[$pathName].'/'.mb_substr($path, $perPos + 1, mb_strlen($path));
+        }
+
+        return $path;
+    }
+
     public function fetch($path) {
+        $path = $this->findPath($path);
         ob_start();
         extract($this->attributes);
         include($this->getTemplatePath($path));

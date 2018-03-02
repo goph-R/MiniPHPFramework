@@ -118,7 +118,7 @@ abstract class Form {
         return $result;
     }
 
-    public function fetch($path = 'components/core/templates/form') {
+    public function fetch($path = ':core/form') {
         foreach ($this->inputs as $input) {
             foreach ($input->getStyles() as $style) {
                 $this->view->addStyle($style);

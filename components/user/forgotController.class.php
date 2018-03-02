@@ -22,14 +22,11 @@ class ForgotController extends Controller {
             }
         }
         $this->view->set('form', $form);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/forgot');
+        $this->responseLayout(':core/layout', ':user/forgot');
     }
 
     public function sent() {
-        return $this->message('info',
-            $this->translator->get('user', 'password_changing'),
-            $this->translator->get('user', 'email_sent_with_instructions')
-        );
+        return $this->message('info', 'password_changing', 'email_sent_with_instructions');
     }
 
     public function newPassword() {
@@ -39,10 +36,7 @@ class ForgotController extends Controller {
         $hash = $this->request->get('hash');
         $record = $this->userService->findByForgotHash($hash);
         if (!$record) {
-            return $this->message('error',
-                $this->translator->get('user', 'password_changing'),
-                $this->translator->get('user', 'activation_not_found')
-            );
+            return $this->message('error', 'password_changing', 'activation_not_found');
         }
         $form = new ForgotNewPasswordForm($this->im);
         if ($form->processInput()) {
@@ -51,21 +45,18 @@ class ForgotController extends Controller {
         }
         $this->view->set('hash', $hash);
         $this->view->set('form', $form);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/forgotNewPassword');
+        $this->responseLayout(':core/layout', ':user/forgotNewPassword');
     }
 
     public function success() {
-        $this->message('info',
-            $this->translator->get('user', 'password_changing'),
-            $this->translator->get('user', 'password_changed')
-        );
+        $this->message('info', 'password_changing', 'password_changed');
     }
 
     private function message($type, $title, $message) {
-        $this->view->set('title', $title);
         $this->view->set('messageType', $type);
-        $this->view->set('message', $message);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/message');
+        $this->view->set('title', $this->translation->get('user', $title));
+        $this->view->set('message', $this->translation->get('user', $message));
+        $this->responseLayout(':core/layout', ':user/message');
     }
 
 }

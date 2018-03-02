@@ -10,7 +10,7 @@ class ProfileController extends Controller {
             // TODO: 404
         }
         $this->view->set('record', $record);
-        $this->responseLayout('components/core/templates/layout', 'components/user/templates/profileView');
+        $this->responseLayout(':core/layout', ':user/profileView');
     }
 
     public function edit() {

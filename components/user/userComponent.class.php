@@ -4,12 +4,14 @@ class UserComponent {
 
     private $router;
     private $translation;
+    private $view;
     
     public function __construct($im) {
         $im->add('userTable', new UserTable($im));
         $im->add('userService', new UserService($im));
         $this->router = $im->get('router');
         $this->translation = $im->get('translation');
+        $this->view = $im->get('view');
     }
 
     public function init() {
@@ -26,6 +28,7 @@ class UserComponent {
         $this->router->add('register/activate/:hash', 'RegisterController', 'activate');
         $this->router->add('register/success', 'RegisterController', 'success');
         $this->translation->add('user', 'components/user/translations');
+        $this->view->addPath('user', 'components/user/templates');
     }
 
 }
