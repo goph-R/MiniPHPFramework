@@ -15,7 +15,6 @@ class UserService {
     }
 
     public function hash($value) {
-        print $this->config->get('user.salt');
         return md5($this->config->get('user.salt').$value);
     }
 

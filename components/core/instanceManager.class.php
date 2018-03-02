@@ -3,15 +3,27 @@
 class InstanceManager {
 
     private $data = [];
+    private $order = [];
 
     public function add($name, $object) {
         $this->data[$name] = $object;
+        $this->order[] = $name;
     }
 
     public function init() {
-        foreach ($this->data as $name => $instance) {
-            if (method_exists($instance, 'init')) {
+        foreach ($this->order as $name) {
+            $instance = $this->data[$name];
+            if (method_exists($instance, 'init')) { // TODO: "Initiable" interface maybe?
                 $instance->init();
+            }
+        }
+    }
+
+    public function done() {
+        foreach ($this->order as $name) {
+            $instance = $this->data[$name];
+            if (method_exists($instance, 'done')) { // TODO: "Doneable" interface maybe?
+                $instance->done();
             }
         }
     }

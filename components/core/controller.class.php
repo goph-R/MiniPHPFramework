@@ -2,7 +2,7 @@
 
 abstract class Controller {
 
-    const InstanceNames = ['config', 'request', 'response', 'router', 'db', 'view', 'user', 'app'];
+    const InstanceNames = ['config', 'request', 'response', 'router', 'db', 'view', 'user', 'app', 'translation'];
 
     protected $im;
 

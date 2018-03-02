@@ -7,12 +7,9 @@ class DB {
     private $conn;
     private $name;
 
-    public function __construct($im) {
+    public function __construct($im, $name) {
         $this->config = $im->get('config');
-    }
-
-    public function init() {
-        $this->name = $this->config->get('db.config');
+        $this->name = $name;
     }
 
     public function connect() {
@@ -46,6 +43,10 @@ class DB {
         if ($this->connected) {
             $this->conn->close();
         }
+    }
+
+    public function done() {
+        $this->close();
     }
 
     public function escape($string) {

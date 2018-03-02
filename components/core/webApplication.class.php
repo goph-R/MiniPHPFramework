@@ -12,6 +12,7 @@ class WebApplication {
     }
 
     public function run() {
+        $this->im->init();
         $result = $this->router->queryCurrent();
         if (!$result) {
             die('404 (router)');
@@ -27,5 +28,6 @@ class WebApplication {
         }
         $controller->$method();
         $this->response->send();
+        $this->im->done();
     }
 }

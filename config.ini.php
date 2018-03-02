@@ -19,9 +19,10 @@ mailer.from.name =
 mailer.fake = false
 
 [dev]
-db.config = default 
-db.default.host = localhost 
+db.default.host = localhost
 db.default.name = a 
 db.default.user = root 
 db.default.password = 
 mailer.fake = true
+
+*/

@@ -16,16 +16,9 @@ class Router {
         $this->im = $im;
         $this->config = $im->get('config');
         $this->request = $im->get('request');
-    }
-
-    public function init() {
         $this->rewrite = $this->config->get('router.rewrite');
         $this->useLocale = $this->config->get('router.locale');
         $this->parameter = $this->config->get('router.parameter', 'route');
-        $this->addDefault();
-    }
-
-    private function addDefault() {
         $this->add('', $this->config->get('router.default.controller'), $this->config->get('router.default.method'));
     }
 

@@ -39,8 +39,7 @@ class View {
     }
 
     private function getTemplatePath($path) {
-        return
-            $this->config->get('application.path').$path.'.'.$this->config->get('view.template.extension');
+        return $this->config->get('application.path').$path.'.'.$this->config->get('view.template.extension');
     }
 
     public function fetch($path) {
