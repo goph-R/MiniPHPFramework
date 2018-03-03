@@ -40,7 +40,7 @@ class DB {
     public function query($sql) {
         $this->connect();
         $result = $this->conn->query($sql);
-        if ($result && $result !== 1) {
+        if ($result) {
             $ret = new DBResult($result);
             return $ret;
         }

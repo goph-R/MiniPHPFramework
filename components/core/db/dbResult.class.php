@@ -2,9 +2,12 @@
 
 class DBResult {
 
+    /**
+     * @var mysqli_result
+     */
     private $result;
 
-    public function __construct(mysqli_result $result) {
+    public function __construct($result) {
         $this->result = $result;
     }
 

@@ -1,15 +1,35 @@
 <?php
 
-function __autoload($className) {
-    $directory = new RecursiveDirectoryIterator(__DIR__.'/components', RecursiveDirectoryIterator::SKIP_DOTS);
-    $fileIterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY);
-    $filename = $className.'.class.php';
-    foreach ($fileIterator as $file) {
-        if (strtolower($file->getFilename()) === strtolower($filename)) {
-            if ($file->isReadable()) {
-                include_once $file->getPathname();
+class ClassLoader {
+
+    public static $files = [];
+
+    public static function storeFiles() {
+        if (self::$files) {
+            return;
+        }
+        $directory = new RecursiveDirectoryIterator(__DIR__.'/components', RecursiveDirectoryIterator::SKIP_DOTS);
+        $fileIterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY);
+        foreach ($fileIterator as $file) {
+            if (substr($file->getFilename(), -10) == '.class.php' && $file->isReadable()) {
+                self::$files[] = $file;
             }
-            break;
         }
     }
+
+    public static function load($className) {
+        self::storeFiles();
+        $filename = $className.'.class.php';
+        foreach (self::$files as $file) {
+            if (strtolower($file->getFilename()) === strtolower($filename)) {
+                include_once $file->getPathname();
+                break;
+            }
+        }
+    }
+
+}
+
+function __autoload($className) {
+    ClassLoader::load($className);
 }
