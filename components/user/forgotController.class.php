@@ -33,7 +33,7 @@ class ForgotController extends UserController {
         }
         $form = new ForgotNewPasswordForm($this->im);
         if ($form->processInput()) {
-            $this->userService->changeForgotPassword($record, $form->getValue('passsword'));
+            $this->userService->changeForgotPassword($record, $form->getValue('password'));
             return $this->redirect('forgot/success');
         }
         $this->view->set('hash', $hash);
