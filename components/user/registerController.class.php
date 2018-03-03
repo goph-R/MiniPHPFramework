@@ -15,6 +15,8 @@ class RegisterController extends UserController {
                 $form->addError($this->translation->get('user', 'couldnt_send_email'));
             }
         }
+        $form->setValue('password', '');
+        $form->setValue('password_again', '');
         $this->view->set('form', $form);
         $this->responseLayout(':core/layout', ':user/register');
     }

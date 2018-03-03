@@ -8,12 +8,16 @@ class LoginController extends UserController {
         }
         $form = new LoginForm($this->im);
         if ($form->processInput()) {
-            if ($this->userService->login($form->getValue('email'), $form->getValue('password'))) {
+            $email = $form->getValue('email');
+            $password = $form->getValue('password');
+            $remember = $form->getValue('remember');
+            if ($this->userService->login($email, $password, $remember)) {
                 return $this->redirect();
             } else {
                 $form->addError($this->translation->get('user', 'email_password_not_found'));
             }
         }
+        $form->setValue('password', '');
         $this->view->set('form', $form);
         $this->responseLayout(':core/layout', ':user/login');
     }

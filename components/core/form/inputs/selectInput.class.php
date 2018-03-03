@@ -11,8 +11,10 @@ class SelectInput extends Input {
 
     public function fetch() {
         $result = '<select';
+        $result .= ' id="'.$this->getId().'"';
         $result .= ' name="'.$this->getName().'"';
-        $result .= ' class="'.$this->getClasses().'">';
+        $result .= $this->getClassHtml();
+        $result .= '>';
         foreach ($this->options as $optionValue => $optionText) {
             $selected = $optionValue == $this->getValue() ? ' selected="selected"' : '';
             $value = $this->view->escape($optionValue);

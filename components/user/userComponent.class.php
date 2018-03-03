@@ -2,11 +2,22 @@
 
 class UserComponent {
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Translation
+     */
     private $translation;
+
+    /**
+     * @var View
+     */
     private $view;
     
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $im->add('userTable', new UserTable($im));
         $im->add('userService', new UserService($im));
         $this->router = $im->get('router');

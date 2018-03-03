@@ -7,13 +7,17 @@
 <?php endif ?>
 <?php foreach ($form->getInputs() as $input): ?>
     <div class="form-row">
-        <label><?= $form->getLabel($input->getName()) ?></label>
-        <?php if ($input->hasError()): ?>
-            <div class="form-error">
-                <?= $input->getError() ?>
-            </div>
-        <?php endif ?>
-        <?= $input->fetch() ?>
+        <div class="form-label">
+            <label for="<?= $form->getId($input->getName()) ?>"><?= $form->getLabel($input->getName()) ?></label>
+        </div>
+        <div class="form-input">
+            <?php if ($input->hasError()): ?>
+                <div class="form-error">
+                    <?= $input->getError() ?>
+                </div>
+            <?php endif ?>
+            <?= $input->fetch() ?>
+        </div>
     </div>
 <?php endforeach ?>
 

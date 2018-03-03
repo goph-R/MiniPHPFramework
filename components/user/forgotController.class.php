@@ -36,6 +36,8 @@ class ForgotController extends UserController {
             $this->userService->changeForgotPassword($record, $form->getValue('password'));
             return $this->redirect('forgot/success');
         }
+        $form->setValue('password', '');
+        $form->setValue('password_again', '');
         $this->view->set('hash', $hash);
         $this->view->set('form', $form);
         return $this->responseLayout(':core/layout', ':user/forgotNewPassword');

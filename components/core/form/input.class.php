@@ -9,6 +9,16 @@ abstract class Input {
      */
     protected $view;
 
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * @var Form
+     */
+    protected $form;
+
     protected $name;
     protected $error;
     protected $defaultValue;
@@ -21,9 +31,21 @@ abstract class Input {
     public function __construct(InstanceManager $im, $name, $defaultValue = '') {
         $this->im = $im;
         $this->view = $im->get('view');
+        $this->request = $im->get('request');
         $this->name = $name;
         $this->defaultValue = $defaultValue;
+        $this->value = $defaultValue;
         $this->create();
+    }
+
+    public function setForm($form) {
+        $this->form = $form;
+    }
+
+    public function getId() {
+        $name = $this->getName();
+        $name = preg_replace('/[^0-9a-zA-Z_]+/', '_', $name);
+        return $this->form->getName().'_'.$name;
     }
 
     public function setTrimValue($trimValue) {
@@ -41,7 +63,12 @@ abstract class Input {
         if ($this->hasError()) {
             $classes[] = 'error';
         }
-        return join($classes, ' ');
+        return $classes;
+    }
+
+    public function getClassHtml() {
+        $classes = $this->getClasses();
+        return $classes ? ' class="'.join($classes, ' ').'"' : '';
     }
 
     public function hasError() {

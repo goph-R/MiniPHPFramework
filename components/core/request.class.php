@@ -5,6 +5,8 @@ class Request {
     private $data;
     private $headers;
 
+    const ONE_YEAR_SECONDS = 31536000;
+
     public function __construct(InstanceManager $im) {
         $this->data = $_REQUEST;
         $this->headers = $_SERVER;
@@ -25,11 +27,19 @@ class Request {
         $this->headers[$name] = $value;
     }
 
-    public function getHeader($name, $defaultValue = null) {
+    public function getHeader($name, $defaultValue=null) {
         if (isset($this->headers[$name])) {
             return $this->headers[$name];
         }
         return $defaultValue;
+    }
+
+    public function getCookie($name, $defaultValue=null) {
+        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : $defaultValue;
+    }
+
+    public function setCookie($name, $value, $time=null) {
+        setcookie($name, $value, $time ? $time : time() + self::ONE_YEAR_SECONDS);
     }
 
     public function isPost() {

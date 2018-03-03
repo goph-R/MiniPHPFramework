@@ -24,6 +24,7 @@ abstract class Form {
     protected $validators = [];
     protected $postValidators = [];
     protected $errors = [];
+    protected $name = 'form';
 
     public function __construct(InstanceManager $im) {
         $this->im = $im;
@@ -33,11 +34,16 @@ abstract class Form {
         $this->create();
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
     abstract function create();
 
-    public function addInput($label, $input) {
+    public function addInput($label, Input $input) {
         $this->labels[$input->getName()] = $label;
         $this->inputs[$input->getName()] = $input;
+        $input->setForm($this);
     }
 
     public function getValues() {
@@ -54,6 +60,10 @@ abstract class Form {
 
     public function getLabel($inputName) {
         return isset($this->labels[$inputName]) ? $this->labels[$inputName] : '';
+    }
+
+    public function getId($inputName) {
+        return isset($this->inputs[$inputName]) ? $this->inputs[$inputName]->getId() : '';
     }
 
     public function hasErrors() {
@@ -83,10 +93,18 @@ abstract class Form {
         return $this->inputs[$inputName]->getValue();
     }
 
+    public function setValue($inputName, $value) {
+        if (isset($this->inputs[$inputName])) {
+            $this->inputs[$inputName]->setValue($value);
+        }
+    }
+
     public function bind() {
         $this->errors = [];
         foreach ($this->inputs as $input) {
-            $input->setValue($this->request->get($input->getName(), $input->getDefaultValue()));
+            $name = $input->getName();
+            $value = $this->request->get($name, null);
+            $input->setValue($value);
         }
     }
 

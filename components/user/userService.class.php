@@ -27,16 +27,33 @@ class UserService {
      */
     private $translation;
 
+    /**
+     * @var Request
+     */
+    private $request;
+
     public function __construct(InstanceManager $im) {
         $this->config = $im->get('config');
         $this->table = $im->get('userTable');
         $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');
         $this->translation = $im->get('translation');
+        $this->request = $im->get('request');
+        $this->rememberLogin();
     }
 
     public function hash($value) {
         return md5($this->config->get('user.salt').$value);
+    }
+
+    public function rememberLogin() {
+        $rememberHash = $this->request->getCookie('remember_hash');
+        if (!$this->user->isLoggedIn() && $rememberHash) {
+            $record = $this->findActiveByRememberHash($rememberHash);
+            if ($record) {
+                $this->doLogin($record);
+            }
+        }
     }
 
     /**
@@ -103,21 +120,50 @@ class UserService {
         ]);
     }
 
-    public function login($email, $password) {
+    /**
+     * @param $hash
+     * @return Record
+     */
+    public function findActiveByRememberHash($hash) {
+        return $this->table->findOne(null, [
+            'where' => [
+                ['remember_hash', '=', $hash],
+                ['active', '=', 1]
+            ]
+        ]);
+    }
+
+    public function login($email, $password, $remember) {
         $record = $this->findActiveByEmailAndPassword($email, $password);
         if (!$record) {
             return false;
         }
+        if ($remember) {
+            $hash = md5(time());
+            $record->set('remember_hash', $hash);
+            $this->request->setCookie('remember_hash', $hash);
+        }
+        $this->doLogin($record);
+        return true;
+    }
+
+    private function doLogin(Record $record) {
         $record->set('last_login', time());
         $record->save();
         foreach ($record->getAttributes() as $name => $value) {
             $this->user->set($name, $value);
         }
         $this->user->setLoggedIn(true);
-        return true;
     }
 
     public function logout() {
+        $id = $this->user->get('id');
+        $record = $this->findById($id);
+        if ($record) {
+            $record->set('remember_hash', null);
+            $record->save();
+        }
+        $this->request->setCookie('remember_hash', null);
         $this->user->destroy();
     }
 
