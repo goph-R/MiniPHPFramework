@@ -1,11 +1,10 @@
 <?php
 
-class ProfileController extends Controller {
+class ProfileController extends UserController {
 
     public function index() {
         // TODO: check permission
-        $service = $this->im->get('userService');
-        $record = $service->findById($this->request->get('id'));
+        $record = $this->userService->findById($this->request->get('id'));
         if (!$record) {
             // TODO: 404
         }

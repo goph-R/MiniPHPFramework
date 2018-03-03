@@ -3,18 +3,33 @@
 abstract class Form {
 
     protected $im;
+
+    /**
+     * @var View
+     */
     protected $view;
+
+    /**
+     * @var Request
+     */
     protected $request;
+
+    /**
+     * @var Translation
+     */
+    protected $translation;
+
     protected $inputs = [];
     protected $labels = [];
     protected $validators = [];
     protected $postValidators = [];
     protected $errors = [];
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->im = $im;
         $this->request = $im->get('request');
         $this->view = $im->get('view');
+        $this->translation = $im->get('translation');
         $this->create();
     }
 

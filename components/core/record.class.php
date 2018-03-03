@@ -5,8 +5,9 @@ class Record {
     private $table;
     private $new = true;
     private $modified = [];
+    private $attributes = [];
 
-    public function __construct($table) {
+    public function __construct(Table $table) {
         $this->table = $table;
     }
 

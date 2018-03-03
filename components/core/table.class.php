@@ -8,11 +8,11 @@ abstract class Table {
     protected $primaryKeys = [];
     protected $db;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->db = $im->get('db');
     }
 
-    public function addColumn($column, $defaultValue = null, $isPrimaryKey = false) {
+    public function addColumn(Column $column, $defaultValue = null, $isPrimaryKey = false) {
         $column->setDefaultValue($defaultValue);
         $this->columns[$column->getName()] = $column;
         if ($isPrimaryKey) {
@@ -24,10 +24,10 @@ abstract class Table {
         return isset($this->columns[$name]) ? $this->columns[$name] : null;
     }
 
-    protected function preSave($record) {}
-    protected function postSave($record) {}
+    protected function preSave(Record $record) {}
+    protected function postSave(Record $record) {}
 
-    public function save($record) {
+    public function save(Record $record) {
         $this->preSave($record);
         if ($record->isNew()) {
             $this->insert($record);
@@ -177,7 +177,7 @@ abstract class Table {
         return $ret['c'];
     }
 
-    private function insert($record) {
+    private function insert(Record $record) {
         $values = [];
         $names = [];
         $autoIncrement = null;
@@ -201,7 +201,7 @@ abstract class Table {
         $record->setNew(false);
     }
 
-    private function getConditionForPrimaryKeys($record) {
+    private function getConditionForPrimaryKeys(Record $record) {
         $pks = [];
         foreach ($this->primaryKeys as $pk) {
             $pks[] = $this->escapeName($pk).' = '.$this->escapeValue($record->get($pk));
@@ -209,7 +209,7 @@ abstract class Table {
         return join($pks, ' AND ');
     }
 
-    private function update($record) {
+    private function update(Record $record) {
         $sets = [];
         foreach ($record->getModified() as $name) {
             $sets[] = $this->escapeName($name).' = '.$this->escapeValue($record->get($name));
@@ -222,7 +222,7 @@ abstract class Table {
         $record->clearModified();
     }
 
-    public function delete($record) {
+    public function delete(Record $record) {
         $sql = 'DELETE FROM '.$this->escapeName($this->name);
         $sql .= ' WHERE '.$this->getConditionForPrimaryKeys($record);
         $sql .= ' LIMIT 1';

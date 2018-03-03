@@ -2,13 +2,17 @@
 
 class View {
 
-    private $attributes = [];
+    /**
+     * @var Config
+     */
     private $config;
+
+    private $attributes = [];
     private $scripts = [];
     private $styles = [];
     private $paths = [];
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->config = $im->get('config');
     }
 

@@ -1,13 +1,6 @@
 <?php
 
-class RegisterController extends Controller {
-
-    private $userService;
-
-    public function __construct($im) {
-        parent::__construct($im);
-        $this->userService = $im->get('userService');
-    }
+class RegisterController extends UserController {
 
     public function index() {
         if ($this->user->isLoggedIn()) {
@@ -15,7 +8,8 @@ class RegisterController extends Controller {
         }
         $form = new RegisterForm($this->im);
         if ($form->processInput()) {
-            if ($this->userService->register($form->getValues())) {
+            $hash = $this->userService->register($form->getValues());
+            if ($this->userService->sendRegisterEmail($form->getValue('email'), $hash)) {
                 return $this->redirect('register/activation');
             } else {
                 $form->addError($this->translation->get('user', 'couldnt_send_email'));

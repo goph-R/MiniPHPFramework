@@ -2,10 +2,17 @@
 
 class User {
 
+    /**
+     * @var Request
+     */
     private $request;
+
+    /**
+     * @var Config
+     */
     private $config;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         session_start();
         $this->request = $im->get('request');
         $this->config = $im->get('config');

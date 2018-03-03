@@ -3,9 +3,18 @@
 class WebApplication {
 
     protected $im;
+
+    /**
+     * @var Router
+     */
     protected $router;
 
-    public function __construct($im) {
+    /**
+     * @var Response
+     */
+    protected $response;
+
+    public function __construct(InstanceManager $im) {
         $this->im = $im;
         $this->router = $im->get('router');
         $this->response = $im->get('response');

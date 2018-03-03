@@ -3,7 +3,7 @@
 class RegisterForm extends Form {
 
     public function create() {
-        $t = $this->im->get('translation');
+        $t = $this->translation;
         $notEmptyValidator = new NotEmptyValidator($this->im);
         // email
         $this->addInput('Email', new TextInput($this->im, 'email'));

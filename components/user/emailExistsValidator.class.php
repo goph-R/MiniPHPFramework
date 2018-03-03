@@ -2,6 +2,9 @@
 
 class EmailExistsValidator extends Validator {
 
+    /**
+     * @var UserService
+     */
     private $userService;
     private $needToExists;
 

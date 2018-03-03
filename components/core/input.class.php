@@ -3,7 +3,12 @@
 abstract class Input {
 
     protected $im;
+
+    /**
+     * @var View
+     */
     protected $view;
+
     protected $name;
     protected $error;
     protected $defaultValue;
@@ -13,7 +18,7 @@ abstract class Input {
     protected $value;
     protected $trimValue = true;
 
-    public function __construct($im, $name, $defaultValue = '') {
+    public function __construct(InstanceManager $im, $name, $defaultValue = '') {
         $this->im = $im;
         $this->view = $im->get('view');
         $this->name = $name;

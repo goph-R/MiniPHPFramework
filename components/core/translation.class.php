@@ -2,12 +2,15 @@
 
 class Translation {
 
+    /**
+     * @var Request
+     */
+    private $request;
     private $paths;
     private $data;
-    private $request;
     private $default;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->request = $im->get('request');
         $this->default = $im->get('config')->get('translation.default', 'en');
     }

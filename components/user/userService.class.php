@@ -2,13 +2,32 @@
 
 class UserService {
 
+    /**
+     * @var Config
+     */
     private $config;
+
+    /**
+     * @var Table
+     */
     private $table;
+
+    /**
+     * @var User
+     */
     private $user;
+
+    /**
+     * @var Mailer
+     */
     private $mailer;
+
+    /**
+     * @var Translation
+     */
     private $translation;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->config = $im->get('config');
         $this->table = $im->get('userTable');
         $this->user = $im->get('user');
@@ -20,6 +39,11 @@ class UserService {
         return md5($this->config->get('user.salt').$value);
     }
 
+    /**
+     * @param $email
+     * @param $password
+     * @return Record
+     */
     private function findActiveByEmailAndPassword($email, $password) {
         $record = $this->table->findOne(null, [
             'where' => [
@@ -31,6 +55,10 @@ class UserService {
         return $record;
     }
 
+    /**
+     * @param $id
+     * @return Record
+     */
     public function findById($id) {
         return $this->table->findOne(null, [
             'where' => [
@@ -39,6 +67,10 @@ class UserService {
         ]);
     }
 
+    /**
+     * @param $email
+     * @return Record
+     */
     public function findByEmail($email) {
         return $this->table->findOne(null, [
             'where' => [
@@ -47,6 +79,10 @@ class UserService {
         ]);
     }
 
+    /**
+     * @param $hash
+     * @return Record
+     */
     public function findByActivationHash($hash) {
         return $this->table->findOne(null, [
             'where' => [
@@ -55,6 +91,10 @@ class UserService {
         ]);
     }
 
+    /**
+     * @param $hash
+     * @return Record
+     */
     public function findByForgotHash($hash) {
         return $this->table->findOne(null, [
             'where' => [
@@ -89,7 +129,7 @@ class UserService {
         $record->set('password', $this->hash($values['password']));
         $record->set('activation_hash', $hash);
         $record->save();
-        return $this->sendRegisterEmail($values['email'], $hash);
+        return $hash;
     }
 
     public function sendRegisterEmail($email, $hash) {
@@ -129,7 +169,7 @@ class UserService {
         return $result;
     }
 
-    public function changeForgotPassword($record, $password) {
+    public function changeForgotPassword(Record $record, $password) {
         $record->set('forgot_hash', '');
         $record->set('password', $this->hash($password));
         $record->save();

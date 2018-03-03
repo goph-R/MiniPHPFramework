@@ -4,7 +4,7 @@ class DBResult {
 
     private $result;
 
-    public function __construct($result) {
+    public function __construct(mysqli_result $result) {
         $this->result = $result;
     }
 

@@ -10,11 +10,16 @@ require 'vendor/PHPMailer/src/SMTP.php';
 class Mailer {
 
     private $im;
+
+    /**
+     * @var Config
+     */
     private $config;
+
     private $addresses = [];
     private $vars = [];
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->im = $im;
         $this->config = $im->get('config');
         $this->view = $im->get('view');
@@ -49,7 +54,7 @@ class Mailer {
         return true;
     }
 
-    private function disableVerify($mail) {
+    private function disableVerify(PHPMailer $mail) {
         $mail->SMTPOptions = [
             'ssl' => [
                 'verify_peer' => false,
@@ -59,7 +64,7 @@ class Mailer {
         ];
     }
 
-    private function setDefaults($mail) {
+    private function setDefaults(PHPMailer $mail) {
         $mail->isHTML(true);
         //$mail->SMTPDebug = 2;
         $mail->isSMTP();
@@ -74,7 +79,7 @@ class Mailer {
         $mail->setFrom($this->config->get('mailer.from.email'), $this->config->get('mailer.from.name'));
     }
 
-    private function addAddresses($mail) {
+    private function addAddresses(PHPMailer $mail) {
         foreach ($this->addresses as $address) {
             $mail->addAddress($address['email'], $address['name']);
         }

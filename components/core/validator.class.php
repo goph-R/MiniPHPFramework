@@ -4,9 +4,13 @@ abstract class Validator {
 
     protected $error = '';
     protected $replacedError = '';
+
+    /**
+     * @var Translation
+     */
     protected $translation;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->translation = $im->get('translation');
     }
 

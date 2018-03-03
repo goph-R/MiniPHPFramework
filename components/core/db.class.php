@@ -2,12 +2,20 @@
 
 class DB {
 
-    private $config;
-    private $connected = false;
+    /**
+     * @var mysqli
+     */
     private $conn;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    private $connected = false;
     private $name;
 
-    public function __construct($im, $name) {
+    public function __construct(InstanceManager $im, $name) {
         $this->config = $im->get('config');
         $this->name = $name;
     }

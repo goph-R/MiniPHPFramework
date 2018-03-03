@@ -1,13 +1,6 @@
 <?php
 
-class LoginController extends Controller {
-
-    private $userService;
-
-    public function __construct($im) {
-        parent::__construct($im);
-        $this->userService = $im->get('userService');
-    }
+class LoginController extends UserController {
 
     public function index() {
         if ($this->user->isLoggedIn()) {

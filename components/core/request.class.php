@@ -5,7 +5,7 @@ class Request {
     private $data;
     private $headers;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->data = $_REQUEST;
         $this->headers = $_SERVER;
     }

@@ -8,8 +8,7 @@ abstract class Column {
     protected $defaultValue;
     // TODO: current_timestamp
 
-    public function __construct($table, $name)
-    {
+    public function __construct(Table $table, $name) {
         $this->table = $table;
         $this->name = $name;
     }

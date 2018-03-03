@@ -1,13 +1,6 @@
 <?php
 
-class ForgotController extends Controller {
-
-    private $userService;
-
-    public function __construct($im) {
-        parent::__construct($im);
-        $this->userService = $im->get('userService');
-    }
+class ForgotController extends UserController {
 
     public function index() {
         if ($this->user->isLoggedIn()) {
@@ -18,11 +11,11 @@ class ForgotController extends Controller {
             if ($this->userService->sendForgotEmail($form->getValue('email'))) {
                 return $this->redirect('forgot/sent');
             } else {
-                $form->addError($this->translator->get('user', 'couldnt_send_email'));
+                $form->addError($this->translation->get('user', 'couldnt_send_email'));
             }
         }
         $this->view->set('form', $form);
-        $this->responseLayout(':core/layout', ':user/forgot');
+        return $this->responseLayout(':core/layout', ':user/forgot');
     }
 
     public function sent() {
@@ -40,12 +33,12 @@ class ForgotController extends Controller {
         }
         $form = new ForgotNewPasswordForm($this->im);
         if ($form->processInput()) {
-            $this->userService->changeForgotPassword($record, $this->getValue('passsword'));
+            $this->userService->changeForgotPassword($record, $form->getValue('passsword'));
             return $this->redirect('forgot/success');
         }
         $this->view->set('hash', $hash);
         $this->view->set('form', $form);
-        $this->responseLayout(':core/layout', ':user/forgotNewPassword');
+        return $this->responseLayout(':core/layout', ':user/forgotNewPassword');
     }
 
     public function success() {

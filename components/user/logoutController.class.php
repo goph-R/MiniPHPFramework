@@ -1,10 +1,9 @@
 <?php
 
-class LogoutController extends Controller {
+class LogoutController extends UserController {
 
     public function index() {
-        $service = $this->im->get('userService');
-        $service->logout();
+        $this->userService->logout();
         $this->redirect();
     }
 
