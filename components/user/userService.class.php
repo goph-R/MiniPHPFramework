@@ -6,23 +6,26 @@ class UserService {
     private $table;
     private $user;
     private $mailer;
+    private $translation;
 
     public function __construct($im) {
         $this->config = $im->get('config');
         $this->table = $im->get('userTable');
         $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');
+        $this->translation = $im->get('translation');
     }
 
     public function hash($value) {
         return md5($this->config->get('user.salt').$value);
     }
 
-    private function findByEmailAndPassword($email, $password) {
+    private function findActiveByEmailAndPassword($email, $password) {
         $record = $this->table->findOne(null, [
             'where' => [
                 ['email', '=', $email],
-                ['password', '=', $this->hash($password)]
+                ['password', '=', $this->hash($password)],
+                ['active', '=', 1]
             ]
         ]);
         return $record;
@@ -61,7 +64,7 @@ class UserService {
     }
 
     public function login($email, $password) {
-        $record = $this->findByEmailAndPassword($email, $password);
+        $record = $this->findActiveByEmailAndPassword($email, $password);
         if (!$record) {
             return false;
         }
@@ -80,12 +83,22 @@ class UserService {
 
     public function register($values) {
         $fields = ['email', 'city', 'country', 'zip', 'firstname', 'lastname'];
+        $hash = md5(time());
         $record = new Record($this->table);
         $record->setAll($fields, $values);
         $record->set('password', $this->hash($values['password']));
-        $record->set('activation_hash', md5(time()));
+        $record->set('activation_hash', $hash);
         $record->save();
-        return $this->mailer->send($values['email']);
+        return $this->sendRegisterEmail($values['email'], $hash);
+    }
+
+    public function sendRegisterEmail($email, $hash) {
+        $this->mailer->addAddress($email);
+        $this->mailer->set('hash', $hash);
+        return $this->mailer->send(
+            $this->translation->get('user', 'registration'),
+            ':user/registerEmail'
+        );
     }
 
     public function activate($hash) {
@@ -104,9 +117,16 @@ class UserService {
         if (!$record) {
             return false;
         }
-        $record->set('forgot_hash', md5(time()));
+        $hash = md5(time());
+        $record->set('forgot_hash', $hash);
         $record->save();
-        return $this->mailer->send($email);
+        $this->mailer->addAddress($email);
+        $this->mailer->set('hash', $hash);
+        $result = $this->mailer->send(
+            $this->translation->get('user', 'password_changing'),
+            ':user/forgotEmail'
+        );
+        return $result;
     }
 
     public function changeForgotPassword($record, $password) {

@@ -194,7 +194,6 @@ abstract class Table {
         $sql .= ') VALUES (';
         $sql .= join($values, ', ');
         $sql .= ')';
-        print $sql;
         $this->db->query($sql);
         if ($autoIncrement) {
             $record->set($autoIncrement, $this->db->lastId(), false);

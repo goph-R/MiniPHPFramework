@@ -63,13 +63,13 @@ class View {
         return $path;
     }
 
-    public function fetch($path) {
+    public function fetch($path, $vars=[]) {
         $path = $this->findPath($path);
         ob_start();
         extract($this->attributes);
+        extract($vars);
         include($this->getTemplatePath($path));
-        $result = ob_get_contents();
-        ob_end_clean();
+        $result = ob_get_clean();
         return $result;
     }
 

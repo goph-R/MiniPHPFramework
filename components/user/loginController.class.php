@@ -18,7 +18,7 @@ class LoginController extends Controller {
             if ($this->userService->login($form->getValue('email'), $form->getValue('password'))) {
                 return $this->redirect();
             } else {
-                $form->addError($this->translator->get('user', 'email_password_not_found'));
+                $form->addError($this->translation->get('user', 'email_password_not_found'));
             }
         }
         $this->view->set('form', $form);
