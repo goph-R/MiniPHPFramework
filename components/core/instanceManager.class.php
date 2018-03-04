@@ -7,7 +7,9 @@ class InstanceManager {
 
     public function add($name, $object) {
         $this->data[$name] = $object;
-        $this->order[] = $name;
+        if (!in_array($name, $this->order)) {
+            $this->order[] = $name;
+        }
     }
 
     public function init() {
@@ -33,6 +35,11 @@ class InstanceManager {
     public function get($name) {
         if (!isset($this->data[$name])) {
             throw new Exception("Instance not exists: ".$name);
+        }
+        if (is_string($this->data[$name])) {
+            $className = $this->data[$name];
+            $instance = new $className($this);
+            $this->data[$name] = $instance;
         }
         return $this->data[$name];
     }

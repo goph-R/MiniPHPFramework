@@ -6,7 +6,7 @@ class RegisterController extends UserController {
         if ($this->user->isLoggedIn()) {
             return $this->redirect();
         }
-        $form = new RegisterForm($this->im);
+        $form = $this->im->get('registerForm');
         if ($form->processInput()) {
             $hash = $this->userService->register($form->getValues());
             if ($this->userService->sendRegisterEmail($form->getValue('email'), $hash)) {

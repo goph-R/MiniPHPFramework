@@ -5,40 +5,50 @@ class UserService {
     /**
      * @var Config
      */
-    private $config;
+    protected $config;
 
     /**
      * @var Table
      */
-    private $table;
+    protected $table;
 
     /**
      * @var User
      */
-    private $user;
+    protected $user;
 
     /**
      * @var Mailer
      */
-    private $mailer;
+    protected $mailer;
 
     /**
      * @var Translation
      */
-    private $translation;
+    protected $translation;
 
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
 
-    public function __construct(InstanceManager $im) {
+    /**
+     * @var InstanceManager
+     */
+    protected $im;
+
+    public function __construct($im) {
+        $this->im = $im;
+    }
+
+    public function init() {
+        $im = $this->im;
         $this->config = $im->get('config');
-        $this->table = $im->get('userTable');
         $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');
         $this->translation = $im->get('translation');
         $this->request = $im->get('request');
+        $this->table = $im->get('userTable');
         $this->rememberLogin();
     }
 

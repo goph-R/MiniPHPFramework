@@ -12,7 +12,7 @@ class Router {
     private $parameter;
     private $im;
 
-    public function __construct($im) {
+    public function __construct(InstanceManager $im) {
         $this->im = $im;
         $this->config = $im->get('config');
         $this->request = $im->get('request');
