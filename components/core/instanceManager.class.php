@@ -17,7 +17,7 @@ class InstanceManager {
         $this->get('view')->addPath('core', 'components/core/templates');
         foreach ($this->order as $name) {
             $instance = $this->data[$name];
-            if (method_exists($instance, 'init')) { // TODO: "Initiable" interface maybe?
+            if ($instance instanceof Initable) {
                 $instance->init();
             }
         }
@@ -26,7 +26,7 @@ class InstanceManager {
     public function done() {
         foreach ($this->order as $name) {
             $instance = $this->data[$name];
-            if (method_exists($instance, 'done')) { // TODO: "Doneable" interface maybe?
+            if ($instance instanceof Doneable) {
                 $instance->done();
             }
         }

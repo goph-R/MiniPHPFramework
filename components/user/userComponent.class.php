@@ -1,6 +1,6 @@
 <?php
 
-class UserComponent {
+class UserComponent implements Initable {
 
     /**
      * @var Router

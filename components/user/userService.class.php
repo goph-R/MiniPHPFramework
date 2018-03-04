@@ -1,6 +1,6 @@
 <?php
 
-class UserService {
+class UserService implements Initable {
 
     /**
      * @var Config

@@ -1,6 +1,6 @@
 <?php
 
-class WelcomeComponent {
+class WelcomeComponent implements Initable {
 
     private $translation;
 
