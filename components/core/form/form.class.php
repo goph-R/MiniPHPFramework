@@ -2,6 +2,9 @@
 
 abstract class Form {
 
+    /**
+     * @var InstanceManager
+     */
     protected $im;
 
     /**
@@ -19,9 +22,20 @@ abstract class Form {
      */
     protected $translation;
 
+    /**
+     * @var Input[]
+     */
     protected $inputs = [];
     protected $labels = [];
+
+    /**
+     * @var Validator[][]
+     */
     protected $validators = [];
+
+    /**
+     * @var Validator[]
+     */
     protected $postValidators = [];
     protected $errors = [];
     protected $name = 'form';

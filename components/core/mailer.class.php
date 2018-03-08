@@ -9,6 +9,9 @@ require 'vendor/PHPMailer/src/SMTP.php';
 
 class Mailer {
 
+    /**
+     * @var InstanceManager
+     */
     private $im;
 
     /**

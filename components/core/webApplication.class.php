@@ -2,6 +2,9 @@
 
 class WebApplication {
 
+    /**
+     * @var InstanceManager
+     */
     protected $im;
 
     /**
