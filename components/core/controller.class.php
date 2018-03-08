@@ -5,7 +5,7 @@ abstract class Controller {
     const InstanceNames = ['config', 'request', 'response', 'router', 'db', 'view', 'user', 'app', 'translation'];
 
     /**
-     * @var View
+     * @var InstanceManager
      */
     protected $im;
 
@@ -25,7 +25,7 @@ abstract class Controller {
     protected $response;
 
     /**
-     * @var View
+     * @var Router
      */
     protected $router;
 

@@ -5,11 +5,23 @@ class Router {
     const PARAMETER_REGEX = '/\:[a-zA-Z0-9_-]+/';
 
     private $map = [];
+
+    /**
+     * @var Config
+     */
     private $config;
+
+    /**
+     * @var Request
+     */
     private $request;
     private $useLocale;
     private $rewrite;
     private $parameter;
+
+    /**
+     * @var InstanceManager
+     */
     private $im;
 
     public function __construct(InstanceManager $im) {
