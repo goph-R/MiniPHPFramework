@@ -149,7 +149,7 @@ class UserService implements Initable {
             return false;
         }
         if ($remember) {
-            $hash = md5(time());
+            $hash = $this->hash(time());
             $record->set('remember_hash', $hash);
             $this->request->setCookie('remember_hash', $hash);
         }
@@ -178,8 +178,8 @@ class UserService implements Initable {
     }
 
     public function register($values) {
-        $fields = ['email', 'city', 'country', 'zip', 'firstname', 'lastname'];
-        $hash = md5(time());
+        $fields = ['email'];
+        $hash = $this->hash(time());
         $record = new Record($this->table);
         $record->setAll($fields, $values);
         $record->set('password', $this->hash($values['password']));
@@ -188,8 +188,14 @@ class UserService implements Initable {
         return $hash;
     }
 
-    public function sendRegisterEmail($email, $hash) {
-        $this->mailer->addAddress($email);
+    public function sendRegisterEmail($values, $hash) {
+        if (!isset($values['email'])) {
+            throw new Exception('There is no email in the values.');
+        }
+        $this->mailer->addAddress($values['email']);
+        foreach ($values as $name => $value) {
+            $this->mailer->set($name, $value);
+        }
         $this->mailer->set('hash', $hash);
         return $this->mailer->send(
             $this->translation->get('user', 'registration'),
@@ -213,7 +219,7 @@ class UserService implements Initable {
         if (!$record) {
             return false;
         }
-        $hash = md5(time());
+        $hash = $this->hash(time());
         $record->set('forgot_hash', $hash);
         $record->save();
         $this->mailer->addAddress($email);
