@@ -1,0 +1,32 @@
+create table `user` (
+    id int not null auto_increment,
+    email varchar(255) not null,
+    password char(32) not null,
+    firstname varchar(255) not null,
+    lastname varchar(255) not null,
+    country char(2) not null,
+    city varchar(255) not null,
+    zip varchar(50) not null,
+    longitude double null default null,
+    latitude double null default null,
+    forgot_hash char(32) null default null,
+    activation_hash char(32) null default null,
+    active tinyint(1) not null default 0,
+    last_login int(11) not null default 0,
+    remember_hash char(32) null default null,
+    primary key(id)
+) engine=innodb;
+
+create table `permission` (
+    id int not null auto_increment,
+    name varchar(50) not null,
+    primary key(id)
+) engine=innodb;
+
+create table `user_permission` (
+    user_id int not null,
+    permission_id int not null,
+    primary key(user_id, permission_id),
+    foreign key (user_id) references `user` (id) on delete cascade,
+    foreign key (permission_id) references `permission` (id) on delete cascade
+) engine=innodb;

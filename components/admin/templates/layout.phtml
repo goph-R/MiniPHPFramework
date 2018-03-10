@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <?php foreach ($view->getStyles() as $style): ?>
+        <link rel="stylesheet" type="text/css" href="<?= $style ?>">
+    <?php endforeach ?>
+</head>
+<body>
+
+    <?= $content ?>
+
+    <?php foreach ($view->getScripts() as $script): ?>
+        <script type="text/javascript" src="<?= $script ?>"></script>
+    <?php endforeach ?>
+
+    <!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
+
+</body>
+</html>

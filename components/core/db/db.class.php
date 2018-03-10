@@ -1,6 +1,6 @@
 <?php
 
-class DB {
+class DB implements Doneable {
 
     /**
      * @var mysqli
@@ -12,7 +12,6 @@ class DB {
      */
     private $config;
 
-    private $connected = false;
     private $name;
 
     public function __construct(InstanceManager $im, $name) {
@@ -21,7 +20,7 @@ class DB {
     }
 
     public function connect() {
-        if ($this->connected) {
+        if ($this->conn) {
             return;
         }
         $this->conn = new mysqli(
@@ -31,9 +30,10 @@ class DB {
             $this->config->get('db.'.$this->name.'.name')
         );
         if ($this->conn->connect_errno) {
-            throw new DBException($this->conn->connect_errno.' '.$this->conn->connect_error);
+            $message = $this->conn->connect_errno.' '.$this->conn->connect_error;
+            $this->conn = null;
+            throw new DBException($message);
         }
-        $this->connected = true;
         $this->query('SET NAMES utf8mb4');
     }
 
@@ -48,7 +48,7 @@ class DB {
     }
 
     public function close() {
-        if ($this->connected) {
+        if ($this->conn) {
             $this->conn->close();
         }
     }

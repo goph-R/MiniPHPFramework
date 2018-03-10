@@ -73,19 +73,23 @@ abstract class Table {
         return $ret;
     }
 
-    private function createCondition($condition, $op = 'AND') {
+    private function createCondition($condition, $op='AND') {
         $subConditions = [];
         foreach ($condition as $item) {
             if ($item[0] == 'and') {
                 $subCondition = $this->createCondition($item[1], 'AND');
             } else if ($item[0] == 'or') {
                 $subCondition = $this->createCondition($item[1], 'OR');
-            } else if ($item[0] == 'in') {
+            } else if ($item[1] == 'in') {
                 $values = [];
-                foreach ($item[1] as $value) {
+                foreach ($item[2] as $value) {
                     $values[] = $this->escapeValue($value);
                 }
-                $subCondition = $this->escapeName($item[0]).' IN ('.join($values, ', ').')';
+                if ($values) {
+                    $subCondition = $this->escapeName($item[0]).' IN ('.join($values, ', ').')';
+                } else {
+                    $subCondition = 'false';
+                }
             } else {
                 $subCondition = $this->escapeName($item[0]).' '.$this->checkOperator($item[1]).' '.$this->escapeValue($item[2]);
             }
@@ -105,7 +109,7 @@ abstract class Table {
         }
         $sqlOrders = [];
         foreach ($orders as $orderName => $orderDir) {
-            $orderDir = $orderDir == 'asc' ? 'asc' : 'desc';
+            $orderDir = $orderDir == 'asc' ? 'ASC' : 'DESC';
             $sqlOrders[] = $this->escapeName($orderName).' '.$orderDir;
         }
         return 'ORDER BY '.join(', ', $sqlOrders);
@@ -172,6 +176,21 @@ abstract class Table {
             return $ret[0];
         }
         return null;
+    }
+
+    public function findColumn($columnName, $query) {
+        $sql = $this->createSelect($columnName, $query);
+        $result = $this->db->query($sql);
+        $ret = [];
+        do {
+            $row = $result->fetch();
+            if (isset($row[$columnName])) {
+                $ret[] = $row[$columnName];
+            }
+        }
+        while ($row);
+        $result->close();
+        return $ret;
     }
 
     public function count($query) {

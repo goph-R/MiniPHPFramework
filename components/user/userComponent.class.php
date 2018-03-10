@@ -20,6 +20,8 @@ class UserComponent implements Initable {
         $view = $im->get('view');
         $view->addPath('user', 'components/user/templates');
         $im->add('userTable', new UserTable($im));
+        $im->add('permissionTable', new PermissionTable($im));
+        $im->add('userPermissionTable', new UserPermissionTable($im));
         $im->add('userService', new UserService($im));
         $im->add('registerForm', 'RegisterForm');
     }

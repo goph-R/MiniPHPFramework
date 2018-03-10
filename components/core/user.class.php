@@ -12,18 +12,23 @@ class User {
      */
     private $config;
 
+    private $permissions;
+
     public function __construct(InstanceManager $im) {
         session_start();
         $this->request = $im->get('request');
         $this->config = $im->get('config');
+        $this->permissions = $this->get('permissions', []);
     }
 
-    public function get($name, $defaultValue = null) {
-        return isset($_SESSION[$name]) ? $_SESSION[$name] : $defaultValue;
+    public function get($name, $defaultValue=null) {
+        $key = 'user.'.$name;
+        return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
     }
 
     public function set($name, $value) {
-        $_SESSION[$name] = $value;
+        $key = 'user.'.$name;
+        $_SESSION[$key] = $value;
     }
 
     public function getHash() {
@@ -42,18 +47,27 @@ class User {
         session_destroy();
     }
 
-    public function setFlash($message) {
-        $this->set('user.flash', $message);
+    public function setFlash($name, $message) {
+        $this->set('user.flash.'.$name, $message);
     }
 
-    public function hasFlash() {
-        return $this->get('user.flash', '') ? true : false;
+    public function hasFlash($name) {
+        return $this->get('user.flash.'.$name, '') ? true : false;
     }
 
-    public function getFlash() {
-        $result = $this->get('user.flash', '');
-        $this->set('user.flash', '');
+    public function getFlash($name) {
+        $result = $this->get('user.flash.'.$name, '');
+        $this->setFlash($name, '');
         return $result;
     }
+
+    public function addPermission($name) {
+        $this->permissions[] = $name;
+        $this->set('permissions', $this->permissions);
+    }
+
+    public function hasPermission($name) {
+        return in_array($name, $this->permissions);
+    }    
 
 }

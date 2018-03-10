@@ -48,7 +48,9 @@ class UserService implements Initable {
         $this->mailer = $im->get('mailer');
         $this->translation = $im->get('translation');
         $this->request = $im->get('request');
-        $this->table = $im->get('userTable');
+        $this->userTable = $im->get('userTable');
+        $this->permissionTable = $im->get('permissionTable');
+        $this->userPermissionTable = $im->get('userPermissionTable');
         $this->rememberLogin();
     }
 
@@ -72,7 +74,7 @@ class UserService implements Initable {
      * @return Record
      */
     private function findActiveByEmailAndPassword($email, $password) {
-        $record = $this->table->findOne(null, [
+        $record = $this->userTable->findOne(null, [
             'where' => [
                 ['email', '=', $email],
                 ['password', '=', $this->hash($password)],
@@ -87,7 +89,7 @@ class UserService implements Initable {
      * @return Record
      */
     public function findById($id) {
-        return $this->table->findOne(null, [
+        return $this->userTable->findOne(null, [
             'where' => [
                 ['id', '=', $id]
             ]
@@ -99,7 +101,7 @@ class UserService implements Initable {
      * @return Record
      */
     public function findByEmail($email) {
-        return $this->table->findOne(null, [
+        return $this->userTable->findOne(null, [
             'where' => [
                 ['email', '=', $email]
             ]
@@ -111,7 +113,7 @@ class UserService implements Initable {
      * @return Record
      */
     public function findByActivationHash($hash) {
-        return $this->table->findOne(null, [
+        return $this->userTable->findOne(null, [
             'where' => [
                 ['activation_hash', '=', $hash]
             ]
@@ -123,7 +125,7 @@ class UserService implements Initable {
      * @return Record
      */
     public function findByForgotHash($hash) {
-        return $this->table->findOne(null, [
+        return $this->userTable->findOne(null, [
             'where' => [
                 ['forgot_hash', '=', $hash]
             ]
@@ -135,10 +137,26 @@ class UserService implements Initable {
      * @return Record
      */
     public function findActiveByRememberHash($hash) {
-        return $this->table->findOne(null, [
+        return $this->userTable->findOne(null, [
             'where' => [
                 ['remember_hash', '=', $hash],
                 ['active', '=', 1]
+            ]
+        ]);
+    }
+
+    public function findPermissionNamesByIds($ids) {
+        return $this->permissionTable->findColumn('name', [
+            'where' => [
+                ['id', 'in', $ids]
+            ]
+        ]);
+    }
+
+    public function findPermissionIdsByUserId($userId) {
+        return $this->userPermissionTable->findColumn('permission_id', [
+            'where' => [
+                ['user_id', '=', $userId]
             ]
         ]);
     }
@@ -157,11 +175,16 @@ class UserService implements Initable {
         return true;
     }
 
-    private function doLogin(Record $record) {
+    private function doLogin(Record $record) {        
         $record->set('last_login', time());
         $record->save();
         foreach ($record->getAttributes() as $name => $value) {
             $this->user->set($name, $value);
+        }
+        $permissionIds = $this->findPermissionIdsByUserId($record->get('id'));
+        $permissions = $this->findPermissionNamesByIds($permissionIds);
+        foreach ($permissions as $permission) {
+            $this->user->addPermission($permission);
         }
         $this->user->setLoggedIn(true);
     }
@@ -180,7 +203,7 @@ class UserService implements Initable {
     public function register($values) {
         $fields = ['email'];
         $hash = $this->hash(time());
-        $record = new Record($this->table);
+        $record = new Record($this->userTable);
         $record->setAll($fields, $values);
         $record->set('password', $this->hash($values['password']));
         $record->set('activation_hash', $hash);

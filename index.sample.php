@@ -16,5 +16,6 @@ $im->add('translation', new Translation($im));
 // app specific
 $im->add('userComponent', new UserComponent($im));
 $im->add('welcomeComponent', new WelcomeComponent($im));
+$im->add('adminComponent', new AdminComponent($im));
 $im->add('app', new WebApplication($im));
 $im->get('app')->run();
