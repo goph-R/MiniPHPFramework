@@ -2,6 +2,9 @@
 
 abstract class Input {
 
+    /**
+     * @var InstanceManager
+     */
     protected $im;
 
     /**

@@ -2,10 +2,21 @@
 
 abstract class Table {
 
+    /**
+     * @var Config
+     */
     protected $config;
     protected $name = null;
+
+    /**
+     * @var Column[]
+     */
     protected $columns = [];
     protected $primaryKeys = [];
+
+    /**
+     * @var DB
+     */
     protected $db;
 
     public function __construct(InstanceManager $im) {

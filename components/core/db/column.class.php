@@ -3,6 +3,10 @@
 abstract class Column {
 
     protected $name;
+
+    /**
+     * @var Table
+     */
     protected $table;
     protected $autoIncrement;
     protected $defaultValue;
