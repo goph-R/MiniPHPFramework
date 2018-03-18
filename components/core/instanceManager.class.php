@@ -39,6 +39,9 @@ class InstanceManager {
         if (is_string($this->data[$name])) {
             $className = $this->data[$name];
             $instance = new $className($this);
+            if ($instance instanceof Initable) {
+                $instance->init();
+            }
             $this->data[$name] = $instance;
         }
         return $this->data[$name];

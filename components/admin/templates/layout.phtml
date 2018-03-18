@@ -6,8 +6,21 @@
     <?php endforeach ?>
 </head>
 <body>
+    <header>
+        <i class="fa fa-search"></i>
 
-    <?= $content ?>
+    </header>
+    <nav>
+        <ul>
+            <?php foreach ($view->get('adminMenu')->getItems() as $item): ?>
+                <li><i class="fa fa-<?= $item->getIcon() ?>"></i><a href="<?= $router->getUrl($item->getRoute()) ?>"><?= $item->getTitle() ?></a></li>
+            <?php endforeach ?>
+        </ul>
+    </nav>
+
+    <main>
+        <?= $content ?>
+    </main>
 
     <?php foreach ($view->getScripts() as $script): ?>
         <script type="text/javascript" src="<?= $script ?>"></script>

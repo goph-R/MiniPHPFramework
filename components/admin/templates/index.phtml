@@ -1,0 +1,29 @@
+<?= $this->fetch(':admin/pager') ?>
+
+<table>
+    <thead>
+        <tr>
+            <?php foreach ($columnViews as $columnView): ?>
+                <th><?= $columnView->getLabel() ?></th>
+            <?php endforeach ?>
+            <?php foreach ($actionButtons as $actionButton): ?>
+                <th></th>
+            <?php endforeach ?>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($records as $record): ?>
+            <tr>
+                <?php foreach ($columnViews as $columnView): ?>
+                    <td><?= $columnView->fetch($record) ?></td>
+                <?php endforeach ?>
+                <?php foreach ($actionButtons as $actionButton): ?>
+                    <td><a href=""></a></td>
+                <?php endforeach ?>
+            </tr>
+        <?php endforeach ?>
+    </tbody>
+</table>
+
+<?= $this->fetch(':admin/pager') ?>
+
