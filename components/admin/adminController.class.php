@@ -15,39 +15,45 @@ class AdminController extends Controller {
             return $this->redirect();
         }
 
-        $step = 4;
-        $page = $this->request->get('page', 0);
+        $table = $this->im->get('userTable');
+        $pageNumber = $this->request->get('page', 0);
+        $pageStep = $this->request->get('step', 4);
+        $orderBy = $this->request->get('orderby', 'email');
+        $orderDir = $this->request->get('orderdir', 'asc');
 
         $query = [
-            'limit' => [$page * $step, $step]
-        ];
-
-        $table = $this->im->get('userTable');
+            'where' => [],
+            'order' => [$orderBy, $orderDir],
+            'limit' => [$pageNumber * $pageStep, $pageStep]
+        ];        
         $count = $table->count($query);
-
-        $maxPage = ceil($count / $step);
-
+        $maxPageNumber = ceil($count / $pageStep);
         $records = $table->find(null, $query);
 
-        $this->view->set('columnViews', [
-            new ColumnView($this->im, 'email', 'Email'),
-            new ColumnView($this->im, 'firstname', 'Firstname'),
-            new ColumnView($this->im, 'lastname', 'Lastname'),
-            new BooleanColumnView($this->im, 'active', 'Active')
-        ]);
-
-        $this->view->set('actionButtons', [
-            new ActionButton(), // edit
-            new ActionButton() // delete
-        ]);
-
+        $this->view->set('columnViews', $this->getColumnViews());
+        $this->view->set('actionButtons', $this->getActionButtons());
         $this->view->set('records', $records);
 
-        $this->view->set('step', $step);
-        $this->view->set('maxPage', $maxPage);
-        $this->view->set('page', $page);
+        $this->view->set('pageStep', $pageStep);
+        $this->view->set('maxPageNumber', $maxPageNumber);
+        $this->view->set('pageNumber', $pageNumber);
 
         $this->responseLayout(':admin/layout', ':admin/index');
+    }
+
+    public function getColumnViews() {
+        $im = $this->im;
+        return [
+            new ColumnView($im, 'email', 'Email'),
+            new BooleanColumnView($im, 'active', 'Active')
+        ];
+    }
+
+    public function getActionButtons() {
+        return [
+            new ActionButton(), // edit
+            new ActionButton() // delete
+        ];
     }
 
     public function edit() {

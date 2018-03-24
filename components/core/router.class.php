@@ -4,8 +4,6 @@ class Router {
 
     const PARAMETER_REGEX = '/\:[a-zA-Z0-9_-]+/';
 
-    private $map = [];
-
     /**
      * @var Config
      */
@@ -15,22 +13,24 @@ class Router {
      * @var Request
      */
     private $request;
-    private $useLocale;
-    private $rewrite;
-    private $parameter;
 
     /**
      * @var InstanceManager
      */
     private $im;
 
+    private $map = [];
+    private $useLocale;
+    private $rewrite;
+    private $routeParameter;
+
     public function __construct(InstanceManager $im) {
         $this->im = $im;
         $this->config = $im->get('config');
         $this->request = $im->get('request');
         $this->rewrite = $this->config->get('router.rewrite');
-        $this->useLocale = $this->config->get('router.locale');
-        $this->parameter = $this->config->get('router.parameter', 'route');
+        $this->useLocale = $this->config->get('router.use_locale');
+        $this->routeParameter = $this->config->get('router.route_parameter', 'route');
         $this->add('', $this->config->get('router.default.controller'), $this->config->get('router.default.method'));
     }
 
@@ -98,7 +98,7 @@ class Router {
     }
 
     public function queryCurrent() {
-        $value = $this->request->get($this->parameter);
+        $value = $this->request->get($this->routeParameter);
         $result = $this->query($value);
         if (!$result && $this->useLocale) {
             $result = $this->query($this->request->getDefaultLocale().'/'.$value);
@@ -106,16 +106,21 @@ class Router {
         return $result;
     }
 
-    public function getUrl($path = '') {
-        $prefix = $this->useLocale ? $this->request->get('locale').'/' : '';
+    public function getUrl($path = '', $params = [], $escapeAmp=true) {
+        // TODO: search $params in the routes
+        $prefix = $this->useLocale ? $this->request->get('locale').'/' : '';        
         if ($this->rewrite) {
-            return $this->getBaseUrl().$prefix.$path;
+            $url = $this->getBaseUrl().$prefix.$path;
+        } else {
+            $params[$this->routeParameter] = $prefix.$path;
+            $url = $this->getBaseUrl();
         }
-        return $this->getBaseUrl().'?'.$this->parameter.'='.$prefix.$path;
+        $url .= http_build_query($params, '', $escapeAmp ? '&amp;' : '&');
+        return $url;
     }
 
     public function getBaseUrl() {
-        return $this->config->get('router.base');
+        return $this->config->get('router.base_url');
     }
 
 }

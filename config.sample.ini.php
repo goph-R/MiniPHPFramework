@@ -2,10 +2,10 @@
 
 [all]
 application.path = "c:/full/path/to/the/application/"
-router.parameter = route 
+router.route_parameter = route 
 router.rewrite = false
-router.locale = true
-router.base = "the://url/to/the/application/'
+router.use_locale = true
+router.base_url = "the://url/to/the/application/'
 router.default.controller = WelcomeController 
 router.default.method = index
 translation.default = en

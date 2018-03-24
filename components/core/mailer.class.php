@@ -75,7 +75,7 @@ class Mailer {
         $mail->SMTPAuth = true;
         $mail->Username = $this->config->get('mailer.username');
         $mail->Password = $this->config->get('mailer.password');
-        //$mail->SMTPSecure = 'tls';
+        $mail->SMTPSecure = 'ssl';
         $mail->Port = $this->config->get('mailer.port');
         $mail->Encoding = 'quoted-printable';
         $mail->CharSet = 'UTF-8';
