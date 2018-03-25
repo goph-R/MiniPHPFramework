@@ -23,7 +23,7 @@ class AdminController extends Controller {
 
         $query = [
             'where' => [],
-            'order' => [$orderBy, $orderDir],
+            'order' => [$orderBy => $orderDir],
             'limit' => [$pageNumber * $pageStep, $pageStep]
         ];        
         $count = $table->count($query);

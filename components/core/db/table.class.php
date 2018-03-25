@@ -143,9 +143,11 @@ abstract class Table {
         }
         $sql .= ' FROM '.$this->escapeName($this->name);
         // TODO: createJoins
-        if (array_key_exists('where', $query)) {
-            $sql .= ' WHERE ';
-            $sql .= $this->createCondition($query['where']);
+        if (isset($query['where'])) {
+            $condition = $this->createCondition($query['where']);
+            if ($condition) {
+                $sql .= ' WHERE '.$condition;
+            }
         }
         // TODO: createGroupBy
         $sql .= $this->createOrder($query);
@@ -194,7 +196,7 @@ abstract class Table {
     }
 
     public function count($query) {
-        if (isset($order['order'])) {
+        if (isset($query['order'])) {
             unset($query['order']);
         }
         if (isset($query['limit'])) {

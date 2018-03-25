@@ -108,14 +108,17 @@ class Router {
 
     public function getUrl($path = '', $params = [], $escapeAmp=true) {
         // TODO: search $params in the routes
-        $prefix = $this->useLocale ? $this->request->get('locale').'/' : '';        
+        $prefix = $this->useLocale ? $this->request->get('locale').'/' : '';
         if ($this->rewrite) {
+            $qmark = $params ? '?' : '';
             $url = $this->getBaseUrl().$prefix.$path;
         } else {
+            $qmark = '?';
             $params[$this->routeParameter] = $prefix.$path;
-            $url = $this->getBaseUrl();
+            $url = $this->getBaseUrl().'index.php';
+
         }
-        $url .= http_build_query($params, '', $escapeAmp ? '&amp;' : '&');
+        $url .= $qmark.http_build_query($params, '', $escapeAmp ? '&amp;' : '&');
         return $url;
     }
 

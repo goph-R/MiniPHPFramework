@@ -37,6 +37,21 @@ class UserService implements Initable {
      */
     protected $im;
 
+    /**
+     * @var Table
+     */
+    protected $userTable;
+
+    /**
+     * @var Table
+     */
+    protected $permissionTable;
+
+    /**
+     * @var Table
+     */
+    protected $userPermissionTable;
+
     public function __construct($im) {
         $this->im = $im;
     }
