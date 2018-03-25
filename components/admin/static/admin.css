@@ -1,0 +1,46 @@
+body, html { height:100% }
+
+.wrapper {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "nav"
+        "content"
+        "footer";
+    grid-template-rows: 40px auto 40px;
+}
+header {
+    grid-area: header;
+    background: yellow;
+}
+nav {
+    grid-area: nav;
+}
+nav li {
+    display: block;
+    padding: 5px;
+}
+nav li i {
+    width: 32px;
+    text-align: center;
+    font-size: 24px;
+    padding-right: 5px;
+}
+nav li a {
+    display: block;
+}
+main {
+    grid-area: content;
+}
+footer {
+    grid-area: footer;
+}
+@media (min-width: 500px) {
+    .wrapper {
+        grid-template-columns: 250px auto;
+        grid-template-areas:
+            "header  header"
+            "nav     content"
+            "footer  footer";
+    }
+}

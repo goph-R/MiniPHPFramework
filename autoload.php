@@ -19,9 +19,9 @@ class ClassLoader {
 
     public static function load($className) {
         self::storeFiles();
-        $filename = $className.'.class.php';
+        $filename = strtolower($className.'.class.php');
         foreach (self::$files as $file) {
-            if (strtolower($file->getFilename()) === strtolower($filename)) {
+            if (strtolower($file->getFilename()) == $filename) {
                 include_once $file->getPathname();
                 break;
             }

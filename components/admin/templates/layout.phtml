@@ -5,15 +5,14 @@
         <link rel="stylesheet" type="text/css" href="<?= $style ?>">
     <?php endforeach ?>
 </head>
-<body>
+<body class="wrapper">
     <header>
         <i class="fa fa-search"></i>
-
     </header>
     <nav>
         <ul>
             <?php foreach ($view->get('adminMenu')->getItems() as $item): ?>
-                <li><i class="fa fa-<?= $item->getIcon() ?>"></i><a href="<?= $router->getUrl($item->getRoute()) ?>"><?= $item->getTitle() ?></a></li>
+                <li><a href="<?= $router->getUrl($item->getRoute()) ?>"><i class="fa fa-<?= $item->getIcon() ?>"></i><?= $item->getTitle() ?></a></li>
             <?php endforeach ?>
         </ul>
     </nav>
@@ -26,6 +25,7 @@
         <script type="text/javascript" src="<?= $script ?>"></script>
     <?php endforeach ?>
 
+    <footer>Copyright <?= date('Y') ?></footer>
     <!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
 
 </body>
