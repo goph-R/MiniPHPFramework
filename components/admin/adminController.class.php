@@ -16,27 +16,33 @@ class AdminController extends Controller {
         }
 
         $table = $this->im->get('userTable');
-        $pageNumber = $this->request->get('page', 0);
-        $pageStep = $this->request->get('step', 4);
-        $orderBy = $this->request->get('orderby', 'email');
-        $orderDir = $this->request->get('orderdir', 'asc');
+        $params = [
+            'orderby' => $this->request->get('orderby', 'email'),
+            'orderdir' => $this->request->get('orderdir', 'asc')
+        ];
+
+        $pager = new Pager(
+            $this->im,
+            'admin',
+            (int)$this->request->get('page', 0),
+            (int)$this->request->get('step', 4),
+            $params
+        );
+
 
         $query = [
             'where' => [],
-            'order' => [$orderBy => $orderDir],
-            'limit' => [$pageNumber * $pageStep, $pageStep]
+            'order' => [$params['orderby'] => $params['orderdir']],
+            'limit' => [$pager->getPage() * $pager->getStep(), $pager->getStep()]
         ];        
-        $count = $table->count($query);
-        $maxPageNumber = ceil($count / $pageStep);
+        $pager->setCount($table->count($query));
+
         $records = $table->find(null, $query);
 
         $this->view->set('columnViews', $this->getColumnViews());
         $this->view->set('actionButtons', $this->getActionButtons());
         $this->view->set('records', $records);
-
-        $this->view->set('pageStep', $pageStep);
-        $this->view->set('maxPageNumber', $maxPageNumber);
-        $this->view->set('pageNumber', $pageNumber);
+        $this->view->set('pager', $pager);
 
         $this->responseLayout(':admin/layout', ':admin/index');
     }

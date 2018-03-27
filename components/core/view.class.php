@@ -74,6 +74,7 @@ class View {
         extract($vars);
         include($this->getTemplatePath($path));
         $result = ob_get_clean();
+        //$result = str_replace('    ', '', $result);
         return $result;
     }
 

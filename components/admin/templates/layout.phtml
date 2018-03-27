@@ -7,12 +7,19 @@
 </head>
 <body class="wrapper">
     <header>
-        <i class="fa fa-search"></i>
+        Admin
+        <div>
+            <input type="text">
+            <button type="submit" id="completed-task" class="fa-button">
+                <i class="fa fa-search"></i>
+            </button>
+            
+        </div>
     </header>
     <nav>
         <ul>
             <?php foreach ($view->get('adminMenu')->getItems() as $item): ?>
-                <li><a href="<?= $router->getUrl($item->getRoute()) ?>"><i class="fa fa-<?= $item->getIcon() ?>"></i><?= $item->getTitle() ?></a></li>
+                <li><a href="<?= $router->getUrl($item->getRoute()) ?>"><span><i class="fa fa-<?= $item->getIcon() ?>"></i></span><?= $item->getTitle() ?></a></li>
             <?php endforeach ?>
         </ul>
     </nav>
@@ -25,7 +32,6 @@
         <script type="text/javascript" src="<?= $script ?>"></script>
     <?php endforeach ?>
 
-    <footer>Copyright <?= date('Y') ?></footer>
     <!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
 
 </body>

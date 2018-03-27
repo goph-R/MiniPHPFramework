@@ -5,42 +5,70 @@ body, html { height:100% }
     grid-template-areas:
         "header"
         "nav"
-        "content"
-        "footer";
-    grid-template-rows: 40px auto 40px;
+        "content";
+    grid-template-rows: 40px auto;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
 }
+
 header {
     grid-area: header;
-    background: yellow;
+    background: #1e2228;
+    color: #7d8591;
+    font-size: 20px;
+    line-height 40px;
+    font-weight: bold;
+    line-height: 40px;
+    padding-left: 10px;
+}
+header div {
+    float: right;
 }
 nav {
     grid-area: nav;
+    background-color: #30343a;
 }
-nav li {
-    display: block;
-    padding: 5px;
+nav li span {
+    padding: 0 48px 0 0;
 }
-nav li i {
-    width: 32px;
+nav i {
+    width: 40px;
     text-align: center;
     font-size: 24px;
-    padding-right: 5px;
+    position: absolute;
+    margin: 10px 0 0 4px;
 }
 nav li a {
+    color: #919dad;
+    line-height: 45px;
     display: block;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid #474d56;
+    border-left: 3px solid #30343a;
 }
+nav li a:hover {
+    color: #fff;
+    border-left: 3px solid #d8ff19;
+}
+
 main {
     grid-area: content;
+    padding: 20px;
+    line-height: 1.5em;
 }
-footer {
-    grid-area: footer;
+
+.fa-button {
+  background: none;
+  padding: 0px;
+  border: none;
 }
+
 @media (min-width: 500px) {
     .wrapper {
         grid-template-columns: 250px auto;
         grid-template-areas:
             "header  header"
-            "nav     content"
-            "footer  footer";
+            "nav     content";
     }
 }

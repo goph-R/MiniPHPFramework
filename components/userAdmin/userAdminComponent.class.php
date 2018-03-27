@@ -18,8 +18,9 @@ class UserAdminComponent implements Initable {
     }
 
     public function init() {
-        $this->adminMenu->addItem('Users', 'admin/users', 'users');
-        $this->adminMenu->addItem('Vehicles', 'admin/vehicles', 'car');
+        $this->adminMenu->addItem('Felhasználók', 'admin/users', 'users');
+        $this->adminMenu->addItem('Kereskedők', 'admin/companies', 'building');
+        $this->adminMenu->addItem('Járművek', 'admin/vehicles', 'car');
     }
 
 }
