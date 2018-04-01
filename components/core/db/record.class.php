@@ -15,6 +15,13 @@ class Record {
         $this->table = $table;
     }
 
+    /**
+     * @return Table
+     */
+    public function getTable() {
+        return $this->table;
+    }
+
     public function isNew() {
         return $this->new;
     }

@@ -33,6 +33,10 @@ abstract class Table {
         }
     }
 
+    public function getPrimaryKeys() {
+        return $this->primaryKeys;
+    }
+
     public function getColumn($name) {
         return isset($this->columns[$name]) ? $this->columns[$name] : null;
     }
@@ -157,6 +161,9 @@ abstract class Table {
         return $sql;
     }
 
+    /**
+     * @return Record[]
+     */
     public function find($columnNames, $query) {
         $sql = $this->createSelect($columnNames, $query);
         $result = $this->db->query($sql);
@@ -173,6 +180,9 @@ abstract class Table {
         return $ret;
     }
 
+    /**
+     * @return Record
+     */
     public function findOne($columns, $query) {
         $query['limit'] = 1;
         $ret = $this->find($columns, $query);

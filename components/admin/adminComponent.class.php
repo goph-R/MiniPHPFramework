@@ -18,6 +18,8 @@ class AdminComponent implements Initiable {
 
     public function init() {
         $this->router->add('admin', 'AdminController', 'index');
+        $this->router->add('admin/edit', 'AdminController', 'edit');
+        $this->router->add('admin/delete', 'AdminController', 'delete');
     }
 
 }

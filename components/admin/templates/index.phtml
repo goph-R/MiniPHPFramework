@@ -18,7 +18,7 @@
                     <td><?= $columnView->fetch($record) ?></td>
                 <?php endforeach ?>
                 <?php foreach ($actionButtons as $actionButton): ?>
-                    <td><a href=""></a></td>
+                    <td><?= $actionButton->fetch($record) ?></td>
                 <?php endforeach ?>
             </tr>
         <?php endforeach ?>

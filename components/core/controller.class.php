@@ -77,8 +77,8 @@ abstract class Controller {
         $this->response->setContent(json_encode($data));
     }
 
-    public function redirect($route = '') {
-        return $this->redirectToUrl($this->router->getUrl($route));
+    public function redirect($route = '', $params=[]) {
+        return $this->redirectToUrl($this->router->getUrl($route, $params, false));
     }
 
     public function redirectToUrl($url) {

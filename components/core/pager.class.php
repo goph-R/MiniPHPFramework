@@ -8,10 +8,10 @@ class Pager {
     private $maxPage;
     private $params;
 
-    public function __construct($route, $page, $step, $params=[]) {
+    public function __construct($route, $params=[]) {
         $im = InstanceManager::getInstance();
-        $this->page = $page;
-        $this->step = $step;
+        $this->page = (int)$params['page'];
+        $this->step = (int)$params['step'];
         $this->params = $params;
         $this->route = $route;
         $this->router = $im->get('router');
@@ -37,7 +37,6 @@ class Pager {
     public function getUrl($page) {
         $params = $this->params;
         $params['page'] = $page;
-        $params['step'] = $this->step;
         return $this->router->getUrl($this->route, $params);
     }
 
