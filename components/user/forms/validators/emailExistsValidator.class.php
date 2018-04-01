@@ -8,13 +8,14 @@ class EmailExistsValidator extends Validator {
     private $userService;
     private $needToExists;
 
-    public function __construct($im, $needToExists=false) {
-        parent::__construct($im);
+    public function __construct($needToExists=false) {
+        parent::__construct();
         if ($needToExists) {
             $this->error = $this->translation->get('user', 'email_not_exists');
         } else {
             $this->error = $this->translation->get('user', 'email_exists');
         }
+        $im = InstanceManager::getInstance();
         $this->userService = $im->get('userService');
         $this->needToExists = $needToExists;
     }

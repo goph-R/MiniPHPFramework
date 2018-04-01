@@ -4,10 +4,8 @@ class ColumnView {
 
     protected $columnName;
     protected $label;
-    protected $im;
 
-    public function __construct($im, $columnName, $label) {
-        $this->im = $im;
+    public function __construct($columnName, $label) {
         $this->columnName = $columnName;
         $this->label = $label;
     }

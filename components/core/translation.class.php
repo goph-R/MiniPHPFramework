@@ -10,7 +10,8 @@ class Translation {
     private $data;
     private $default;
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->request = $im->get('request');
         $this->default = $im->get('config')->get('translation.default', 'en');
     }

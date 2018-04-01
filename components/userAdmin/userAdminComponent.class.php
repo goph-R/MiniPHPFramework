@@ -1,6 +1,6 @@
 <?php
 
-class UserAdminComponent implements Initable {
+class UserAdminComponent implements Initiable {
 
     /**
      * @var Router
@@ -12,7 +12,8 @@ class UserAdminComponent implements Initable {
      */
     private $adminMenu;
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->router = $im->get('router');
         $this->adminMenu = $im->get('adminMenu');
     }

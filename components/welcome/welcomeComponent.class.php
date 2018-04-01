@@ -1,10 +1,11 @@
 <?php
 
-class WelcomeComponent implements Initable {
+class WelcomeComponent implements Initiable {
 
     private $translation;
 
-    public function __construct($im) {
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->translation = $im->get('translation');
     }
 

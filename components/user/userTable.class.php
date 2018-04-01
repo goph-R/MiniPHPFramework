@@ -2,8 +2,8 @@
 
 class UserTable extends Table {
 
-    public function __construct($im) {
-        parent::__construct($im);
+    public function __construct() {
+        parent::__construct();
         $this->name = 'user';
         $this->addColumn(new IntegerColumn($this, 'id'), null, true);
         $this->addColumn(new StringColumn($this, 'email', 255));

@@ -6,6 +6,7 @@ class Record {
      * @var Table
      */
     private $table;
+
     private $new = true;
     private $modified = [];
     private $attributes = [];

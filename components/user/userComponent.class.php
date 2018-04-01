@@ -1,28 +1,23 @@
 <?php
 
-class UserComponent implements Initable {
+class UserComponent implements Initiable {
 
     /**
      * @var Router
      */
     private $router;
 
-    /**
-     * @var InstanceManager
-     */
-    private $im;
-
-    public function __construct(InstanceManager $im) {
-        $this->im = $im;
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->router = $im->get('router');
         $translation = $im->get('translation');
         $translation->add('user', 'components/user/translations');
         $view = $im->get('view');
         $view->addPath('user', 'components/user/templates');
-        $im->add('userTable', new UserTable($im));
-        $im->add('permissionTable', new PermissionTable($im));
-        $im->add('userPermissionTable', new UserPermissionTable($im));
-        $im->add('userService', new UserService($im));
+        $im->add('userTable', new UserTable());
+        $im->add('permissionTable', new PermissionTable());
+        $im->add('userPermissionTable', new UserPermissionTable());
+        $im->add('userService', new UserService());
         $im->add('registerForm', 'RegisterForm');
     }
 

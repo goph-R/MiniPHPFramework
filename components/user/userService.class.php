@@ -1,6 +1,6 @@
 <?php
 
-class UserService implements Initable {
+class UserService implements Initiable {
 
     /**
      * @var Config
@@ -52,12 +52,8 @@ class UserService implements Initable {
      */
     protected $userPermissionTable;
 
-    public function __construct($im) {
-        $this->im = $im;
-    }
-
     public function init() {
-        $im = $this->im;
+        $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
         $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');

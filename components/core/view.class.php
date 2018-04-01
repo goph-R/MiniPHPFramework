@@ -12,7 +12,8 @@ class View {
     private $styles = [];
     private $paths = [];
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
     }
 

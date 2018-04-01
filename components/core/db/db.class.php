@@ -1,6 +1,6 @@
 <?php
 
-class DB implements Doneable {
+class DB implements Finishable {
 
     /**
      * @var mysqli
@@ -14,7 +14,8 @@ class DB implements Doneable {
 
     private $name;
 
-    public function __construct(InstanceManager $im, $name) {
+    public function __construct($name) {
+        $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
         $this->name = $name;
     }
@@ -53,7 +54,7 @@ class DB implements Doneable {
         }
     }
 
-    public function done() {
+    public function finish() {
         $this->close();
     }
 

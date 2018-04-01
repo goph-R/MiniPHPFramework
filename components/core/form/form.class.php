@@ -40,8 +40,8 @@ abstract class Form {
     protected $errors = [];
     protected $name = 'form';
 
-    public function __construct(InstanceManager $im) {
-        $this->im = $im;
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->request = $im->get('request');
         $this->view = $im->get('view');
         $this->translation = $im->get('translation');

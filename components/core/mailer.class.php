@@ -22,8 +22,8 @@ class Mailer {
     private $addresses = [];
     private $vars = [];
 
-    public function __construct(InstanceManager $im) {
-        $this->im = $im;
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
         $this->view = $im->get('view');
     }

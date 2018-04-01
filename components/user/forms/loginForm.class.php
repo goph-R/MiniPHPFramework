@@ -3,14 +3,13 @@
 class LoginForm extends Form {
 
     public function create() {
-        $im = $this->im;
         $t = $this->translation;
-        $notEmptyValidator = new NotEmptyValidator($im);
-        $this->addInput('Email', new TextInput($im, 'email'));
+        $notEmptyValidator = new NotEmptyValidator();
+        $this->addInput('Email', new TextInput('email'));
         $this->addValidator('email', $notEmptyValidator);
-        $this->addInput($t->get('user', 'password'), new PasswordInput($im, 'password'));
+        $this->addInput($t->get('user', 'password'), new PasswordInput('password'));
         $this->addValidator('password', $notEmptyValidator);
-        $this->addInput('', new CheckboxInput($im, 'remember', '1', $t->get('user', 'remember_me')));
+        $this->addInput('', new CheckboxInput('remember', '1', $t->get('user', 'remember_me')));
     }
 
 }

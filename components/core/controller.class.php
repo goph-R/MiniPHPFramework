@@ -54,8 +54,8 @@ abstract class Controller {
      */
     protected $translation;
 
-    public function __construct(InstanceManager $im) {
-        $this->im = $im;
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         foreach (self::InstanceNames as $name) {
             $this->$name = $im->get($name);
         }

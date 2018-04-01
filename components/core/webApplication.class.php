@@ -17,10 +17,10 @@ class WebApplication {
      */
     protected $response;
 
-    public function __construct(InstanceManager $im) {
-        $this->im = $im;
-        $this->router = $im->get('router');
-        $this->response = $im->get('response');
+    public function __construct() {
+        $this->im = InstanceManager::getInstance();
+        $this->router = $this->im->get('router');
+        $this->response = $this->im->get('response');
     }
 
     public function run() {
@@ -40,6 +40,6 @@ class WebApplication {
         }
         $controller->$method();
         $this->response->send();
-        $this->im->done();
+        $this->im->finish();
     }
 }

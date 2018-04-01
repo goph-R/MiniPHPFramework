@@ -1,5 +1,5 @@
 <?php
 
-interface Initable {
+interface Initiable {
     public function init();
 }

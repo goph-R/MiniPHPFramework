@@ -5,8 +5,8 @@ class CheckboxInput extends Input {
     private $checked;
     private $label;
 
-    public function __construct($im, $name, $defaultValue='', $label='', $checked=false) {
-        parent::__construct($im, $name, $defaultValue);
+    public function __construct($name, $defaultValue='', $label='', $checked=false) {
+        parent::__construct($name, $defaultValue);
         $this->checked = $checked;
         $this->label = $label;
     }

@@ -7,7 +7,7 @@ class Request {
 
     const ONE_YEAR_SECONDS = 31536000;
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
         $this->data = $_REQUEST;
         $this->headers = $_SERVER;
     }

@@ -14,18 +14,13 @@ class Router {
      */
     private $request;
 
-    /**
-     * @var InstanceManager
-     */
-    private $im;
-
     private $map = [];
     private $useLocale;
     private $rewrite;
     private $routeParameter;
 
-    public function __construct(InstanceManager $im) {
-        $this->im = $im;
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
         $this->request = $im->get('request');
         $this->rewrite = $this->config->get('router.rewrite');

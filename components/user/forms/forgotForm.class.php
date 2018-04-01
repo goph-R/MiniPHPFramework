@@ -3,11 +3,10 @@
 class ForgotForm extends Form {
 
     public function create() {
-        $im = $this->im;
-        $this->addInput('Email', new TextInput($im, 'email'));
-        $this->addValidator('email', new NotEmptyValidator($im));
-        $this->addValidator('email', new EmailValidator($im));
-        $this->addValidator('email', new EmailExistsValidator($im, true));
+        $this->addInput('Email', new TextInput('email'));
+        $this->addValidator('email', new NotEmptyValidator());
+        $this->addValidator('email', new EmailValidator());
+        $this->addValidator('email', new EmailExistsValidator(true));
     }
 
 }

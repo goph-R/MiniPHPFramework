@@ -10,7 +10,8 @@ abstract class Validator {
      */
     protected $translation;
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->translation = $im->get('translation');
     }
 

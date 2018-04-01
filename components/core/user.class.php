@@ -14,8 +14,9 @@ class User {
 
     private $permissions;
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
         session_start();
+        $im = InstanceManager::getInstance();
         $this->request = $im->get('request');
         $this->config = $im->get('config');
         $this->permissions = $this->get('permissions', []);

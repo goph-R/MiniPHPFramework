@@ -5,8 +5,6 @@ class Response {
     private $headers = [];
     private $content;
 
-    public function __construct(InstanceManager $im) {}
-
     public function setHeader($name, $value) {
         $this->headers[$name] = $value;
     }

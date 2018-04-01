@@ -2,8 +2,9 @@
 
 class AdminController extends Controller {
 
-    public function __construct(InstanceManager $im) {
-        parent::__construct($im);
+    public function __construct() {
+        parent::__construct();
+        $im = InstanceManager::getInstance();
         $this->view->addStyle('components/admin/static/reset.css');
         $this->view->addStyle('components/admin/static/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css');
         $this->view->addStyle('components/admin/static/admin.css');
@@ -14,15 +15,14 @@ class AdminController extends Controller {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-
-        $table = $this->im->get('userTable');
+        $im = InstanceManager::getInstance();
+        $table = $im->get('userTable');
         $params = [
             'orderby' => $this->request->get('orderby', 'email'),
             'orderdir' => $this->request->get('orderdir', 'asc')
         ];
 
         $pager = new Pager(
-            $this->im,
             'admin',
             (int)$this->request->get('page', 0),
             (int)$this->request->get('step', 4),
@@ -48,10 +48,9 @@ class AdminController extends Controller {
     }
 
     public function getColumnViews() {
-        $im = $this->im;
         return [
-            new ColumnView($im, 'email', 'Email'),
-            new BooleanColumnView($im, 'active', 'Active')
+            new ColumnView('email', 'Email'),
+            new BooleanColumnView('active', 'Active')
         ];
     }
 

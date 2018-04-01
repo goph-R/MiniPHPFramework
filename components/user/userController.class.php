@@ -7,8 +7,9 @@ abstract class UserController extends Controller {
      */
     protected $userService;
 
-    public function __construct($im) {
-        parent::__construct($im);
+    public function __construct() {
+        parent::__construct();
+        $im = InstanceManager::getInstance();
         $this->userService = $im->get('userService');
     }
 

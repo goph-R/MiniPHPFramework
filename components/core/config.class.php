@@ -4,7 +4,7 @@ class Config {
 
     private $attributes = [];
 
-    public function __construct($im, $path, $group) {
+    public function __construct($path, $group) {
         $this->load($path, $group);
     }
 

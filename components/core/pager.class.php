@@ -8,7 +8,8 @@ class Pager {
     private $maxPage;
     private $params;
 
-    public function __construct($im, $route, $page, $step, $params=[]) {
+    public function __construct($route, $page, $step, $params=[]) {
+        $im = InstanceManager::getInstance();
         $this->page = $page;
         $this->step = $step;
         $this->params = $params;

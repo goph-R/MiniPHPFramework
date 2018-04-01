@@ -3,11 +3,6 @@
 abstract class Input {
 
     /**
-     * @var InstanceManager
-     */
-    protected $im;
-
-    /**
      * @var View
      */
     protected $view;
@@ -31,8 +26,8 @@ abstract class Input {
     protected $value;
     protected $trimValue = true;
 
-    public function __construct(InstanceManager $im, $name, $defaultValue = '') {
-        $this->im = $im;
+    public function __construct($name, $defaultValue = '') {
+        $im = InstanceManager::getInstance();
         $this->view = $im->get('view');
         $this->request = $im->get('request');
         $this->name = $name;

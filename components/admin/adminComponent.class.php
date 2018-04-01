@@ -1,13 +1,14 @@
 <?php
 
-class AdminComponent implements Initable {
+class AdminComponent implements Initiable {
     
     /**
      * @var Router
      */
     private $router;
 
-    public function __construct(InstanceManager $im) {
+    public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->router = $im->get('router');
         $view = $im->get('view');
         $view->addPath('admin', 'components/admin/templates');
