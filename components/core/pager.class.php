@@ -20,6 +20,9 @@ class Pager {
     public function setCount($count) {
         $this->count = $count;
         $this->maxPage = ceil($count / $this->step);
+        if ($this->page >= $this->maxPage) {
+            $this->page = $this->maxPage - 1;
+        }
     }
 
     public function getPage() {
@@ -38,6 +41,29 @@ class Pager {
         $params = $this->params;
         $params['page'] = $page;
         return $this->router->getUrl($this->route, $params);
+    }
+
+    public function hasNext() {
+        return $this->getPage() != $this->getMaxPage() - 1;
+    }
+
+    public function hasPrev() {
+        return $this->getPage() != 0;
+    }
+
+    public function getLastUrl() {
+        return $this->getUrl($this->getMaxPage() - 1);
+    }
+
+    public function getNextUrl() {
+        return $this->getUrl($this->getPage() + 1);
+    }
+    public function getPrevUrl() {
+        return $this->getUrl($this->getPage() - 1);
+    }
+
+    public function getFirstUrl() {
+        return $this->getUrl(0);
     }
 
 }
