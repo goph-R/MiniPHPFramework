@@ -52,7 +52,7 @@ class InstanceManager {
         }
         if (is_string($this->data[$name])) {
             $className = $this->data[$name];
-            $instance = new $className($this);
+            $instance = new $className();
             if ($instance instanceof Initiable) {
                 $instance->init();
             }
