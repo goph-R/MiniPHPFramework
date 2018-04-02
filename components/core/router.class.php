@@ -27,6 +27,19 @@ class Router {
         $this->useLocale = $this->config->get('router.use_locale');
         $this->routeParameter = $this->config->get('router.route_parameter', 'route');
         $this->add('', $this->config->get('router.default.controller'), $this->config->get('router.default.method'));
+        $this->findLocale();
+    }
+
+    private function findLocale() {
+        if (!$this->useLocale) {
+            return;
+        }
+        $route = $this->getRoute();
+        // TODO: better solution
+        $parts = explode('/', $route);
+        if (isset($parts[0])) {
+            $this->request->set('locale', $parts[0]);
+        }
     }
 
     public function add($route, $controller, $method) {
@@ -45,8 +58,8 @@ class Router {
         $this->map[$route] = $item;
     }
 
-    public function usingLocale() {
-        return $this->useLocale;
+    public function getRoute() {
+        return $this->request->get($this->routeParameter);
     }
 
     public function query($paramRoute) {
@@ -103,7 +116,7 @@ class Router {
     }
 
     public function getUrl($path = '', $params = [], $escapeAmp=true) {
-        // TODO: search $params in the routes
+        // TODO: search and replace $params in the routes
         $prefix = $this->useLocale ? $this->request->get('locale').'/' : '';
         if ($this->rewrite) {
             $qmark = $params ? '?' : '';

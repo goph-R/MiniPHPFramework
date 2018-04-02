@@ -1,0 +1,26 @@
+<table class="list">
+    <thead>
+    <tr>
+        <?php foreach ($columnViews as $columnView): ?>
+            <?= $columnView->fetchHeader($listParams) ?>
+        <?php endforeach ?>
+        <?php foreach ($actionButtons as $actionButton): ?>
+            <th></th>
+        <?php endforeach ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($records as $record): ?>
+        <tr>
+            <?php foreach ($columnViews as $columnView): ?>
+                <td style="text-align: <?= $columnView->getAlign() ?>">
+                    <?= $columnView->fetch($record) ?>
+                </td>
+            <?php endforeach ?>
+            <?php foreach ($actionButtons as $actionButton): ?>
+                <td><?= $actionButton->fetch($record, $listParams) ?></td>
+            <?php endforeach ?>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
+</table>

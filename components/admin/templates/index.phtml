@@ -1,33 +1,7 @@
+<h1>List example</h1>
+<div class="buttons">
+    <a class="default-button" href="<?= $router->getUrl('example', $listParams) ?>"><i class="fa fa-plus"></i> Add new</a>
+</div>
 <?= $this->fetch(':admin/pager') ?>
-
-<table class="list">
-    <thead>
-        <tr>
-            <?php foreach ($columnViews as $columnView): ?>
-                <th<?php if ($columnView->getWidth()): ?> style="width: <?= $columnView->getWidth() ?>"<?php endif ?>>
-                    <?= $columnView->getLabel() ?>
-                </th>
-            <?php endforeach ?>
-            <?php foreach ($actionButtons as $actionButton): ?>
-                <th></th>
-            <?php endforeach ?>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($records as $record): ?>
-            <tr>
-                <?php foreach ($columnViews as $columnView): ?>
-                    <td style="text-align: <?= $columnView->getAlign() ?>">
-                        <?= $columnView->fetch($record) ?>
-                    </td>
-                <?php endforeach ?>
-                <?php foreach ($actionButtons as $actionButton): ?>
-                    <td><?= $actionButton->fetch($record) ?></td>
-                <?php endforeach ?>
-            </tr>
-        <?php endforeach ?>
-    </tbody>
-</table>
-
+<?= $this->fetch(':admin/list') ?>
 <?= $this->fetch(':admin/pager') ?>
-
