@@ -2,6 +2,9 @@
 <form action="<?= $router->getUrl('login') ?>" method="post">
     <?= $form->fetch() ?>
     <div class="form-row">
+        <a href="<?= $router->getUrl('forgot') ?>"><?= $translation->get('user', 'forgotten_password') ?></a>
+    </div>
+    <div class="form-row">
         <input type="submit" value="<?= $translation->get('user', 'login') ?>">
     </div>
 </form>

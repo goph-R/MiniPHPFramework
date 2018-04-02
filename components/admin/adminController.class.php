@@ -37,6 +37,7 @@ class AdminController extends Controller {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
+        return $this->responseLayout(':admin/layout', ':admin/edit');
     }
 
     public function delete() {
@@ -74,8 +75,9 @@ class AdminController extends Controller {
 
     protected function getColumnViews() {
         return [
-            new ColumnView('email', 'Email'),
-            new BooleanColumnView('active', 'Active')
+            new ColumnView('id', 'ID', 'right'),
+            new ColumnView('email', 'Email', 'left', '100%'),
+            new BooleanColumnView('active', 'Active', 'center')
         ];
     }
 
