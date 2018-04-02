@@ -1,27 +1,17 @@
 <?php
 
-class UserAdminComponent implements Initiable {
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    /**
-     * @var AdminMenu
-     */
-    private $adminMenu;
+class UserAdminComponent {
 
     public function __construct() {
         $im = InstanceManager::getInstance();
-        $this->router = $im->get('router');
-        $this->adminMenu = $im->get('adminMenu');
-    }
-
-    public function init() {
-        $this->adminMenu->addItem('Felhasználók', 'admin/users', 'users');
-        $this->adminMenu->addItem('Kereskedők', 'admin/companies', 'building');
-        $this->adminMenu->addItem('Járművek', 'admin/vehicles', 'car');
+        $router = $im->get('router');
+        $router->add('admin', 'UserAdminController', 'index');
+        $router->add('admin/user/edit', 'UserAdminController', 'edit');
+        $router->add('admin/user/delete', 'UserAdminController', 'delete');
+        $adminMenu = $im->get('adminMenu');
+        $adminMenu->addItem('Felhasználók', 'admin', 'users');
+        //$adminMenu->addItem('Kereskedők', 'admin/companies', 'building');
+        //$adminMenu->addItem('Járművek', 'admin/vehicles', 'car');
     }
 
 }

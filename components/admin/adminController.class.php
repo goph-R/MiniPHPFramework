@@ -1,6 +1,6 @@
 <?php
 
-class AdminController extends Controller {
+abstract class AdminController extends Controller {
 
     public function __construct() {
         parent::__construct();
@@ -56,14 +56,6 @@ class AdminController extends Controller {
         return $this->redirect('admin', $this->getListParams());
     }
 
-    /**
-     * @return Table
-     */
-    protected function getTable() {
-        $im = InstanceManager::getInstance();
-        return $im->get('userTable');
-    }
-
     protected function getListParams() {
         return [
             'page' => $this->request->get('page', 0),
@@ -73,19 +65,11 @@ class AdminController extends Controller {
         ];
     }
 
-    protected function getColumnViews() {
-        return [
-            new ColumnView('id', 'ID', 'right'),
-            new ColumnView('email', 'Email', 'left', '100%'),
-            new BooleanColumnView('active', 'Active', 'center')
-        ];
-    }
-
-    protected function getActionButtons() {
-        return [
-            new ActionButton('admin/edit', 'edit'),
-            new ConfirmActionButton('admin/delete', 'trash')
-        ];
-    }
+    /**
+     * @return Table
+     */
+    abstract protected function getTable();
+    abstract protected function getColumnViews();
+    abstract protected function getActionButtons();
 
 }

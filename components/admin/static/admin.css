@@ -62,7 +62,9 @@ main {
   padding: 0px;
   border: none;
 }
-
+.list {
+    border-bottom: 1px solid #ccc;
+}
 .list th {
     padding: 5px;
     text-align: left;

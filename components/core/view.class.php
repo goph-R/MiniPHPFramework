@@ -18,11 +18,16 @@ class View {
     }
 
     public function addScript($script) {
-        $this->scripts[] = $script;
+        $key = strtolower($script);
+        $this->scripts[$key] = $script;
     }
 
-    public function addStyle($style) {
-        $this->styles[] = $style;
+    public function addStyle($style, $media='all') {
+        $key = strtolower($style.';'.$media);
+        $this->styles[$key] = [
+            'source' => $style,
+            'media' => $media
+        ];
     }
 
     public function getScripts() {

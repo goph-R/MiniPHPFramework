@@ -31,37 +31,38 @@ class Router {
 
     public function add($route, $controller, $method) {
         $prefix = $this->useLocale ? ':locale/' : '';
+        $route = $prefix.$route;
         $item = [
-            'route' => $prefix.$route,
+            'route' => $route,
             'controller' => $controller,
             'method' => $method
         ];
         $matches = [];
-        preg_match_all(self::PARAMETER_REGEX, $prefix.$route, $matches, PREG_PATTERN_ORDER);
+        preg_match_all(self::PARAMETER_REGEX, $route, $matches, PREG_PATTERN_ORDER);
         if ($matches[0]) {
             $item['parameters'] = $matches[0];
         }
-        $this->map[] = $item;
+        $this->map[$route] = $item;
     }
 
     public function usingLocale() {
         return $this->useLocale;
     }
 
-    public function query($route) {
-        foreach ($this->map as $item) {
+    public function query($paramRoute) {
+        foreach ($this->map as $route => $item) {
             if (isset($item['parameters'])) {
-                $valuesInRoute = $this->fetchParameterValues($route, $item['route']);
+                $valuesInRoute = $this->fetchParameterValues($paramRoute, $route);
                 if ($valuesInRoute) {
                     $valueByName = $this->getValueByName($valuesInRoute, $item['parameters']);
                     // TODO: preg_replace, because ':nameLonger/:name' route can cause an issue
-                    $routeForSearch = str_replace(array_keys($valueByName), array_values($valueByName), $item['route']);
-                    if ($route == $routeForSearch) {
+                    $routeForSearch = str_replace(array_keys($valueByName), array_values($valueByName), $route);
+                    if ($paramRoute == $routeForSearch) {
                         $this->setRequestParameters($valueByName);
                         return $item;
                     }
                 }
-            } else if ($route == $item['route']) {
+            } else if ($paramRoute == $route) {
                 return $item;
             }
         }

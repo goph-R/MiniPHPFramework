@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <base href="<?= $router->getBaseUrl() ?>">
     <?php foreach ($view->getStyles() as $style): ?>
-        <link rel="stylesheet" type="text/css" href="<?= $style ?>">
+        <link rel="stylesheet" type="text/css" href="<?= $style['source'] ?>" media="<?= $style['media'] ?>">
     <?php endforeach ?>
 </head>
 <body>

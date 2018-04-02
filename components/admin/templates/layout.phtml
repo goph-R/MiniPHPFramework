@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <base href="<?= $router->getBaseUrl() ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php foreach ($view->getStyles() as $style): ?>
-        <link rel="stylesheet" type="text/css" href="<?= $style ?>">
+        <link rel="stylesheet" type="text/css" href="<?= $style['source'] ?>" media="<?= $style['media'] ?>">
     <?php endforeach ?>
 </head>
 <body class="wrapper">
