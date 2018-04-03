@@ -1,4 +1,5 @@
 .idea/*
+logs/*
 components/kfz/*
 config.ini.php
 index.php

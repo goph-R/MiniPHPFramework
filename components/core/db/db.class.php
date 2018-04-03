@@ -12,11 +12,17 @@ class DB implements Finishable {
      */
     private $config;
 
+    /**
+     * @var Logger
+     */
+    private $logger;
+
     private $name;
 
     public function __construct($name) {
         $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
+        $this->logger = $im->get('logger');
         $this->name = $name;
     }
 
@@ -24,6 +30,7 @@ class DB implements Finishable {
         if ($this->conn) {
             return;
         }
+        $this->logger->info('Connecting to database "'.$this->name.'"');
         $this->conn = new mysqli(
             $this->config->get('db.'.$this->name.'.host'),
             $this->config->get('db.'.$this->name.'.user'),
@@ -40,6 +47,7 @@ class DB implements Finishable {
 
     public function query($sql) {
         $this->connect();
+        $this->logger->info('Execute SQL on "'.$this->name.'":'."\r\n".$sql."\r\n");
         $result = $this->conn->query($sql);
         if ($result) {
             $ret = new DBResult($result);
@@ -51,6 +59,7 @@ class DB implements Finishable {
     public function close() {
         if ($this->conn) {
             $this->conn->close();
+            $this->logger->info('Closing database "'.$this->name.'" connection');
         }
     }
 

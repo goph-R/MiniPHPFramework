@@ -3,6 +3,7 @@
 include_once "autoload.php";
 
 $im = InstanceManager::getInstance();
+$im->add('logger', new Logger(Logger::INFO, 'logs/info.log'));
 $im->add('config', new Config('config.ini.php', 'dev'));
 $im->add('db', new DB('default'));
 $im->add('request', new Request());

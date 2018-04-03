@@ -38,7 +38,7 @@ class InstanceManager {
     }
 
     public function finish() {
-        foreach ($this->order as $name) {
+        foreach (array_reverse($this->order) as $name) {
             $instance = $this->data[$name];
             if ($instance instanceof Finishable) {
                 $instance->finish();

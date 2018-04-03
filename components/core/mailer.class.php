@@ -19,6 +19,11 @@ class Mailer {
      */
     private $config;
 
+    /**
+     * @var Logger
+     */
+    private $logger;
+
     private $addresses = [];
     private $vars = [];
 
@@ -26,6 +31,7 @@ class Mailer {
         $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
         $this->view = $im->get('view');
+        $this->logger = $im->get('logger');
     }
 
     public function addAddress($email, $name = null) {
@@ -40,6 +46,30 @@ class Mailer {
     }
 
     public function send($subject, $templatePath) {
+        $body = $this->view->fetch($templatePath, $this->vars);
+        $result = true;
+        if ($this->config->get('mailer.fake')) {
+            $this->fakeSend($subject, $body);
+        } else {
+            $result = $this->realSend($subject, $body);
+        }
+        return $result;
+    }
+
+    private function fakeSend($subject, $body) {
+        $to = [];
+        foreach ($this->addresses as $address) {
+            $to[] = $address['name'].' <'.$address['email'].'>';
+        }        
+        $message = "Fake mail sending\r\n";
+        $message .= 'To: '.join('; ', $to)."\r\n";
+        $message .= 'Subject: '.$subject."\r\n";
+        $message .= "Message:\r\n".$body."\r\n";
+        $this->logger->info($message);
+    }
+
+    private function realSend($subject, $body) {
+        $result = true;
         $mail = new PHPMailer(true);
         if (!$this->config->get('mailer.verify_ssl')) {
             $this->disableVerify($mail);
@@ -47,14 +77,14 @@ class Mailer {
         $this->setDefaults($mail);
         $this->addAddresses($mail);
         $mail->Subject = '=?utf-8?Q?'.quoted_printable_encode($subject).'?=';
-        $mail->Body = $this->view->fetch($templatePath, $this->vars);
+        $mail->Body = $body;
         try {
             $mail->send();
         } catch (PHPMailerException $e) {
-            // TODO: logging
-            return false;
+            $this->logger->error($e->getMessage());
+            $result = false;
         }
-        return true;
+        return $result;
     }
 
     private function disableVerify(PHPMailer $mail) {
