@@ -12,7 +12,8 @@ class Logger {
     public function __construct($level, $path) {
         $this->level = $level;
         $this->path = $path;
-        set_error_handler([$this, 'handleError'], E_ALL | E_STRICT);
+        set_error_handler([$this, 'handleError'], E_ALL);
+        register_shutdown_function([$this, 'handleShutdown']);
     }
 
     public function info($message) {

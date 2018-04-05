@@ -45,14 +45,11 @@ abstract class Form {
         $this->request = $im->get('request');
         $this->view = $im->get('view');
         $this->translation = $im->get('translation');
-        $this->create();
     }
 
     public function getName() {
         return $this->name;
     }
-
-    abstract function create();
 
     public function addInput($label, Input $input) {
         $this->labels[$input->getName()] = $label;
@@ -177,4 +174,5 @@ abstract class Form {
         $this->view->set('form', $this);
         return $this->view->fetch($path);
     }
+
 }

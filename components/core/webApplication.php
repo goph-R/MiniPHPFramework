@@ -3,6 +3,11 @@
 class WebApplication {
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var InstanceManager
      */
     protected $im;
@@ -27,18 +32,19 @@ class WebApplication {
         $this->router = $this->im->get('router');
         $this->response = $this->im->get('response');
         $this->logger = $this->im->get('logger');
+        $this->config = $this->im->get('config');
     }
 
     public function run() {
         try {
-            $this->tryToRun();
+            $this->runCore();
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
             $this->sendInternalServerError();
         }
     }
 
-    private function tryToRun() {
+    private function runCore() {
         $this->im->init();
         $route = $this->router->queryCurrent();
         $found = false;
@@ -63,11 +69,11 @@ class WebApplication {
 
     private function sendNotFound() {
         header("HTTP/1.0 404 Not Found");
-        include __DIR__.'/static/404.html';
+        include $this->config->get('application.error_path.404');
     }
 
     private function sendInternalServerError() {
         header("HTTP/1.0 500 Internal Server Error");
-        include __DIR__.'/static/500.html';
+        include $this->config->get('application.error_path.500');
     }
 }

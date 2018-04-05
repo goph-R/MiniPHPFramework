@@ -1,14 +1,11 @@
 <?php
 
-class RegisterForm extends Form {
+class ForgotNewPasswordForm extends Form {
 
-    public function create() {
+    public function __construct() {
+        parent::__construct();
         $t = $this->translation;
         $notEmptyValidator = new NotEmptyValidator();
-        $this->addInput('Email', new TextInput('email'));
-        $this->addValidator('email', $notEmptyValidator);
-        $this->addValidator('email', new EmailValidator());
-        $this->addValidator('email', new EmailExistsValidator());
         $password = new PasswordInput('password');
         $password->setTrimValue(false);
         $passwordAgain = new PasswordInput('password_again');

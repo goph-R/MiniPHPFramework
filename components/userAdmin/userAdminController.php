@@ -26,5 +26,9 @@ class UserAdminController extends AdminController {
             new ConfirmActionButton('admin/user/delete', 'trash')
         ];
     }
+    
+    protected function getForm(Record $record) {       
+        return new UserForm($record);
+    }
 
 }

@@ -11,7 +11,7 @@ class ClassLoader {
         $directory = new RecursiveDirectoryIterator(__DIR__.'/components', RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY);
         foreach ($fileIterator as $file) {
-            if (substr($file->getFilename(), -10) == '.class.php' && $file->isReadable()) {
+            if (substr($file->getFilename(), -4) == '.php' && $file->isReadable()) {
                 self::$files[] = $file;
             }
         }
@@ -19,7 +19,7 @@ class ClassLoader {
 
     public static function load($className) {
         self::storeFiles();
-        $filename = strtolower($className.'.class.php');
+        $filename = strtolower($className.'.php');
         foreach (self::$files as $file) {
             if (strtolower($file->getFilename()) == $filename) {
                 include_once $file->getPathname();
@@ -30,6 +30,4 @@ class ClassLoader {
 
 }
 
-function __autoload($className) {
-    ClassLoader::load($className);
-}
+spl_autoload_register(['ClassLoader', 'load']);

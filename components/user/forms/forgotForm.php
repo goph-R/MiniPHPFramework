@@ -2,7 +2,8 @@
 
 class ForgotForm extends Form {
 
-    public function create() {
+    public function __construct() {
+        parent::__construct();
         $this->addInput('Email', new TextInput('email'));
         $this->addValidator('email', new NotEmptyValidator());
         $this->addValidator('email', new EmailValidator());

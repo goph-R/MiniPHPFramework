@@ -79,5 +79,6 @@ abstract class AdminController extends Controller {
     abstract protected function getTable();
     abstract protected function getColumnViews();
     abstract protected function getActionButtons();
+    abstract protected function getForm(Record $record);
 
 }
