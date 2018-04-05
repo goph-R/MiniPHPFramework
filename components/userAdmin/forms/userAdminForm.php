@@ -1,6 +1,6 @@
 <?php
 
-class UserForm extends AdminForm {
+class UserAdminForm extends AdminForm {
 
     public function __construct(Record $record) {
         parent::__construct($record);        

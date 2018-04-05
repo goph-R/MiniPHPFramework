@@ -28,7 +28,7 @@ class UserAdminController extends AdminController {
     }
     
     protected function getForm(Record $record) {       
-        return new UserForm($record);
+        return new UserAdminForm($record);
     }
 
 }

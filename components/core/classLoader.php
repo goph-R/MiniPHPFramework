@@ -2,13 +2,14 @@
 
 class ClassLoader {
 
-    public static $files = [];
+    private static $files = [];
+    private static $rootPath;
 
     public static function storeFiles() {
         if (self::$files) {
             return;
         }
-        $directory = new RecursiveDirectoryIterator(__DIR__.'/components', RecursiveDirectoryIterator::SKIP_DOTS);
+        $directory = new RecursiveDirectoryIterator(self::$rootPath, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY);
         foreach ($fileIterator as $file) {
             if (substr($file->getFilename(), -4) == '.php' && $file->isReadable()) {
@@ -28,6 +29,14 @@ class ClassLoader {
         }
     }
 
+    public static function initialize($rootPath=null) {
+        if ($rootPath === null) {
+            $rootPath = __DIR__.'/..';
+        }
+        self::$rootPath = $rootPath;
+        spl_autoload_register(['ClassLoader', 'load']);
+    }
+
 }
 
-spl_autoload_register(['ClassLoader', 'load']);
+

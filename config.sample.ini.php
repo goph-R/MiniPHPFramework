@@ -1,6 +1,9 @@
 ;<?php /*
 
 [all]
+logger.level = "info"
+logger.path = "logs/info.log"
+db.name = "default"
 application.path = "c:/full/path/to/the/application/"
 application.error_path.404 = 'components/core/static/404.html'
 application.error_path.500 = 'components/core/static/500.html'

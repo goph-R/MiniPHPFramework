@@ -27,6 +27,22 @@ class WebApplication {
      */
     protected $logger;
 
+    public static function initialize($configPath, $environment) {
+        $im = InstanceManager::getInstance();
+        $config = new Config($configPath, $environment);
+        $im->add('config', $config);
+        $im->add('logger', new Logger($config));
+        $im->add('db', new DB($config->get('db.name')));
+        $im->add('request', new Request());
+        $im->add('response', new Response());
+        $im->add('router', new Router());
+        $im->add('view', new View());
+        $im->add('user', new User());
+        $im->add('mailer', new Mailer());
+        $im->add('translation', new Translation());
+        $im->add('app', new WebApplication());
+    }
+
     public function __construct() {
         $this->im = InstanceManager::getInstance();
         $this->router = $this->im->get('router');

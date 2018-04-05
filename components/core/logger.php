@@ -2,16 +2,22 @@
 
 class Logger {
     
-    const INFO = 0;
-    const WARNING = 1;
-    const ERROR = 2;
+    const INFO = 1;
+    const WARNING = 2;
+    const ERROR = 3;
+
+    private static $levelMap = [
+        'info' => self::INFO,
+        'warning' => self::WARNING,
+        'error' => self::ERROR
+    ];
 
     protected $level;
     protected $path;
 
-    public function __construct($level, $path) {
-        $this->level = $level;
-        $this->path = $path;
+    public function __construct(Config $config) {
+        $this->level = @self::$levelMap[$config->get('logger.level')];
+        $this->path = $config->get('logger.path');
         set_error_handler([$this, 'handleError'], E_ALL);
         //register_shutdown_function([$this, 'handleShutdown']);
     }

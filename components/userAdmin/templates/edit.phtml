@@ -2,6 +2,7 @@
 <form action="<?= $router->getUrl('admin/user/edit', $params) ?>" method="post">
     <?= $form->fetch() ?>
     <div class="form-row">
-        <input class="default-button" type="submit" value="<?= $translation->get('userAdmin', 'edit_user') ?>">
+        <a href="<?= $router->getUrl($indexRoute, $params) ?>" class="button"><?= $translation->get('admin', 'back') ?></a>
+        <input class="default-button" type="submit" value="<?= $translation->get('admin', 'save') ?>">
     </div>
 </form>
