@@ -9,7 +9,7 @@ abstract class Column {
      */
     protected $table;
     protected $autoIncrement;
-    protected $defaultValue;
+    protected $defaultValue = null;
     // TODO: current_timestamp
 
     public function __construct(Table $table, $name) {

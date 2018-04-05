@@ -3,6 +3,7 @@
 abstract class AdminController extends Controller {
 
     protected $viewPath = ':admin';
+    protected $indexRoute = 'admin/index';
 
     public function __construct() {
         parent::__construct();
@@ -32,12 +33,21 @@ abstract class AdminController extends Controller {
         $this->view->set('records', $records);
         $this->view->set('pager', $pager);
         return $this->responseLayout(':admin/layout', $this->viewPath.'/index');
-    }
+    }    
 
     public function edit() {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
+        $table = $this->getTable();
+        $pkValues = $this->getPrimaryKeyValues($table);
+        $record = $table->findOneByPrimaryKeys($pkValues);
+        $form = $this->getForm($record);
+        if ($form->processInput()) {
+            $form->save();
+        }        
+        $this->view->set('params', $pkValues + $this->getListParams());
+        $this->view->set('form', $form);
         return $this->responseLayout(':admin/layout', $this->viewPath.'/edit');
     }
 
@@ -45,6 +55,14 @@ abstract class AdminController extends Controller {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
+        $table = $this->getTable();
+        $record = new Record($table);
+        $form = $this->getForm($record);
+        if ($form->processInput()) {
+            $form->save();
+        }        
+        $this->view->set('params', $this->getListParams());
+        $this->view->set('form', $form);
         return $this->responseLayout(':admin/layout', $this->viewPath.'/add');
     }
 
@@ -53,16 +71,21 @@ abstract class AdminController extends Controller {
             return $this->redirect();
         }
         $table = $this->getTable();
-        $where = [];
-        foreach ($table->getPrimaryKeys() as $pk) {
-            $where[] = [$pk, '=', $this->request->get($pk)];
-        }
-        $record = $table->findOne(null, ['where' => $where]);
+        $pkValues = $this->getPrimaryKeyValues($table);
+        $record = $table->findOneByPrimaryKeys($pkValues);
         if ($record) {
             $record->delete();
         }
         return $this->redirect('admin', $this->getListParams());
     }
+    
+    protected function getPrimaryKeyValues($table) {
+        $result = [];        
+        foreach ($table->getPrimaryKeys() as $pk) {
+            $result[$pk] = $this->request->get($pk);
+        }
+        return $result;
+    }        
 
     protected function getListParams() {
         return [

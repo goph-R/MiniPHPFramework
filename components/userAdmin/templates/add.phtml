@@ -1,1 +1,7 @@
 <h1><?= $translation->get('userAdmin', 'add_user') ?></h1>
+<form action="<?= $router->getUrl('admin/user/add', $params) ?>" method="post">
+    <?= $form->fetch() ?>
+    <div class="form-row">
+        <input class="default-button" type="submit" value="<?= $translation->get('userAdmin', 'add_user') ?>">
+    </div>
+</form>

@@ -40,6 +40,10 @@ abstract class Table {
     public function getColumn($name) {
         return isset($this->columns[$name]) ? $this->columns[$name] : null;
     }
+    
+    public function getColumns() {
+        return $this->columns;
+    }
 
     protected function preSave(Record $record) {}
     protected function postSave(Record $record) {}
@@ -86,16 +90,10 @@ abstract class Table {
                 $subCondition = $this->createCondition($item[1], 'AND');
             } else if ($item[0] == 'or') {
                 $subCondition = $this->createCondition($item[1], 'OR');
+            } else if ($item[0] == 'not') {
+                $subCondition = 'NOT '.$this->createCondition($item[1]);
             } else if ($item[1] == 'in') {
-                $values = [];
-                foreach ($item[2] as $value) {
-                    $values[] = $this->escapeValue($value);
-                }
-                if ($values) {
-                    $subCondition = $this->escapeName($item[0]).' IN ('.join($values, ', ').')';
-                } else {
-                    $subCondition = 'false';
-                }
+                $subCondition = $this->createInCondition($item);
             } else {
                 $subCondition = $this->escapeName($item[0]).' '.$this->checkOperator($item[1]).' '.$this->escapeValue($item[2]);
             }
@@ -103,6 +101,19 @@ abstract class Table {
         }
         $ret = join($subConditions, ' '.$op.' ');
         return $ret ? '('.$ret.')' : '';
+    }
+    
+    private function createInCondition($item) {
+        $values = [];
+        foreach ($item[2] as $value) {
+            $values[] = $this->escapeValue($value);
+        }
+        if ($values) {
+            $subCondition = $this->escapeName($item[0]).' IN ('.join($values, ', ').')';
+        } else {
+            $subCondition = 'false';
+        }
+        return $subCondition;
     }
 
     private function createOrder($query) {
@@ -206,6 +217,23 @@ abstract class Table {
         $result->close();
         return $ret;
     }
+    
+    public function findOneByPrimaryKeys($pkValues) {
+        $where = [];
+        foreach ($this->getPrimaryKeys() as $pk) {
+            $where[] = [$pk, '=', $pkValues[$pk]];
+        }
+        $record = $this->findOne(null, ['where' => $where]);
+        return $record;        
+    }
+    
+    public function getConditionsForRecord($record) {
+        $where = [];
+        foreach ($this->getPrimaryKeys() as $pk) {
+            $where[] = [$pk, '=', $record->get($pk)];
+        }
+        return $where;
+    }
 
     public function count($query) {
         if (isset($query['order'])) {
@@ -245,14 +273,6 @@ abstract class Table {
         $record->setNew(false);
     }
 
-    private function getConditionForPrimaryKeys(Record $record) {
-        $pks = [];
-        foreach ($this->primaryKeys as $pk) {
-            $pks[] = $this->escapeName($pk).' = '.$this->escapeValue($record->get($pk));
-        }
-        return join($pks, ' AND ');
-    }
-
     private function update(Record $record) {
         $sets = [];
         foreach ($record->getModified() as $name) {
@@ -260,7 +280,7 @@ abstract class Table {
         }
         $sql = 'UPDATE '.$this->escapeName($this->name);
         $sql .= ' SET '.join($sets, ', ');
-        $sql .= ' WHERE '.$this->getConditionForPrimaryKeys($record);
+        $sql .= ' WHERE '.$this->createCondition($this->getConditionsForRecord($record));
         $sql .= ' LIMIT 1';
         $this->db->query($sql);
         $record->clearModified();
@@ -268,10 +288,10 @@ abstract class Table {
 
     public function delete(Record $record) {
         $sql = 'DELETE FROM '.$this->escapeName($this->name);
-        $sql .= ' WHERE '.$this->getConditionForPrimaryKeys($record);
+        $sql .= ' WHERE '.$this->createCondition($this->getConditionsForRecord($record));
         $sql .= ' LIMIT 1';
         $this->db->query($sql);
         $record->setNew(true);
     }
-
+    
 }

@@ -13,7 +13,7 @@ class Logger {
         $this->level = $level;
         $this->path = $path;
         set_error_handler([$this, 'handleError'], E_ALL);
-        register_shutdown_function([$this, 'handleShutdown']);
+        //register_shutdown_function([$this, 'handleShutdown']);
     }
 
     public function info($message) {
