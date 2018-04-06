@@ -4,7 +4,12 @@ class UserAdminController extends AdminController {
 
     public function __construct() {
         parent::__construct();
-        $this->viewPath = ':userAdmin';
+        $this->indexTitle = $this->translation->get('userAdmin', 'users');
+        $this->addRoute = 'admin/user/add';
+        $this->addTitle = $this->translation->get('userAdmin', 'add_user');
+        $this->editRoute = 'admin/user/edit';
+        $this->editTitle = $this->translation->get('userAdmin', 'edit_user');
+        $this->deleteRoute = 'admin/user/delete';
     }
 
     protected function getTable() {
@@ -20,13 +25,6 @@ class UserAdminController extends AdminController {
         ];
     }
 
-    protected function getActionButtons() {
-        return [
-            new ActionButton('admin/user/edit', 'edit'),
-            new ConfirmActionButton('admin/user/delete', 'trash')
-        ];
-    }
-    
     protected function getForm(Record $record) {       
         return new UserAdminForm($record);
     }

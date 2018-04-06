@@ -1,8 +1,0 @@
-<h1><?= $translation->get('userAdmin', 'add_user') ?></h1>
-<form action="<?= $router->getUrl('admin/user/add', $params) ?>" method="post">
-    <?= $form->fetch() ?>
-    <div class="form-row">
-        <a href="<?= $router->getUrl($indexRoute, $params) ?>" class="button"><?= $translation->get('admin', 'back') ?></a>
-        <input class="default-button" type="submit" value="<?= $translation->get('admin', 'save') ?>">
-    </div>
-</form>

@@ -2,8 +2,14 @@
 
 abstract class AdminController extends Controller {
 
-    protected $viewPath = ':admin';
     protected $indexRoute = 'admin';
+    protected $indexTitle = 'Index';
+    protected $editTitle = 'Edit';
+    protected $editRoute = 'admin/edit';
+    protected $addTitle = 'Add';
+    protected $addRoute = 'admin/add';
+    protected $deleteRoute = 'admin/delete';
+    protected $filterForm = null;
 
     public function __construct() {
         parent::__construct();
@@ -19,9 +25,10 @@ abstract class AdminController extends Controller {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-        $table = $this->getTable();
+        $table = $this->getTable();        
+        $this->processFilterForm();
         $listParams = $this->getListParams();
-        $query = [];
+        $query = $this->getListQuery();
         $pager = new Pager('admin', $listParams);
         $pager->setCount($table->count($query));
         $query['order'] = [$listParams['orderby'] => $listParams['orderdir']];
@@ -30,9 +37,21 @@ abstract class AdminController extends Controller {
         $this->view->set('columnViews', $this->getColumnViews());
         $this->view->set('actionButtons', $this->getActionButtons());
         $this->view->set('listParams', $listParams);
+        $this->view->set('filterForm', $this->filterForm);
+        $this->view->set('title', $this->indexTitle);
         $this->view->set('records', $records);
         $this->view->set('pager', $pager);
-        return $this->responseLayout(':admin/layout', $this->viewPath.'/index');
+        $this->view->set('addTitle', $this->addTitle);
+        $this->view->set('addRoute', $this->addRoute);        
+        return $this->responseLayout(':admin/layout', ':admin/index');
+    }
+    
+    private function processFilterForm() {
+        $this->filterForm = $this->getFilterForm();
+        if ($this->filterForm) {
+            $this->filterForm->bind();
+            $this->filterForm->validate();
+        }        
     }
 
     public function edit() {
@@ -51,7 +70,9 @@ abstract class AdminController extends Controller {
         $this->view->set('params', $params);
         $this->view->set('form', $form);
         $this->view->set('indexRoute', $this->indexRoute);
-        return $this->responseLayout(':admin/layout', $this->viewPath.'/edit');
+        $this->view->set('title', $this->editTitle);
+        $this->view->set('action', $this->router->getUrl($this->editRoute, $params));
+        return $this->responseLayout(':admin/layout', ':admin/adminForm');
     }
 
     public function add() {
@@ -69,7 +90,9 @@ abstract class AdminController extends Controller {
         $this->view->set('params', $params);
         $this->view->set('form', $form);
         $this->view->set('indexRoute', $this->indexRoute);
-        return $this->responseLayout(':admin/layout', $this->viewPath.'/add');
+        $this->view->set('title', $this->addTitle);
+        $this->view->set('action', $this->router->getUrl($this->addRoute, $params));
+        return $this->responseLayout(':admin/layout', ':admin/adminForm');
     }
 
     public function delete() {
@@ -92,7 +115,14 @@ abstract class AdminController extends Controller {
         }
         return $result;
     }        
-
+    
+    /**
+     * @return Form
+     */
+    protected function getFilterForm() {
+        return null;
+    }
+    
     protected function getListParams() {
         return [
             'page' => $this->request->get('page', 0),
@@ -101,13 +131,23 @@ abstract class AdminController extends Controller {
             'orderdir' => $this->request->get('orderdir', 'asc')
         ];
     }
-
+    
+    protected function getListQuery() {
+        return [];
+    }
+    
+    protected function getActionButtons() {
+        return [
+            new ActionButton($this->editRoute, 'pencil-alt'),
+            new ConfirmActionButton($this->deleteRoute, 'trash')
+        ];
+    }
+    
     /**
      * @return Table
      */
     abstract protected function getTable();
     abstract protected function getColumnViews();
-    abstract protected function getActionButtons();
 
     /**
      * @param Record

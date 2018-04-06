@@ -1,7 +1,0 @@
-<h1><?= $translation->get('userAdmin', 'users') ?></h1>
-<div class="buttons">
-    <a class="default-button" href="<?= $router->getUrl('admin/user/add', $listParams) ?>"><i class="fa fa-plus"></i> <?= $translation->get('userAdmin', 'add_user') ?></a>
-</div>
-<?= $this->fetch(':admin/pager') ?>
-<?= $this->fetch(':admin/list') ?>
-<?= $this->fetch(':admin/pager') ?>

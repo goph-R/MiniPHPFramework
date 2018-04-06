@@ -1,0 +1,10 @@
+<?php if ($filterForm): ?>
+    <div class="filter-form">
+        <form action="<?= $router->getUrl($indexRoute, $listParams) ?>" method="get">
+            <?= $filterForm->fetch() ?>
+            <div class="form-row">
+                <button class="default-button" type="submit"><i class="fa fa-search"></i> <?= $translation->get('admin', 'search') ?></button>
+            </div>        
+        </form>
+    </div>
+<?php endif ?>

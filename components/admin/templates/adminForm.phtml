@@ -1,0 +1,8 @@
+<h1><?= $title ?></h1>
+<form action="<?= $action ?>" method="post">
+    <?= $form->fetch() ?>
+    <div class="form-row">
+        <a href="<?= $router->getUrl($indexRoute, $params) ?>" class="button"><i class="fa fa-chevron-circle-left"></i> <?= $translation->get('admin', 'back') ?></a>
+        <button class="default-button" type="submit"><i class="fa fa-pencil-alt"></i> <?= $translation->get('admin', 'save') ?></button>
+    </div>
+</form>

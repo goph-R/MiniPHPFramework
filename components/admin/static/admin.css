@@ -142,12 +142,61 @@ main {
     padding-right: 6px;
 }
 
+.button {
+    background-color: #717982;
+    text-shadow: 0 -1px 0 #54575b;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 3px solid #54575b;
+    padding: 7px 12px 6px 12px;
+    text-decoration: none;
+    color: #fff;
+}
+.button:hover {
+    background-color: #9a9ca0;
+    border-bottom: 3px solid #717982;
+    text-shadow: 0 -1px 0 #717982;
+}
+.button i {
+    padding-right: 6px;
+}
+
 h1 {
     font-weight: bold;
     color: #415468;
     font-size: 22px;
     padding-bottom: 24px;
 }
+.form-row {
+    padding-bottom: 10px;
+}
+.form-row input {
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    border-top: 2px solid #bbb;
+    padding: 5px;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5e5e5+2,ffffff+28 */
+    background: #e5e5e5; /* Old browsers */
+    background: -moz-linear-gradient(top, #e5e5e5 2%, #ffffff 28%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #e5e5e5 2%,#ffffff 28%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #e5e5e5 2%,#ffffff 28%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */    
+}
+.form-row label {
+    font-weight: bold;
+    color: #555;
+}
+.form-row input[type="text"], input[type="password"] {
+    min-width: 400px;
+}
+.form-error {
+    color: #d14638;
+}
+
 @media (min-width: 768px) {
     .wrapper {
         grid-template-rows: 40px auto;
