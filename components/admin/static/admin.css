@@ -178,13 +178,16 @@ h1 {
     border-right: 1px solid #eee;
     border-bottom: 1px solid #eee;
     border-top: 2px solid #bbb;
-    padding: 5px;
+    padding: 7px;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5e5e5+2,ffffff+28 */
     background: #e5e5e5; /* Old browsers */
     background: -moz-linear-gradient(top, #e5e5e5 2%, #ffffff 28%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top, #e5e5e5 2%,#ffffff 28%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(to bottom, #e5e5e5 2%,#ffffff 28%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */    
+}
+.clear {
+    clear: both;
 }
 .form-row label {
     font-weight: bold;
@@ -195,6 +198,30 @@ h1 {
 }
 .form-error {
     color: #d14638;
+}
+.buttons {
+    float: left;
+}
+.buttons a {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle; 
+}
+
+.filter-form {
+    float: right;
+}
+.filter-form .form-row, .filter-form .form-label, .filter-form .form-input {
+    display: inline;
+}
+
+.filter-form .form-row input {
+    min-width: 150px;
+}
+.filter-form .form-row input, .filter-form .form-row button {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
 }
 
 @media (min-width: 768px) {

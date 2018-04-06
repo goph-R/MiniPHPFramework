@@ -68,6 +68,10 @@ abstract class Form {
     public function getInputs() {
         return $this->inputs;
     }
+    
+    public function hasInput($inputName) {
+        return isset($this->inputs[$inputName]);
+    }
 
     public function getLabel($inputName) {
         return isset($this->labels[$inputName]) ? $this->labels[$inputName] : '';

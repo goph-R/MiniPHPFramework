@@ -38,7 +38,7 @@ class ColumnView {
             $html .= ' style="width: '.$this->width.'"';
         }
         $html .= '><a href="'.$this->router->getUrl('admin', $listParams).'">';
-        $html .= $this->label;
+        $html .= htmlspecialchars($this->label);
         if ($orderBy == $this->columnName) {
             if ($listParams['orderdir'] == 'desc') {
                 $html .= '&nbsp;<i class="fa fa-angle-up"></i>';

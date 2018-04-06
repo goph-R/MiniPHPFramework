@@ -42,7 +42,8 @@ abstract class AdminController extends Controller {
         $this->view->set('records', $records);
         $this->view->set('pager', $pager);
         $this->view->set('addTitle', $this->addTitle);
-        $this->view->set('addRoute', $this->addRoute);        
+        $this->view->set('addRoute', $this->addRoute);
+        $this->view->set('indexRoute', $this->indexRoute);
         return $this->responseLayout(':admin/layout', ':admin/index');
     }
     
@@ -60,6 +61,7 @@ abstract class AdminController extends Controller {
         }
         $table = $this->getTable();
         $pkValues = $this->getPrimaryKeyValues($table);
+        $this->processFilterForm();
         $params = $pkValues + $this->getListParams();
         $record = $table->findOneByPrimaryKeys($pkValues);
         $form = $this->getForm($record);
@@ -80,6 +82,7 @@ abstract class AdminController extends Controller {
             return $this->redirect();
         }
         $table = $this->getTable();
+        $this->processFilterForm();
         $params = $this->getListParams();
         $record = new Record($table);
         $form = $this->getForm($record);
@@ -124,12 +127,16 @@ abstract class AdminController extends Controller {
     }
     
     protected function getListParams() {
-        return [
+        $result = [
             'page' => $this->request->get('page', 0),
             'step' => $this->request->get('step', 10),
             'orderby' => $this->request->get('orderby', 'email'),
             'orderdir' => $this->request->get('orderdir', 'asc')
         ];
+        if ($this->filterForm) {
+            $result += $this->filterForm->getValues();
+        }
+        return $result;
     }
     
     protected function getListQuery() {

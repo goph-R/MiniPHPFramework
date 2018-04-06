@@ -1,8 +1,9 @@
 <h1><?= $title ?></h1>
 <div class="buttons">
-    <a class="default-button" href="<?= $router->getUrl($addRoute, $listParams) ?>"><i class="fa fa-plus"></i> <?= $addTitle ?></a>
+    <a href="<?= $router->getUrl($addRoute, $listParams) ?>"><button class="default-button"><i class="fa fa-plus"></i> <?= $addTitle ?></button></a>
 </div>
 <?= $this->fetch(':admin/filterForm') ?>
+<div class="clear"></div>
 <?= $this->fetch(':admin/pager') ?>
 <?= $this->fetch(':admin/list') ?>
 <?= $this->fetch(':admin/pager') ?>
