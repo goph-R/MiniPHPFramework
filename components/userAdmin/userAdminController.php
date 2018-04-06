@@ -33,4 +33,17 @@ class UserAdminController extends AdminController {
         return new UserFilterForm();
     }
 
+    protected function getFilterQuery() {
+        $search = $this->filterForm->getValue('search');
+        $result = [];
+        if ($search) {
+            $searchLike = '%'.$search.'%';
+            $result[] = ['or', [
+                ['email', 'like', $searchLike],
+                ['firstname', 'like', $searchLike],
+                ['lastname', 'like', $searchLike]
+            ]];
+        }
+        return $result;
+    }
 }

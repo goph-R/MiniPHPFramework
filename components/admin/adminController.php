@@ -9,6 +9,10 @@ abstract class AdminController extends Controller {
     protected $addTitle = 'Add';
     protected $addRoute = 'admin/add';
     protected $deleteRoute = 'admin/delete';
+
+    /**
+     * @var Form
+     */
     protected $filterForm = null;
 
     public function __construct() {
@@ -28,7 +32,7 @@ abstract class AdminController extends Controller {
         $table = $this->getTable();        
         $this->processFilterForm();
         $listParams = $this->getListParams();
-        $query = $this->getListQuery();
+        $query = ['where' => $this->getFilterQuery()];
         $pager = new Pager('admin', $listParams);
         $pager->setCount($table->count($query));
         $query['order'] = [$listParams['orderby'] => $listParams['orderdir']];
@@ -139,7 +143,7 @@ abstract class AdminController extends Controller {
         return $result;
     }
     
-    protected function getListQuery() {
+    protected function getFilterQuery() {
         return [];
     }
     

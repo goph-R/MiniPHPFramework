@@ -2,8 +2,16 @@
 <div class="buttons">
     <a href="<?= $router->getUrl($addRoute, $listParams) ?>"><button class="default-button"><i class="fa fa-plus"></i> <?= $addTitle ?></button></a>
 </div>
-<?= $this->fetch(':admin/filterForm') ?>
+<?php if ($filterForm): ?>
+    <div class="filter-form">
+        <?= $this->fetch(':admin/filterForm') ?>
+    </div>
+<?php endif ?>
 <div class="clear"></div>
-<?= $this->fetch(':admin/pager') ?>
-<?= $this->fetch(':admin/list') ?>
-<?= $this->fetch(':admin/pager') ?>
+<?php if ($records): ?>
+    <?= $this->fetch(':admin/pager') ?>
+    <?= $this->fetch(':admin/list') ?>
+    <?= $this->fetch(':admin/pager') ?>
+<?php else: ?>
+    <div class="no-results"><?= $translation->get('admin', 'no_results'); ?></div>
+<?php endif ?>

@@ -102,8 +102,11 @@ main {
     background-color: #d7e7f7;
 }
 .list a.action-button {
+    padding: 0 10px 0 10px;
     text-decoration: none;
     color: #0056ad;
+    display: inline-block;
+    font-size: 16px;
 }
 .list a.action-button:hover {
     color: #708eaa;
@@ -116,12 +119,23 @@ main {
 .pager span {
     padding: 0 5px;
     color: #aaa;
+    display: inline-block;
+    vertical-align: middle;
+}
+.pager i {
+    font-size: 18px;
+    display: inline-block;
+    vertical-align: middle;
 }
 .pager a {
     text-decoration: none;
     color: #0056ad;
+    display: inline-block;
+    vertical-align: middle;
 }
-
+.no-results {
+    padding: 20px 0;
+}
 .default-button {
     background-color: #376ca3;
     text-shadow: 0 -1px 0 #193d63;

@@ -19,9 +19,13 @@ class Pager {
 
     public function setCount($count) {
         $this->count = $count;
-        $this->maxPage = ceil($count / $this->step);
-        if ($this->page >= $this->maxPage) {
-            $this->page = $this->maxPage - 1;
+        if ($count == 0) {
+            $this->page = 0;
+        } else {
+            $this->maxPage = ceil($count / $this->step);
+            if ($this->page >= $this->maxPage) {
+                $this->page = $this->maxPage - 1;
+            }
         }
     }
 

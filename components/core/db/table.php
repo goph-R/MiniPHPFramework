@@ -77,7 +77,7 @@ abstract class Table {
 
     private function checkOperator($op) {
         $ret = $op;
-        if (!in_array($op, ['<', '>', '<=', '>=', '=', 'IS'])) {
+        if (!in_array($op, ['<', '>', '<=', '>=', '=', 'like'])) {
             throw new DBException('Unknown operator: '.$op);
         }
         return $ret;
@@ -95,8 +95,13 @@ abstract class Table {
             } else if ($item[1] == 'in') {
                 $subCondition = $this->createInCondition($item);
             } else {
-                $operator = ($item[1] == '=' && $item[2] === null) ? 'IS' : '=';
-                $subCondition = $this->escapeName($item[0]).' '.$this->checkOperator($operator).' '.$this->escapeValue($item[2]);
+                $field = $this->escapeName($item[0]);
+                $value = $this->escapeValue($item[2]);
+                $operator = $this->checkOperator($item[1]);
+                if ($operator == '=' && $item[2] === null) {
+                    $operator = 'IS';
+                }
+                $subCondition = $field.' '.$operator.' '.$value;
             }
             $subConditions[] = $subCondition;
         }
@@ -138,7 +143,9 @@ abstract class Table {
             return '';
         }
         if (is_array($query['limit'])) {
-            $sql = ' LIMIT '.(int)$query['limit'][0].', '.(int)$query['limit'][1];
+            $from = (int)$query['limit'][0];
+            $step = (int)$query['limit'][1];
+            $sql = ' LIMIT '.$from.', '.$step;
         } else {
             $sql = ' LIMIT '.(int)$query['limit'];
         }

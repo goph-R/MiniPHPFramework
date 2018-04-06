@@ -1,16 +1,12 @@
-<?php if ($filterForm): ?>
-    <div class="filter-form">
-        <form action="<?= $router->getUrl($indexRoute) ?>" method="get">
-            <?= $filterForm->fetch() ?>
-            <?php foreach ($listParams as $name => $value): ?>
-                <?php if (!$filterForm->hasInput($name)): ?>
-                    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>">
-                <?php endif ?>
-            <?php endforeach ?>
-            <input type="hidden" name="<?= htmlspecialchars($config->get('router.route_parameter')) ?>" value="<?= htmlspecialchars($request->get($config->get('router.route_parameter'))) ?>">
-            <div class="form-row">
-                <button class="default-button" type="submit"><i class="fa fa-search"></i> <?= $translation->get('admin', 'search') ?></button>
-            </div>        
-        </form>
+<form action="<?= $router->getUrl($indexRoute) ?>" method="get">
+    <?= $filterForm->fetch() ?>
+    <?php foreach ($listParams as $name => $value): ?>
+        <?php if (!$filterForm->hasInput($name)): ?>
+            <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>">
+        <?php endif ?>
+    <?php endforeach ?>
+    <input type="hidden" name="<?= htmlspecialchars($config->get('router.route_parameter')) ?>" value="<?= htmlspecialchars($request->get($config->get('router.route_parameter'))) ?>">
+    <div class="form-row">
+        <button class="default-button" type="submit"><i class="fa fa-search"></i> <?= $translation->get('admin', 'search') ?></button>
     </div>
-<?php endif ?>
+</form>
