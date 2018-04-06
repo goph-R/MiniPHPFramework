@@ -6,6 +6,10 @@ class UserAdminEmailExistsValidator extends Validator {
      * @var UserTable
      */
     private $userTable;
+    
+    /**
+     * @var Record
+     */
     private $exceptRecord;
 
     public function __construct($exceptRecord=null) {

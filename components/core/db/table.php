@@ -77,7 +77,7 @@ abstract class Table {
 
     private function checkOperator($op) {
         $ret = $op;
-        if (!in_array($op, ['<', '>', '<=', '>=', '='])) {
+        if (!in_array($op, ['<', '>', '<=', '>=', '=', 'IS'])) {
             throw new DBException('Unknown operator: '.$op);
         }
         return $ret;
@@ -95,7 +95,8 @@ abstract class Table {
             } else if ($item[1] == 'in') {
                 $subCondition = $this->createInCondition($item);
             } else {
-                $subCondition = $this->escapeName($item[0]).' '.$this->checkOperator($item[1]).' '.$this->escapeValue($item[2]);
+                $operator = ($item[1] == '=' && $item[2] === null) ? 'IS' : '=';
+                $subCondition = $this->escapeName($item[0]).' '.$this->checkOperator($operator).' '.$this->escapeValue($item[2]);
             }
             $subConditions[] = $subCondition;
         }
