@@ -1,8 +1,8 @@
 <?php foreach ($view->getScripts() as $script): ?>
     <script type="text/javascript" src="<?= $script ?>"></script>
 <?php endforeach ?>
-<?php if ($scriptContent): ?>
+<?php if ($view->hasScriptContent()): ?>
     <script type="text/javascript">
-        <?= $scriptContent ?>
+        <?= $view->getScriptContent() ?>
     </script>
 <?php endif ?>

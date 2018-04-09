@@ -26,6 +26,7 @@ abstract class Form {
      * @var Input[]
      */
     protected $inputs = [];
+    protected $order = [];
     protected $labels = [];
 
     /**
@@ -52,8 +53,12 @@ abstract class Form {
     }
 
     public function addInput($label, Input $input, $description='') {
-        $this->labels[$input->getName()] = $label;
-        $this->inputs[$input->getName()] = $input;
+        $name = $input->getName();
+        if (!in_array($name, $this->order)) {
+            $this->order[] = $name;
+        }
+        $this->labels[$name] = $label;
+        $this->inputs[$name] = $input;
         $input->setDescription($description);
         $input->setForm($this);
     }
@@ -67,7 +72,11 @@ abstract class Form {
     }
 
     public function getInputs() {
-        return $this->inputs;
+        $result = [];
+        foreach ($this->order as $name) {
+            $result[] = $this->inputs[$name];
+        }
+        return $result;
     }
     
     public function hasInput($inputName) {

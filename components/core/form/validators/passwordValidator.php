@@ -27,7 +27,7 @@ class PasswordValidator extends Validator {
 
     private $options;
     
-    public function __construct($options = self::DEFAULT_OPTIONS) {
+    public function __construct($options=[]) {
         parent::__construct();
         $this->error = $this->translation->get('core', 'password_not_valid');        
         $this->options = self::DEFAULT_OPTIONS + $options;

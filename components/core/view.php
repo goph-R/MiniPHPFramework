@@ -78,11 +78,19 @@ class View {
         return $path;
     }
 
+    public function hasScriptContent() {
+        return $this->scriptContents ? true : false;
+    }
+
+    public function getScriptContent() {
+        if ($this->scriptContents) {
+            return join("\r\n", $this->scriptContents);
+        }
+        return '';
+    }
+
     public function fetch($path, $vars=[]) {
         $path = $this->findPath($path);
-        if ($this->scriptContents) {
-            $vars['scriptContent'] = join("\r\n", $this->scriptContents);
-        }
         ob_start();
         extract($this->attributes);
         extract($vars);

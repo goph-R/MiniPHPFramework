@@ -9,8 +9,8 @@ class UserAdminForm extends AdminForm {
         $this->addValidator('email', new NotEmptyValidator());
         $this->addValidator('email', new EmailValidator());
         $this->addValidator('email', new UserAdminEmailExistsValidator($record));
-        $this->addInput($t->get('user', 'password'), new TextInput('password', ''));
         if ($record->isNew()) {
+            $this->addInput($t->get('user', 'password'), new TextInput('password', ''));
             $this->addValidator('password', new PasswordValidator());
         }
         $this->addInput('', new CheckboxInput('active', '1', $t->get('userAdmin', 'active'), $record->get('active')));

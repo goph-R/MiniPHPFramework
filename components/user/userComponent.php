@@ -19,6 +19,7 @@ class UserComponent implements Initiable {
         $im->add('userPermissionTable', new UserPermissionTable());
         $im->add('userService', new UserService());
         $im->add('registerForm', 'RegisterForm');
+        $im->add('forgotNewPasswordForm', 'ForgotNewPasswordForm');
     }
 
     public function init() {
