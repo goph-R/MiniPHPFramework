@@ -18,7 +18,7 @@ class UserAdminForm extends AdminForm {
     
     public function save() {
         $this->record->set('email', $this->getValue('email'));
-        if ($this->getValue('password')) {
+        if ($this->hasInput('password')) {
             $im = InstanceManager::getInstance();
             $userService = $im->get('userService');
             $this->record->set('password', $userService->hash($this->getValue('password')));            
