@@ -10,14 +10,11 @@ class RegisterForm extends Form {
         $this->addValidator('email', $notEmptyValidator);
         $this->addValidator('email', new EmailValidator());
         $this->addValidator('email', new EmailExistsValidator());
-        $password = new PasswordInput('password');
-        $password->setTrimValue(false);
+        $password = new PasswordInput('password', '', true);
         $passwordAgain = new PasswordInput('password_again');
-        $passwordAgain->setTrimValue(false);
         $this->addInput($t->get('user', 'password'), $password);
         $this->addInput($t->get('user', 'password_again'), $passwordAgain);
-        $this->addValidator('password', $notEmptyValidator);
-        $this->addValidator('password_again', $notEmptyValidator);
+        $this->addValidator('password', new PasswordValidator());
         $this->addValidator('password_again', new SameValidator($password));
     }
 

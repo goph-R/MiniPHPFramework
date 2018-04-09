@@ -33,24 +33,25 @@ abstract class Input {
         $this->name = $name;
         $this->defaultValue = $defaultValue;
         $this->value = $defaultValue;
-        $this->create();
     }
 
     public function setForm($form) {
         $this->form = $form;
     }
 
+    public function escapeName($name) {
+        return preg_replace('/[^0-9a-zA-Z_]+/', '_', $name);
+    }
+    
     public function getId() {
-        $name = $this->getName();
-        $name = preg_replace('/[^0-9a-zA-Z_]+/', '_', $name);
-        return $this->form->getName().'_'.$name;
+        $safeName = $this->escapeName($this->getName());
+        $formSafeName = $this->escapeName($this->form->getName());
+        return $formSafeName.'_'.$safeName;
     }
 
     public function setTrimValue($trimValue) {
         $this->trimValue = $trimValue;
     }
-
-    public function create() {}
 
     public function setError($error) {
         $this->error = $error;

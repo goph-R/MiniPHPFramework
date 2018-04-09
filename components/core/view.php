@@ -9,6 +9,7 @@ class View {
 
     private $attributes = [];
     private $scripts = [];
+    private $scriptContents = [];
     private $styles = [];
     private $paths = [];
 
@@ -20,6 +21,10 @@ class View {
     public function addScript($script) {
         $key = strtolower($script);
         $this->scripts[$key] = $script;
+    }
+    
+    public function addScriptContent($scriptContent) {
+        $this->scriptContents[] = $scriptContent;
     }
 
     public function addStyle($style, $media='all') {
@@ -75,6 +80,9 @@ class View {
 
     public function fetch($path, $vars=[]) {
         $path = $this->findPath($path);
+        if ($this->scriptContents) {
+            $vars['scriptContent'] = join("\r\n", $this->scriptContents);
+        }
         ob_start();
         extract($this->attributes);
         extract($vars);

@@ -21,9 +21,7 @@
 
     <?= $content ?>
 
-    <?php foreach ($view->getScripts() as $script): ?>
-        <script type="text/javascript" src="<?= $script ?>"></script>
-    <?php endforeach ?>
+    <?= $view->fetch(':core/scripts') ?>
 
     <!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
 

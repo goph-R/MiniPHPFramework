@@ -3,7 +3,7 @@
 abstract class Validator {
 
     protected $error = '';
-    protected $replacedError = '';
+    protected $label = '';
 
     /**
      * @var Translation
@@ -16,16 +16,12 @@ abstract class Validator {
     }
 
     public function validate($label, $value) {
-        $this->replacedError = str_replace('{label}', $label, $this->error);
+        $this->label = $label;
         return $this->doValidate($value);
     }
 
     public function getError() {
-        return $this->replacedError;
-    }
-
-    public function setError($error) {
-        $this->error = $error;
+        return str_replace('{label}', $this->label, $this->error);
     }
 
     abstract function doValidate($value);

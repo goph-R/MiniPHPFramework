@@ -4,7 +4,7 @@ class SelectInput extends Input {
 
     private $options = [];
 
-    public function __construct($name, $defaultValue = '', $options = []) {
+    public function __construct($name, $defaultValue='', $options=[]) {
         parent::__construct($name, $defaultValue);
         $this->options = $options;
     }
