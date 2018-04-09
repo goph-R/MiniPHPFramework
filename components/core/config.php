@@ -3,9 +3,15 @@
 class Config {
 
     private $attributes = [];
+    private $environment;
 
-    public function __construct($path, $group) {
-        $this->load($path, $group);
+    public function __construct($path, $environment) {
+        $this->load($path, $environment);
+        $this->environment = $environment;
+    }
+
+    public function getEnvironment() {
+        return $this->environment;
     }
 
     public function set($name, $value) {

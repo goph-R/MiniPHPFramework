@@ -55,7 +55,8 @@ class WebApplication {
         try {
             $this->runCore();
         } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
+            $message = $e->getMessage()."\r\n".$e->getTraceAsString();
+            $this->logger->error($message);
             $this->sendInternalServerError();
         }
     }

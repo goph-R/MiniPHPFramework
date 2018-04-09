@@ -14,12 +14,13 @@ class Logger {
 
     protected $level;
     protected $path;
+    protected $enviroment;
 
     public function __construct(Config $config) {
         $this->level = @self::$levelMap[$config->get('logger.level')];
         $this->path = $config->get('logger.path');
-        set_error_handler([$this, 'handleError'], E_ALL);
-        //register_shutdown_function([$this, 'handleShutdown']);
+        $this->enviroment = $config->getEnvironment();
+        set_error_handler([$this, 'handleError']);
     }
 
     public function info($message) {
@@ -43,6 +44,10 @@ class Logger {
     public function handleError($errno, $errstr, $errfile, $errline) {
         $message = $errstr." (".$errno.")\r\nFile: ".$errfile."\r\nLine: ".$errline."\r\n";
         $this->error($message);
+        // TODO: better solution
+        if ($this->enviroment == 'dev') {
+            print str_replace("\n", "<br>", $message);
+        }
     }
 
     protected function log($label, $message) {
