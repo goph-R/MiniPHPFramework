@@ -18,6 +18,7 @@ abstract class Input {
     protected $form;
 
     protected $name;
+    protected $description;
     protected $error;
     protected $defaultValue;
     protected $scripts = [];
@@ -57,6 +58,10 @@ abstract class Input {
         $this->error = $error;
     }
 
+    public function setDescription($description) {
+        $this->description = $description;
+    }
+
     public function getClasses() {
         $classes = $this->classes;
         if ($this->hasError()) {
@@ -76,6 +81,10 @@ abstract class Input {
 
     public function getError() {
         return $this->error;
+    }
+
+    public function getDescription() {
+        return $this->description;
     }
 
     public function getScripts() {

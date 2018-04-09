@@ -51,9 +51,10 @@ abstract class Form {
         return $this->name;
     }
 
-    public function addInput($label, Input $input) {
+    public function addInput($label, Input $input, $description='') {
         $this->labels[$input->getName()] = $label;
         $this->inputs[$input->getName()] = $input;
+        $input->setDescription($description);
         $input->setForm($this);
     }
 

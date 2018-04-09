@@ -2,6 +2,8 @@
 
 class Pager {
 
+    const MAX_STEP = 100;
+
     private $page;
     private $step;
     private $count;
@@ -11,7 +13,15 @@ class Pager {
     public function __construct($route, $params=[]) {
         $im = InstanceManager::getInstance();
         $this->page = (int)$params['page'];
+        if ($this->page < 0) {
+            $this->page = 0;
+        }
         $this->step = (int)$params['step'];
+        if ($this->step < 1) {
+            $this->step = 1;
+        } else if ($this->step > self::MAX_STEP) {
+            $this->step = self::MAX_STEP;
+        }
         $this->params = $params;
         $this->route = $route;
         $this->router = $im->get('router');
@@ -41,10 +51,10 @@ class Pager {
         return $this->step;
     }
 
-    public function getUrl($page) {
+    public function getUrl($page, $escapeAmp=true) {
         $params = $this->params;
         $params['page'] = $page;
-        return $this->router->getUrl($this->route, $params);
+        return $this->router->getUrl($this->route, $params, $escapeAmp);
     }
 
     public function hasNext() {
