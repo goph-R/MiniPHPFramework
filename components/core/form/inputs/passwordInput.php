@@ -24,10 +24,12 @@ class PasswordInput extends TextInput {
         if (self::$scriptAdded) {
             return;
         }
+        $im = InstanceManager::getInstance();
+        $t = $im->get('translation');
         $texts = [
-            'low' => 'Low',
-            'normal' => 'Normal',
-            'high' => 'High'
+            'low'    => $t->get('core', 'password_low'),
+            'normal' => $t->get('core', 'password_normal'),
+            'high'   => $t->get('core', 'password_high')
         ];
         $this->view->addScript('components/core/static/js/passwordCheck.js');
         $this->view->addScriptContent('PasswordCheck.texts = '.json_encode($texts).';');

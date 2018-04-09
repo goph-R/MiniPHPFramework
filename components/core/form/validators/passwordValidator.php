@@ -3,27 +3,29 @@
 class PasswordValidator extends Validator {
 
     const DEFAULT_OPTIONS = [
-        'minLength' => 8,
-        'minLowerCase' => 0,
-        'minUpperCase' => 0,
-        'minNumber' => 0,
+        'minLength'      => 8,
+        'minLowerCase'   => 0,
+        'minUpperCase'   => 0,
+        'minNumber'      => 0,
         'minSpecialChar' => 0,
-        'specialChars' => '!@#$%^&+-*/=_'
+        'specialChars'   => '!@#$%^&+-*/=_'
     ];
     
     const MESSAGE = [
-        'minLowerCase' => 'password_use_more_lowercase',
-        'minUpperCase' => 'password_use_more_uppercase',
-        'minNumber' => 'password_use_more_numbers',
+        'minLowerCase'   => 'password_use_more_lowercase',
+        'minUpperCase'   => 'password_use_more_uppercase',
+        'minNumber'      => 'password_use_more_numbers',
         'minSpecialChar' => 'password_use_more_specialchars'
     ];
     
-    private $regex = [
-        'minLowerCase' => '/[^a-z]+/',
-        'minUpperCase' => '/[^A-Z]+/',
-        'minNumber' => '/[^0-9]+/',
-        'minSpecialChar' => ''
+    private $removerRegex = [
+        'minLowerCase'   => '/[^a-z]+/',
+        'minUpperCase'   => '/[^A-Z]+/',
+        'minNumber'      => '/[^0-9]+/',
+        'minSpecialChar' => '' // set at runtime based on 'specialChars'
     ];
+
+    private $options;
     
     public function __construct($options = self::DEFAULT_OPTIONS) {
         parent::__construct();
@@ -33,7 +35,7 @@ class PasswordValidator extends Validator {
         for ($i = 0; $i < strlen($this->options['specialChars']); $i++) {
             $regex .= '\\'.$this->options['specialChars'][$i];
         }
-        $this->regex['minSpecialChar'] = '/[^'.$regex.']+/';
+        $this->removerRegex['minSpecialChar'] = '/[^'.$regex.']+/';
     }
 
     public function doValidate($value) {
@@ -46,7 +48,7 @@ class PasswordValidator extends Validator {
             $this->error = str_replace('{min}', $min, $message);
             return false;
         }        
-        foreach ($this->regex as $name => $regex) {
+        foreach ($this->removerRegex as $name => $regex) {
             $min = $this->options[$name];      
             $count = mb_strlen(preg_replace($regex, '', $value));
             if ($this->options[$name] && $count < $min) {
