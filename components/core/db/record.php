@@ -71,7 +71,9 @@ class Record {
 
     public function setAll($fields, $values) {
         foreach ($fields as $field) {
-            $this->set($field, $values[$field]);
+            if (isset($values[$field])) {
+                $this->set($field, $values[$field]);
+            }
         }
     }
 
