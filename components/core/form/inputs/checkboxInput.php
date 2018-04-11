@@ -27,7 +27,7 @@ class CheckboxInput extends Input {
         }
         $result .= '>';
         if ($this->label) {
-           $result .= '<label for="'.$this->getId().'">'.$this->view->escape($this->label).'</label>';
+           $result .= '<label for="'.$this->getId().'">'.$this->label.'</label>';
         }
         return $result;
     }

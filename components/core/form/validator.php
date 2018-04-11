@@ -23,7 +23,7 @@ abstract class Validator {
     public function getError() {
         return str_replace('{label}', $this->label, $this->error);
     }
-
+    
     abstract function doValidate($value);
 
 }
