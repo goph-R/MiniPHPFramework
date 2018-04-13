@@ -156,7 +156,7 @@ abstract class Form {
                 $subResult = $validator->validate($this->labels[$inputName], $this->inputs[$inputName]->getValue());
                 if (!$subResult) {
                     $result = false;
-                    $this->inputs[$inputName]->setError($validator->getError());
+                    $this->inputs[$inputName]->setError($validator->getMessage());
                     break;
                 }
             }
@@ -169,7 +169,7 @@ abstract class Form {
         foreach ($this->postValidators as $validator) {
             $subResult = $validator->validate('', null);
             if (!$subResult) {
-                $this->errors[] = $validator->getError();
+                $this->errors[] = $validator->getMessage();
                 $result = false;
             }
         }

@@ -6,7 +6,7 @@ class SameValidator extends Validator {
 
     public function __construct(Input $otherInput) {
         parent::__construct();
-        $this->error = $this->translation->get('user', 'didnt_match');
+        $this->message = $this->translation->get('user', 'didnt_match');
         $this->otherInput = $otherInput;
     }
 

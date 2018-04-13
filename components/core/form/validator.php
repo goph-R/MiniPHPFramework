@@ -2,7 +2,7 @@
 
 abstract class Validator {
 
-    protected $error = '';
+    protected $message = '';
     protected $label = '';
 
     /**
@@ -20,8 +20,12 @@ abstract class Validator {
         return $this->doValidate($value);
     }
 
-    public function getError() {
-        return str_replace('{label}', $this->label, $this->error);
+    public function getMessage() {
+        return str_replace('{label}', $this->label, $this->message);
+    }
+    
+    public function setMessage($message) {
+        $this->message = $message;
     }
     
     abstract function doValidate($value);

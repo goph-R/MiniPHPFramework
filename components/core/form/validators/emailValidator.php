@@ -4,7 +4,7 @@ class EmailValidator extends Validator {
 
     public function __construct() {
         parent::__construct();
-        $this->error = $this->translation->get('core', 'not_valid_email');
+        $this->message = $this->translation->get('core', 'not_valid_email');
     }
 
     public function doValidate($value) {

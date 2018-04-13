@@ -15,7 +15,7 @@ class UserAdminEmailExistsValidator extends Validator {
     public function __construct($exceptRecord=null) {
         parent::__construct();
         $im = InstanceManager::getInstance();
-        $this->error = $this->translation->get('user', 'email_exists');
+        $this->message = $this->translation->get('user', 'email_exists');
         $this->userTable = $im->get('userTable');
         $this->exceptRecord = $exceptRecord;
     }

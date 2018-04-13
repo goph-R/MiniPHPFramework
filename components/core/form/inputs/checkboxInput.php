@@ -12,12 +12,12 @@ class CheckboxInput extends Input {
     }
 
     public function setValue($value) {
-        parent::setValue($value);
+        parent::setValue($value);        
         $this->checked = $value == $this->defaultValue;
     }
 
-    public function fetch() {
-        $result = '<input type="checkbox"';
+    public function fetch() { 
+       $result = '<input type="checkbox"';
         $result .= ' id="'.$this->getId().'"';
         $result .= ' name="'.$this->getName().'"';
         $result .= ' value="'.$this->view->escape($this->defaultValue).'"';
