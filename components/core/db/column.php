@@ -33,7 +33,11 @@ abstract class Column {
         return $this->autoIncrement;
     }
 
-    public function convert($value) {
+    public function convertTo($value) {
+        return $value;
+    }
+    
+    public function convertFrom($value) {
         return $value;
     }
 

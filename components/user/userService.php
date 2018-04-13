@@ -219,13 +219,14 @@ class UserService implements Initiable {
         $record->set('password', $this->hash($values['password']));
         $record->set('activation_hash', $hash);
         $record->save();
-        return $hash;
+        return $record;
     }
 
     public function sendRegisterEmail($values, $hash) {
         if (!isset($values['email'])) {
             throw new Exception('There is no email in the values.');
         }
+        $this->mailer->init();        
         $this->mailer->addAddress($values['email']);
         foreach ($values as $name => $value) {
             $this->mailer->set($name, $value);
@@ -256,6 +257,7 @@ class UserService implements Initiable {
         $hash = $this->hash(time());
         $record->set('forgot_hash', $hash);
         $record->save();
+        $this->mailer->init();
         $this->mailer->addAddress($email);
         $this->mailer->set('hash', $hash);
         $result = $this->mailer->send(

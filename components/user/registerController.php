@@ -10,8 +10,8 @@ class RegisterController extends UserController {
         $form = $im->get('registerForm');
         if ($form->processInput()) {
             $values = $form->getValues();
-            $hash = $this->userService->register($values);
-            if ($this->userService->sendRegisterEmail($values, $hash)) {
+            $record = $this->userService->register($values);
+            if ($this->userService->sendRegisterEmail($values, $record->get('activation_hash'))) {
                 return $this->redirect('register/activation');
             }
             $form->addError($this->translation->get('user', 'couldnt_send_email'));

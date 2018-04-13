@@ -29,13 +29,29 @@ class Record {
     public function setNew($new) {
         $this->new = $new;
     }
-
-    public function get($name) {
+    
+    private function getColumn($name) {
         $column = $this->table->getColumn($name);
         if (!$column) {
             throw new DBException('Try to get a non existing column: '.$name);
+        }    
+        return $column;
+    }
+
+    public function get($name) {
+        $column = $this->getColumn($name);
+        if (!isset($this->attributes[$name])) {
+            return $column->getDefaultValue();
         }
-        return isset($this->attributes[$name]) ? $this->attributes[$name] : $column->getDefaultValue();
+        return $column->convertFrom($this->attributes[$name]);
+    }
+    
+    public function getRaw($name) {
+        $column = $this->getColumn($name);
+        if (!isset($this->attributes[$name])) {
+            return $column->getDefaultValue();
+        }        
+        return $this->attributes[$name];
     }
 
     public function getAttributes() {
@@ -47,7 +63,7 @@ class Record {
         if (!$column) {
             throw new DBException('Try to modify a non existing column: '.$name);
         }
-        $this->attributes[$name] = $column->convert($value);
+        $this->attributes[$name] = $column->convertTo($value);
         if ($modified && !in_array($name, $this->modified)) {
             $this->modified[] = $name;
         }

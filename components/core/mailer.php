@@ -33,6 +33,10 @@ class Mailer {
         $this->view = $im->get('view');
         $this->logger = $im->get('logger');
     }
+    
+    public function init() {
+        $this->addresses = [];
+    }
 
     public function addAddress($email, $name = null) {
         $this->addresses[] = [
@@ -66,6 +70,7 @@ class Mailer {
         $message .= 'Subject: '.$subject."\r\n";
         $message .= "Message:\r\n".$body."\r\n";
         $this->logger->info($message);
+        return true;
     }
 
     private function realSend($subject, $body) {

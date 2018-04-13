@@ -25,7 +25,7 @@ abstract class Table {
         $this->db = $im->get('db');
     }
 
-    public function addColumn(Column $column, $defaultValue = null, $isPrimaryKey = false) {
+    public function addColumn(Column $column, $defaultValue=null, $isPrimaryKey=false) {
         $column->setDefaultValue($defaultValue);
         $this->columns[$column->getName()] = $column;
         if ($isPrimaryKey) {
@@ -95,13 +95,7 @@ abstract class Table {
             } else if ($item[1] == 'in') {
                 $subCondition = $this->createInCondition($item);
             } else {
-                $field = $this->escapeName($item[0]);
-                $value = $this->escapeValue($item[2]);
-                $operator = $this->checkOperator($item[1]);
-                if ($operator == '=' && $item[2] === null) {
-                    $operator = 'IS';
-                }
-                $subCondition = $field.' '.$operator.' '.$value;
+                $subCondition = $this->createGeneralCondition($item);
             }
             $subConditions[] = $subCondition;
         }
@@ -120,6 +114,16 @@ abstract class Table {
             $subCondition = 'false';
         }
         return $subCondition;
+    }
+    
+    private function createGeneralCondition($item) {
+        $field = $this->escapeName($item[0]);
+        $value = $this->escapeValue($item[2]);
+        $operator = $this->checkOperator($item[1]);
+        if ($operator == '=' && $item[2] === null) {
+            $operator = 'IS';
+        }
+        return $field.' '.$operator.' '.$value;        
     }
 
     private function createOrder($query) {
@@ -263,7 +267,7 @@ abstract class Table {
         $autoIncrement = null;
         foreach ($this->columns as $name => $column) {
             $names[] = $this->escapeName($name);
-            $value = $record->get($name);
+            $value = $record->getRaw($name);
             $values[] = $this->escapeValue($value);
             if ($column->isAutoIncrement() && $value === null) {
                 $autoIncrement = $name;
@@ -284,7 +288,7 @@ abstract class Table {
     private function update(Record $record) {
         $sets = [];
         foreach ($record->getModified() as $name) {
-            $sets[] = $this->escapeName($name).' = '.$this->escapeValue($record->get($name));
+            $sets[] = $this->escapeName($name).' = '.$this->escapeValue($record->getRaw($name));
         }
         $sql = 'UPDATE '.$this->escapeName($this->name);
         $sql .= ' SET '.join($sets, ', ');

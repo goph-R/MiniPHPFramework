@@ -10,7 +10,7 @@ class ForgotNewPasswordForm extends Form {
         $this->addInput($t->get('user', 'password'), $password);
         $this->addInput($t->get('user', 'password_again'), $passwordAgain);
         $this->addValidator('password', new PasswordValidator());
-        $this->addValidator('password_again', new SameValidator($password));
+        $this->addValidator('password_again', new SameValidator($this, 'password'));
     }
 
 }

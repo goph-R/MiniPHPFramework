@@ -1,7 +1,12 @@
 <?php
 
 class DoubleColumn extends Column {
-    public function convert($value) {
+    
+    public function convertFrom($value) {
+        return (double)$value;
+    }
+
+    public function convertTo($value) {
         return (double)$value;
     }
 }

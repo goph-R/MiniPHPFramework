@@ -2,16 +2,18 @@
 
 class SameValidator extends Validator {
 
-    private $otherInput;
+    private $form;
+    private $otherInputName;
 
-    public function __construct(Input $otherInput) {
+    public function __construct(Form $form, $otherInputName) {
         parent::__construct();
         $this->message = $this->translation->get('user', 'didnt_match');
-        $this->otherInput = $otherInput;
+        $this->otherInputName = $otherInputName;
+        $this->form = $form;
     }
 
     public function doValidate($value) {
-        if ($this->otherInput->getValue() != $value) {
+        if ($this->form->getValue($this->otherInputName) != $value) {
             return false;
         }
         return true;
