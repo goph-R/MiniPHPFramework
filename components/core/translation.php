@@ -13,7 +13,6 @@ class Translation {
     public function __construct() {
         $im = InstanceManager::getInstance();
         $this->request = $im->get('request');
-        $this->default = $im->get('config')->get('translation.default', 'en');
     }
 
     public function add($namespace, $path) {
@@ -27,7 +26,7 @@ class Translation {
             return $result;
         }
         if ($this->data[$namespace] === false) {
-            $locale = $this->request->get('locale', $this->default);
+            $locale = $this->request->get('locale');
             $path = $this->paths[$namespace].'/'.$locale.'.ini';
             $iniData = file_exists($path) ? parse_ini_file($path) : [];
             $this->data[$namespace] = $iniData;

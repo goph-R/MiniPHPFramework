@@ -7,6 +7,7 @@ class ColumnView {
     protected $width;
     protected $align;
     protected $route;
+    protected $alias;
 
     /**
      * @var Router
@@ -22,13 +23,18 @@ class ColumnView {
         $this->router = $im->get('router');
     }
 
+    public function setAlias($alias) {
+        $this->alias = $alias;
+    }
+
     public function getAlign() {
         return $this->align;
     }
 
     public function fetch(Record $record) {
-        $value = htmlspecialchars($record->get($this->columnName));
-        $value = str_replace('-', '&#8209;', $value);
+        $columnName = $this->alias ? $this->alias : $this->columnName;
+        $value = htmlspecialchars($record->get($columnName));
+        $value = str_replace(['-', ' '], ['&#8209;', '&nbsp;'], $value);
         return $value;
     }
 

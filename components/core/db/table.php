@@ -2,6 +2,9 @@
 
 abstract class Table {
 
+    const VALID_OPERATORS = ['<', '>', '<=', '>=', '=', 'like'];
+    const VALID_JOIN_TYPES = ['left', 'right', 'inner'];
+
     /**
      * @var Config
      */
@@ -59,14 +62,32 @@ abstract class Table {
         $record->setNew(false);
     }
 
-    private function escapeName($name) {
-        // TODO: true escape
+    private function escapeTableName($name) {
         return '`'.$name.'`';
+    }
+
+    private function escapeName($name) {
+        $as = '';
+        if (is_array($name)) {
+            $keys = array_keys($name);
+            $values = array_values($name);
+            $name = $keys[0];
+            $as = $values[0];
+        }
+        if (strpos($name, '.') == -1) {
+            $name = $this->name.'.'.$name;
+        }
+        $names = str_replace('.', '`.`', $name);
+        $postfix = $as ? ' AS `'.$as.'`' : '';
+        return '`'.$names.'`'.$postfix;
     }
 
     private function escapeValue($value) {
         if ($value === null) {
             return 'NULL';
+        }
+        if (is_array($value)) {
+            return $this->escapeName($value[0]);
         }
         $ret = $this->db->escape($value);
         if (!is_numeric($value)) {
@@ -77,7 +98,7 @@ abstract class Table {
 
     private function checkOperator($op) {
         $ret = $op;
-        if (!in_array($op, ['<', '>', '<=', '>=', '=', 'like'])) {
+        if (!in_array($op, self::VALID_OPERATORS)) {
             throw new DBException('Unknown operator: '.$op);
         }
         return $ret;
@@ -170,8 +191,10 @@ abstract class Table {
             }
             $sql .= join($escapedColumnNames, ', ');
         }
-        $sql .= ' FROM '.$this->escapeName($this->name);
-        // TODO: createJoins
+        $sql .= ' FROM '.$this->escapeTableName($this->name);
+        if (isset($query['join']) && $query['join']) {
+            $sql .= $this->createJoins($query['join']);
+        }
         if (isset($query['where'])) {
             $condition = $this->createCondition($query['where']);
             if ($condition) {
@@ -181,6 +204,33 @@ abstract class Table {
         // TODO: createGroupBy
         $sql .= $this->createOrder($query);
         $sql .= $this->createLimit($query);
+        return $sql;
+    }
+
+    private function checkJoinType($type) {
+        $ret = $type;
+        if (!in_array($type, self::VALID_JOIN_TYPES)) {
+            throw new DBException('Unknown join type: '.$type);
+        }
+        return $ret;
+    }
+
+    private function createJoins($joins) {
+        $sql = '';
+        if (isset($joins['table'])) {
+            $joins = [$joins];
+        }
+        foreach ($joins as $join) {
+            if (!isset($join['table'])) {
+                throw new DBException("No table defined for join");
+            }
+            $type = isset($join['type']) ? $this->checkJoinType($join['type']) : 'left';
+            $table = $this->escapeTableName($join['table']);
+            $sql .= ' '.strtoupper($type).' JOIN '.$table;
+            if (isset($join['on']) && is_array($join['on'])) {
+                $sql .= ' ON '.$this->createCondition($join['on'])."\r\n";
+            }
+        }
         return $sql;
     }
 
@@ -273,7 +323,7 @@ abstract class Table {
                 $autoIncrement = $name;
             }
         }
-        $sql = 'INSERT INTO '.$this->escapeName($this->name).' (';
+        $sql = 'INSERT INTO '.$this->escapeTableName($this->name).' (';
         $sql .= join($names, ', ');
         $sql .= ') VALUES (';
         $sql .= join($values, ', ');
@@ -290,7 +340,7 @@ abstract class Table {
         foreach ($record->getModified() as $name) {
             $sets[] = $this->escapeName($name).' = '.$this->escapeValue($record->getRaw($name));
         }
-        $sql = 'UPDATE '.$this->escapeName($this->name);
+        $sql = 'UPDATE '.$this->escapeTableName($this->name);
         $sql .= ' SET '.join($sets, ', ');
         $sql .= ' WHERE '.$this->createCondition($this->getConditionsForRecord($record));
         $sql .= ' LIMIT 1';
@@ -299,7 +349,7 @@ abstract class Table {
     }
 
     public function delete(Record $record) {
-        $sql = 'DELETE FROM '.$this->escapeName($this->name);
+        $sql = 'DELETE FROM '.$this->escapeTableName($this->name);
         $sql .= ' WHERE '.$this->createCondition($this->getConditionsForRecord($record));
         $sql .= ' LIMIT 1';
         $this->db->query($sql);

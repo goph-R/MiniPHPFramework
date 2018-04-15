@@ -1,6 +1,6 @@
 <?php
 
-abstract class Column {
+class Column {
 
     protected $name;
 
@@ -12,7 +12,7 @@ abstract class Column {
     protected $defaultValue = null;
     // TODO: current_timestamp
 
-    public function __construct(Table $table, $name) {
+    public function __construct($table, $name) {
         $this->table = $table;
         $this->name = $name;
     }

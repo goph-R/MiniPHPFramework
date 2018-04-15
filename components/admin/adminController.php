@@ -32,12 +32,14 @@ abstract class AdminController extends Controller {
         $table = $this->getTable();        
         $this->processFilterForm();
         $listParams = $this->getListParams();
-        $query = ['where' => $this->getFilterQuery()];
+        $query = [];
+        $query['where'] = $this->getFilterQuery();
+        $query['join'] = $this->getFilterJoins();
         $pager = new Pager('admin', $listParams);
         $pager->setCount($table->count($query));
         $query['order'] = [$listParams['orderby'] => $listParams['orderdir']];
         $query['limit'] = [$pager->getPage() * $pager->getStep(), $pager->getStep()];
-        $records = $table->find(null, $query);
+        $records = $table->find($this->getListColumns(), $query);
         $this->view->set('columnViews', $this->getColumnViews());
         $this->view->set('actionButtons', $this->getActionButtons());
         $this->view->set('listParams', $listParams);
@@ -142,9 +144,17 @@ abstract class AdminController extends Controller {
         }
         return $result;
     }
+
+    protected function getListColumns() {
+        return null;
+    }
     
     protected function getFilterQuery() {
-        return [];
+        return null;
+    }
+
+    protected function getFilterJoins() {
+        return null;
     }
     
     protected function getActionButtons() {

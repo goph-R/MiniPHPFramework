@@ -33,7 +33,7 @@ class Record {
     private function getColumn($name) {
         $column = $this->table->getColumn($name);
         if (!$column) {
-            throw new DBException('Try to get or set a non existing column: '.$name);
+            $column = new Column(null, $name);
         }    
         return $column;
     }

@@ -61,7 +61,7 @@ class Request {
     }
 
     public function getDefaultLocale() {
-        if (isset($this->headers['HTTP_ACCEPT_LANGUAGE'])) {
+        if ($this->config->get('router.use_locale') && isset($this->headers['HTTP_ACCEPT_LANGUAGE'])) {
             return mb_strtolower(mb_substr($this->headers['HTTP_ACCEPT_LANGUAGE'], 0, 2));
         }
         return $this->config->get('translation.default', 'en');
