@@ -33,7 +33,7 @@ class Record {
     private function getColumn($name) {
         $column = $this->table->getColumn($name);
         if (!$column) {
-            throw new DBException('Try to get a non existing column: '.$name);
+            throw new DBException('Try to get or set a non existing column: '.$name);
         }    
         return $column;
     }
@@ -58,15 +58,17 @@ class Record {
         return $this->attributes;
     }
 
-    public function set($name, $value, $modified = true) {
-        $column = $this->table->getColumn($name);
-        if (!$column) {
-            throw new DBException('Try to modify a non existing column: '.$name);
-        }
+    public function set($name, $value, $modified=true) {
+        $column = $this->getColumn($name);
         $this->attributes[$name] = $column->convertTo($value);
         if ($modified && !in_array($name, $this->modified)) {
             $this->modified[] = $name;
         }
+    }
+
+    public function setRaw($name, $value) {
+        $this->getColumn($name);
+        $this->attributes[$name] = $value;
     }
 
     public function clearModified() {

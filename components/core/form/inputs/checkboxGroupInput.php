@@ -5,10 +5,10 @@ class CheckboxGroupInput extends Input {
     private $checks;
     private $labels;
 
-    public function __construct($name, $defaultValues=[], $labels=[], $checks=[]) {
-        parent::__construct($name, $defaultValues);
+    public function __construct($name, $labelsByValues=[], $checks=[]) {
+        parent::__construct($name, array_keys($labelsByValues));
         $this->checks = $checks;
-        $this->labels = $labels;
+        $this->labels = array_values($labelsByValues);
         $this->trimValue = false;
     }
 

@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <?php foreach ($columnViews as $columnView): ?>
-            <?= $columnView->fetchHeader($listParams) ?>
+            <?= $columnView->fetchHeader($listParams, $indexRoute) ?>
         <?php endforeach ?>
         <?php foreach ($actionButtons as $actionButton): ?>
             <th></th>

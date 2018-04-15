@@ -33,6 +33,12 @@ class UserAdminController extends AdminController {
         return new UserFilterForm();
     }
 
+    protected function getListParams() {
+        $result = parent::getListParams();
+        $result['orderby'] = $this->request->get('orderby', 'email');
+        return $result;
+    }
+
     protected function getFilterQuery() {
         $search = $this->filterForm->getValue('search');
         $result = [];

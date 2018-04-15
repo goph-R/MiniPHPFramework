@@ -134,7 +134,7 @@ abstract class AdminController extends Controller {
         $result = [
             'page' => $this->request->get('page', 0),
             'step' => $this->request->get('step', 10),
-            'orderby' => $this->request->get('orderby', 'email'),
+            'orderby' => $this->request->get('orderby', 'id'),
             'orderdir' => $this->request->get('orderdir', 'asc')
         ];
         if ($this->filterForm) {

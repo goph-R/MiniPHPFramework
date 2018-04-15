@@ -195,7 +195,7 @@ abstract class Table {
             $record = new Record($this);
             $record->setNew(false);
             foreach ($row as $name => $value) {
-                $record->set($name, $value, false);
+                $record->setRaw($name, $value);
             }
             $ret[] = $record;
         }

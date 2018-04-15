@@ -27,17 +27,19 @@ class ColumnView {
     }
 
     public function fetch(Record $record) {
-        return htmlspecialchars($record->get($this->columnName));
+        $value = htmlspecialchars($record->get($this->columnName));
+        $value = str_replace('-', '&#8209;', $value);
+        return $value;
     }
 
-    public function fetchHeader($listParams) {
+    public function fetchHeader($listParams, $indexRoute) {
         $orderBy = @$listParams['orderby'];
         $listParams = $this->adjustListParams($listParams);
         $html = '<th';
         if ($this->width) {
             $html .= ' style="width: '.$this->width.'"';
         }
-        $html .= '><a href="'.$this->router->getUrl('admin', $listParams).'">';
+        $html .= '><a href="'.$this->router->getUrl($indexRoute, $listParams).'">';
         $html .= htmlspecialchars($this->label);
         if ($orderBy == $this->columnName) {
             if ($listParams['orderdir'] == 'desc') {
