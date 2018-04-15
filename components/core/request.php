@@ -4,12 +4,15 @@ class Request {
 
     private $data;
     private $headers;
+    private $config;
 
     const ONE_YEAR_SECONDS = 31536000;
 
     public function __construct() {
+        $im = InstanceManager::getInstance();
         $this->data = $_REQUEST;
         $this->headers = $_SERVER;
+        $this->config = $im->get('config');
     }
 
     public function get($name, $defaultValue = null) {
@@ -59,9 +62,9 @@ class Request {
 
     public function getDefaultLocale() {
         if (isset($this->headers['HTTP_ACCEPT_LANGUAGE'])) {
-            return substr($this->headers['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+            return mb_strtolower(mb_substr($this->headers['HTTP_ACCEPT_LANGUAGE'], 0, 2));
         }
-        return 'en';
+        return $this->config->get('translation.default', 'en');
     }
 
 }

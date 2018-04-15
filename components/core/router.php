@@ -35,10 +35,11 @@ class Router {
             return;
         }
         $route = $this->getRoute();
-        // TODO: better solution
         $parts = explode('/', $route);
-        if (isset($parts[0])) {
+        if (isset($parts[0]) && $parts[0]) {
             $this->request->set('locale', $parts[0]);
+        } else {
+            $this->request->set('locale', $this->request->getDefaultLocale());
         }
     }
 
