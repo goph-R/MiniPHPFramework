@@ -28,10 +28,11 @@ abstract class Table {
         $this->db = $im->get('db');
     }
 
-    public function addColumn(Column $column, $defaultValue=null, $isPrimaryKey=false) {
+    public function addColumn(Column $column, $defaultValue=null, $primaryKey=false, $autoIncrement=false) {
         $column->setDefaultValue($defaultValue);
+        $column->setAutoIncrement($autoIncrement);
         $this->columns[$column->getName()] = $column;
-        if ($isPrimaryKey) {
+        if ($primaryKey) {
             $this->primaryKeys[] = $column->getName();
         }
     }
