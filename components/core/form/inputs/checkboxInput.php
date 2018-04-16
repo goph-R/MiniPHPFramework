@@ -3,12 +3,12 @@
 class CheckboxInput extends Input {
 
     private $checked;
-    private $label;
+    private $suffixLabel;
 
     public function __construct($name, $defaultValue='', $label='', $checked=false) {
         parent::__construct($name, $defaultValue);
         $this->checked = $checked;
-        $this->label = $label;
+        $this->suffixLabel = $label;
     }
 
     public function setValue($value) {
@@ -26,8 +26,8 @@ class CheckboxInput extends Input {
             $result .= ' checked="checked"';
         }
         $result .= '>';
-        if ($this->label) {
-           $result .= '<label for="'.$this->getId().'">'.$this->label.'</label>';
+        if ($this->suffixLabel) {
+           $result .= '<label for="'.$this->getId().'">'.$this->suffixLabel.'</label>';
         }
         return $result;
     }

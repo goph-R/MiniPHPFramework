@@ -9,9 +9,7 @@
 <?php endif ?>
 <div class="clear"></div>
 <?php if ($records): ?>
-    <?= $this->fetch(':admin/pager') ?>
     <?= $this->fetch(':admin/list') ?>
-    <?= $this->fetch(':admin/pager') ?>
 <?php else: ?>
     <div class="no-results"><?= $translation->get('admin', 'no_results'); ?></div>
 <?php endif ?>

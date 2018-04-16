@@ -1,0 +1,7 @@
+<h1><?= $translation->get('user', 'settings') ?></h1>
+<form action="<?= $router->getUrl('settings') ?>" method="post">
+    <?= $form->fetch() ?>
+    <div class="form-row">
+        <input type="submit" value="<?= $translation->get('admin', 'save') ?>">
+    </div>
+</form>

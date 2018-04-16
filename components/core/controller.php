@@ -76,6 +76,14 @@ abstract class Controller {
     public function responseJson($data) {
         $this->response->setContent(json_encode($data));
     }
+        
+    public function response404() {
+        $this->app->sendNotFound();
+    }
+    
+    public function response500() {
+        $this->app->sendInternalServerError();
+    }    
 
     public function redirect($route = '', $params=[]) {
         return $this->redirectToUrl($this->router->getUrl($route, $params, false));
@@ -86,4 +94,5 @@ abstract class Controller {
         $this->response->setContent('');
         return true;
     }
+
 }

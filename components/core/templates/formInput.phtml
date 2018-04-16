@@ -3,6 +3,7 @@
         <?= $view->fetch(':core/formError', ['error' => $input->getError()]) ?>
     <?php endif ?>
     <?= $input->fetch() ?>
+    
     <?php if ($input->getDescription()): ?>
         <div class="form-description">
             <?= $input->getDescription() ?>

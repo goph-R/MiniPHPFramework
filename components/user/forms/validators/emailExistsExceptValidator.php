@@ -1,6 +1,6 @@
 <?php
 
-class UserAdminEmailExistsValidator extends Validator {
+class EmailExistsExceptValidator extends Validator {
 
     /**
      * @var UserTable

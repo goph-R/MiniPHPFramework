@@ -8,10 +8,7 @@ class NotEmptyValidator extends Validator {
     }
 
     public function doValidate($value) {
-        if (!$value) {
-            return false;
-        }
-        return true;
+        return !empty($value);
     }
 
 }

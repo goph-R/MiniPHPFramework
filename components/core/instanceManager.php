@@ -46,13 +46,14 @@ class InstanceManager {
         }
     }
 
-    public function get($name) {
+    public function get($name, $args=[]) {
         if (!isset($this->data[$name])) {
             throw new Exception("Instance not exists: ".$name);
         }
         if (is_string($this->data[$name])) {
             $className = $this->data[$name];
-            $instance = new $className();
+            $reflect = new ReflectionClass($className);
+            $instance = $reflect->newInstanceArgs($args);
             if ($instance instanceof Initiable) {
                 $instance->init();
             }

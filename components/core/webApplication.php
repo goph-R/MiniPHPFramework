@@ -84,12 +84,12 @@ class WebApplication {
         $this->im->finish();        
     }
 
-    private function sendNotFound() {
+    public function sendNotFound() {
         header("HTTP/1.0 404 Not Found");
         include $this->config->get('application.error_path.404');
     }
 
-    private function sendInternalServerError() {
+    public function sendInternalServerError() {
         header("HTTP/1.0 500 Internal Server Error");
         include $this->config->get('application.error_path.500');
     }

@@ -27,7 +27,6 @@ abstract class Form {
      */
     protected $inputs = [];
     protected $order = [];
-    protected $labels = [];
 
     /**
      * @var Validator[][]
@@ -56,9 +55,9 @@ abstract class Form {
         $name = $input->getName();
         if (!in_array($name, $this->order)) {
             $this->order[] = $name;
-        }
-        $this->labels[$name] = $label;
+        }        
         $this->inputs[$name] = $input;
+        $input->setLabel($label);
         $input->setDescription($description);
         $input->setForm($this);
     }
@@ -83,14 +82,6 @@ abstract class Form {
         return isset($this->inputs[$inputName]);
     }
 
-    public function getLabel($inputName) {
-        return isset($this->labels[$inputName]) ? $this->labels[$inputName] : '';
-    }
-
-    public function getId($inputName) {
-        return isset($this->inputs[$inputName]) ? $this->inputs[$inputName]->getId() : '';
-    }
-
     public function hasErrors() {
         return count($this->errors) > 0;
     }
@@ -104,6 +95,9 @@ abstract class Form {
     }
 
     public function addValidator($inputName, $validator) {
+        if (!$this->hasInput($inputName)) {
+            throw new Exception("Input doesn't exist: $inputName");
+        }
         if (!isset($this->validators[$inputName])) {
             $this->validators[$inputName] = [];
         }
@@ -115,12 +109,21 @@ abstract class Form {
     }
 
     public function getValue($inputName) {
-        return $this->inputs[$inputName]->getValue();
+        if ($this->hasInput($inputName)) {
+            return $this->inputs[$inputName]->getValue();
+        }
+        return null;
     }
 
     public function setValue($inputName, $value) {
-        if (isset($this->inputs[$inputName])) {
+        if ($this->hasInput($inputName)) {
             $this->inputs[$inputName]->setValue($value);
+        }
+    }
+    
+    public function setRequired($inputName, $required) {
+        if ($this->hasInput($inputName)) {
+            $this->inputs[$inputName]->setRequired($required);
         }
     }
 
@@ -153,14 +156,26 @@ abstract class Form {
         $result = true;
         foreach ($this->validators as $inputName => $validatorList) {
             foreach ($validatorList as $validator) {
-                $subResult = $validator->validate($this->labels[$inputName], $this->inputs[$inputName]->getValue());
-                if (!$subResult) {
+                if (!$this->validateInput($inputName, $validator)) {
                     $result = false;
-                    $this->inputs[$inputName]->setError($validator->getMessage());
                     break;
                 }
             }
         }
+        return $result;
+    }
+    
+    private function validateInput($inputName, $validator) {
+        if (!$this->inputs[$inputName]->isRequired() && $this->inputs[$inputName]->isEmpty()) {
+            return true;
+        }
+        $result = $validator->validate(
+            $this->inputs[$inputName]->getLabel(),
+            $this->inputs[$inputName]->getValue()
+        );
+        if (!$result) {
+            $this->inputs[$inputName]->setError($validator->getMessage());
+        }    
         return $result;
     }
 

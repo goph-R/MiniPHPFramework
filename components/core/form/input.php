@@ -26,6 +26,8 @@ abstract class Input {
     protected $classes = [];
     protected $value;
     protected $trimValue = true;
+    protected $required = true;
+    protected $label = '';
 
     public function __construct($name, $defaultValue = '') {
         $im = InstanceManager::getInstance();
@@ -60,6 +62,14 @@ abstract class Input {
 
     public function setDescription($description) {
         $this->description = $description;
+    }
+    
+    public function setRequired($required) {
+        $this->required = $required;
+    }
+    
+    public function isRequired() {
+        return $this->required;
     }
 
     public function getClasses() {
@@ -98,6 +108,10 @@ abstract class Input {
     public function getName() {
         return $this->name;
     }
+    
+    public function isEmpty() {
+        return empty($this->getValue());
+    }
 
     public function getValue() {
         return $this->trimValue ? trim($this->value) : $this->value;
@@ -105,6 +119,14 @@ abstract class Input {
 
     public function setValue($value) {
         $this->value = $value;
+    }
+    
+    public function setLabel($label) {
+        $this->label = $label;
+    }
+    
+    public function getLabel() {
+        return $this->label;
     }
 
     public function getDefaultValue() {

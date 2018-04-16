@@ -44,16 +44,15 @@ class PasswordValidator extends Validator {
         }
         $min = $this->options['minLength'];
         if ($this->options['minLength'] && mb_strlen($value) < $min) {
-            $message = $this->translation->get('core', 'password_too_short');
-            $this->message = str_replace('{min}', $min, $message);
+            $message = $this->translation->get('core', 'password_too_short', ['min' => $min]);
             return false;
         }        
         foreach ($this->removerRegex as $name => $regex) {
             $min = $this->options[$name];      
             $count = mb_strlen(preg_replace($regex, '', $value));
             if ($this->options[$name] && $count < $min) {
-                $message = $this->translation->get('core', self::MESSAGE[$name]);
-                $this->message = str_replace(['{min}', '{chars}'], [$min, $this->options['specialChars']], $message);
+                $params = ['min' => $min, 'chars' => $this->options['specialChars']];
+                $message = $this->translation->get('core', self::MESSAGE[$name], $params);
                 return false;
             }
         }
