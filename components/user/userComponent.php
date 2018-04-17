@@ -20,7 +20,7 @@ class UserComponent implements Initiable {
         $im->add('userService', new UserService());
         $im->add('registerForm', 'RegisterForm');
         $im->add('forgotNewPasswordForm', 'ForgotNewPasswordForm');
-        $im->add('settingsForm', 'SettingsForm');
+        $im->add('userSettingsForm', 'UserSettingsForm');
     }
 
     public function init() {
@@ -31,7 +31,8 @@ class UserComponent implements Initiable {
         $this->router->add('forgot/success', 'ForgotController', 'success');
         $this->router->add('logout', 'LogoutController', 'index');
         $this->router->add('profile/:id', 'ProfileController', 'index');
-        $this->router->add('settings', 'SettingsController', 'index');
+        $this->router->add('settings', 'UserSettingsController', 'index');
+        $this->router->add('settings/activate/:id/:hash', 'UserSettingsController', 'activate');
         $this->router->add('register', 'RegisterController', 'index');
         $this->router->add('register/activation', 'RegisterController', 'activation');
         $this->router->add('register/activate/:hash', 'RegisterController', 'activate');

@@ -81,6 +81,12 @@ abstract class Form {
     public function hasInput($inputName) {
         return isset($this->inputs[$inputName]);
     }
+    
+    public function checkInputExistance($inputName) {
+        if (!$this->hasInput($inputName)) {
+            throw new Exception("Input doesn't exist: $inputName");
+        }
+    }
 
     public function hasErrors() {
         return count($this->errors) > 0;
@@ -95,9 +101,7 @@ abstract class Form {
     }
 
     public function addValidator($inputName, $validator) {
-        if (!$this->hasInput($inputName)) {
-            throw new Exception("Input doesn't exist: $inputName");
-        }
+        $this->checkInputExistance($inputName);
         if (!isset($this->validators[$inputName])) {
             $this->validators[$inputName] = [];
         }
@@ -109,22 +113,18 @@ abstract class Form {
     }
 
     public function getValue($inputName) {
-        if ($this->hasInput($inputName)) {
-            return $this->inputs[$inputName]->getValue();
-        }
-        return null;
+        $this->checkInputExistance($inputName);
+        return $this->inputs[$inputName]->getValue();
     }
 
     public function setValue($inputName, $value) {
-        if ($this->hasInput($inputName)) {
-            $this->inputs[$inputName]->setValue($value);
-        }
+        $this->checkInputExistance($inputName);
+        $this->inputs[$inputName]->setValue($value);
     }
     
     public function setRequired($inputName, $required) {
-        if ($this->hasInput($inputName)) {
-            $this->inputs[$inputName]->setRequired($required);
-        }
+        $this->checkInputExistance($inputName);
+        $this->inputs[$inputName]->setRequired($required);
     }
 
     public function bind() {
@@ -166,7 +166,7 @@ abstract class Form {
     }
     
     private function validateInput($inputName, $validator) {
-        if (!$this->inputs[$inputName]->isRequired() && $this->inputs[$inputName]->isEmpty()) {
+        if (!$this->inputs[$inputName]->isRequired() && $this->inputs[$inputName]->isEmpty()) {            
             return true;
         }
         $result = $validator->validate(

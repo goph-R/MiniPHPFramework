@@ -10,9 +10,11 @@ class UserTable extends Table {
         $this->addColumn(new StringColumn($this, 'password', 255));
         $this->addColumn(new IntegerColumn($this, 'last_login'), 0);
         $this->addColumn(new BooleanColumn($this, 'active'), 0);
-        $this->addColumn(new StringColumn($this, 'activation_hash', 32));
-        $this->addColumn(new StringColumn($this, 'forgot_hash', 32));
-        $this->addColumn(new StringColumn($this, 'remember_hash', 32));
+        $this->addColumn(new StringColumn($this, 'activation_hash', 32), null);
+        $this->addColumn(new StringColumn($this, 'forgot_hash', 32), null);
+        $this->addColumn(new StringColumn($this, 'remember_hash', 32), null);
+        $this->addColumn(new StringColumn($this, 'new_email', 255), null);
+        $this->addColumn(new StringColumn($this, 'new_email_hash', 32), null);
     }
 
 }

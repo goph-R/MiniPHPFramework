@@ -1,0 +1,9 @@
+<html>
+<body>
+    <p><b>Hi!</b></p>
+    <p>
+        You have set a new email address on our site. Please activate this address the link below:<br>
+        <a href="<?= $router->getUrl('settings/activate/'.$id.'/'.$hash) ?>"><?= $router->getUrl('settings/activate/'.$id.'/'.$hash) ?></a>
+    </p>
+</body>
+</html>

@@ -272,5 +272,66 @@ class UserService implements Initiable {
         $record->set('password', $this->hash($password));
         $record->save();
     }
+    
+    public function changePassword($id, $password) {
+        $record = $this->findById($id);
+        if (!$record) {
+            return false;
+        }
+        $passwordHash = $this->hash($password);
+        $record->set('password', $passwordHash);
+        $record->save();
+        if ($id == $this->user->get('id')) {
+            $this->user->set('password', $passwordHash);
+        }
+        return true;
+    }
+    
+    public function saveNewEmail($id, $email) {
+        $record = $this->findById($id);
+        if (!$record) {
+            return false;
+        }
+        $hash = $this->hash($email);
+        $record->set('new_email', $email);
+        $record->set('new_email_hash', $hash);
+        $record->save();
+        if ($id == $this->user->get('id')) {
+            $this->user->set('new_email', $email);
+            $this->user->set('new_email_hash', $hash);
+        }
+        return true;
+    }
+    
+    public function sendNewAddressEmail($email, $id, $hash) {
+        $this->mailer->init();
+        $this->mailer->addAddress($email);
+        $this->mailer->set('id', $id);
+        $this->mailer->set('hash', $hash);
+        $result = $this->mailer->send(
+            $this->translation->get('user', 'new_email_address'),
+            ':user/newAddressEmail'
+        );
+        return $result;
+    }
+    
+    public function activateNewEmail($id, $hash) {
+        $record = $this->findById($id);
+        if (!$record || $record->get('new_email_hash') != $hash) {
+            return false;
+        }
+        $email = $record->get('new_email');
+        $record->set('new_email', null);
+        $record->set('new_email_hash', null);
+        $record->set('email', $email);        
+        $record->save();
+        if ($id == $this->user->get('id')) {
+            $this->user->set('new_email', null);
+            $this->user->set('new_email_hash', null);
+            $this->user->set('email', $email);
+        }
+        return true;
+    }
+
 
 }
