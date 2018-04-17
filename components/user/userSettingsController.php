@@ -10,7 +10,7 @@ class UserSettingsController extends UserController {
         $im = InstanceManager::getInstance();
         $form = $im->get('userSettingsForm', [$userRecord]);
         if ($form->processInput()) {
-            $messages = $this->saveChanges($form);
+            $messages = $this->save($form);
             if ($messages) {
                 $this->user->setFlash('settings_messages', $messages);
                 return $this->redirect('settings');
@@ -23,7 +23,7 @@ class UserSettingsController extends UserController {
         return $this->responseLayout(':core/layout', ':user/settings');
     }
     
-    protected function saveChanges($form) {
+    protected function save(Form $form) {
         $messages = [];
         if ($form->getValue('old_password') && $form->getValue('password')) {
             $this->userService->changePassword($this->user->get('id'), $form->getValue('password'));

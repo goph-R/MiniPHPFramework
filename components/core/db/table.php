@@ -52,7 +52,7 @@ abstract class Table {
     protected function preSave(Record $record) {}
     protected function postSave(Record $record) {}
 
-    public function save(Record $record) {
+    public function save(Record $record) {        
         $this->preSave($record);
         if ($record->isNew()) {
             $this->insert($record);
@@ -337,6 +337,9 @@ abstract class Table {
     }
 
     private function update(Record $record) {
+        if (!$record->getModified()) {
+            return;
+        }
         $sets = [];
         foreach ($record->getModified() as $name) {
             $sets[] = $this->escapeName($name).' = '.$this->escapeValue($record->getRaw($name));

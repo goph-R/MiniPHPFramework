@@ -1,15 +1,10 @@
 <?php
 
-class UserComponent implements Initiable {
-
-    /**
-     * @var Router
-     */
-    private $router;
+class UserComponent {
 
     public function __construct() {
         $im = InstanceManager::getInstance();
-        $this->router = $im->get('router');
+        $router = $im->get('router');
         $translation = $im->get('translation');
         $translation->add('user', 'components/user/translations');
         $view = $im->get('view');
@@ -21,22 +16,19 @@ class UserComponent implements Initiable {
         $im->add('registerForm', 'RegisterForm');
         $im->add('forgotNewPasswordForm', 'ForgotNewPasswordForm');
         $im->add('userSettingsForm', 'UserSettingsForm');
-    }
-
-    public function init() {
-        $this->router->add('login', 'LoginController', 'index');
-        $this->router->add('forgot', 'ForgotController', 'index');
-        $this->router->add('forgot/sent', 'ForgotController', 'sent');
-        $this->router->add('forgot/new/:hash', 'ForgotController', 'newPassword');
-        $this->router->add('forgot/success', 'ForgotController', 'success');
-        $this->router->add('logout', 'LogoutController', 'index');
-        $this->router->add('profile/:id', 'ProfileController', 'index');
-        $this->router->add('settings', 'UserSettingsController', 'index');
-        $this->router->add('settings/activate/:id/:hash', 'UserSettingsController', 'activate');
-        $this->router->add('register', 'RegisterController', 'index');
-        $this->router->add('register/activation', 'RegisterController', 'activation');
-        $this->router->add('register/activate/:hash', 'RegisterController', 'activate');
-        $this->router->add('register/success', 'RegisterController', 'success');
+        $router->add('login', 'LoginController', 'index');
+        $router->add('forgot', 'ForgotController', 'index');
+        $router->add('forgot/sent', 'ForgotController', 'sent');
+        $router->add('forgot/new/:hash', 'ForgotController', 'newPassword');
+        $router->add('forgot/success', 'ForgotController', 'success');
+        $router->add('logout', 'LogoutController', 'index');
+        $router->add('profile/:id', 'ProfileController', 'index');
+        $router->add('settings', 'UserSettingsController', 'index');
+        $router->add('settings/activate/:id/:hash', 'UserSettingsController', 'activate');
+        $router->add('register', 'RegisterController', 'index');
+        $router->add('register/activation', 'RegisterController', 'activation');
+        $router->add('register/activate/:hash', 'RegisterController', 'activate');
+        $router->add('register/success', 'RegisterController', 'success');        
     }
 
 }
