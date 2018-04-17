@@ -1,7 +1,5 @@
 <h1><?= $title ?></h1>
-<div class="buttons">
-    <a href="<?= $router->getUrl($addRoute, $listParams) ?>"><button class="default-button"><i class="fa fa-plus"></i> <?= $addTitle ?></button></a>
-</div>
+<?php $this->fetch(':admin/listButtons') ?>
 <?php if ($filterForm): ?>
     <div class="filter-form">
         <?= $this->fetch(':admin/filterForm') ?>

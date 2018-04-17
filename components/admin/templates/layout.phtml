@@ -10,15 +10,6 @@
 <body class="wrapper">
     <header>
         Admin
-        <!--
-        <div>
-            <input type="text">
-            <button type="submit" class="fa-button">
-                <i class="fa fa-search"></i>
-            </button>
-            
-        </div>
-        -->
     </header>
     <nav>
         <ul>
@@ -32,9 +23,7 @@
         <?= $content ?>
     </main>
 
-    <?php foreach ($view->getScripts() as $script): ?>
-        <script type="text/javascript" src="<?= $script ?>"></script>
-    <?php endforeach ?>
+    <?= $view->fetch(':core/scripts') ?>
 
     <!-- Memory usage: <?= memory_get_usage() / 1024 ?>K -->
 
