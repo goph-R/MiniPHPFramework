@@ -4,16 +4,15 @@ class UserAdminForm extends AdminForm {
 
     public function __construct(Record $record) {
         parent::__construct($record);        
-        $t = $this->translation;
         $this->addInput('Email', new TextInput('email', $record->get('email')));
-        $this->addValidator('email', new NotEmptyValidator());
         $this->addValidator('email', new EmailValidator());
         $this->addValidator('email', new EmailExistsExceptValidator($record));
         if ($record->isNew()) {
-            $this->addInput($t->get('user', 'password'), new TextInput('password', ''));
+            $this->addInput(['user', 'password'], new TextInput('password', ''));
             $this->addValidator('password', new PasswordValidator());
         }
-        $this->addInput('', new CheckboxInput('active', '1', $t->get('userAdmin', 'active'), $record->get('active')));
+        $activeCheckbox = new CheckboxInput('active', '1', ['userAdmin', 'active'], $record->get('active'));
+        $this->addInput('', $activeCheckbox);
     }
     
     public function save() {

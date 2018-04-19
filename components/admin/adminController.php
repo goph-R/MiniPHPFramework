@@ -33,7 +33,7 @@ abstract class AdminController extends Controller {
         $this->processFilterForm();
         $listParams = $this->getListParams();
         $query = [];
-        $query['where'] = $this->getFilterQuery();
+        $query['where'] = $this->getFilterWhere();
         $query['join'] = $this->getFilterJoins();
         $pager = new Pager('admin', $listParams);
         $pager->setCount($table->count($query));
@@ -149,7 +149,7 @@ abstract class AdminController extends Controller {
         return null;
     }
     
-    protected function getFilterQuery() {
+    protected function getFilterWhere() {
         return null;
     }
 

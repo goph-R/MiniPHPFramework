@@ -4,13 +4,11 @@ class LoginForm extends Form {
 
     public function __construct() {
         parent::__construct();
-        $t = $this->translation;
-        $notEmptyValidator = new NotEmptyValidator();
         $this->addInput('Email', new TextInput('email'));
-        $this->addValidator('email', $notEmptyValidator);
-        $this->addInput($t->get('user', 'password'), new PasswordInput('password'));
-        $this->addValidator('password', $notEmptyValidator);
-        $this->addInput('', new CheckboxInput('remember', '1', $t->get('user', 'remember_me')));
+        $this->addInput(['user', 'password'], new PasswordInput('password'));
+        $checkbox = new CheckboxInput('remember', '1', ['user', 'remember_me']);
+        $checkbox->setRequired(false);
+        $this->addInput('', $checkbox);
     }
 
 }

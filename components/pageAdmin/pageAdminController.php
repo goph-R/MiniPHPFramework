@@ -8,6 +8,7 @@ class PageAdminController extends AdminController {
         $this->indexTitle = $this->translation->get('pageAdmin', 'pages');
         $this->editRoute = 'admin/page/edit';
         $this->editTitle = $this->translation->get('pageAdmin', 'edit_page');
+        $this->view->addPath(':admin/listButtons', 'components/pageAdmin/templates/empty');
     }
 
     protected function getTable() {
@@ -35,7 +36,7 @@ class PageAdminController extends AdminController {
     }
     
     protected function getFilterForm() {
-        return new UserFilterForm();
+        return new AdminSearchForm();
     }
 
     protected function getListParams() {
@@ -44,15 +45,15 @@ class PageAdminController extends AdminController {
         return $result;
     }
 
-    protected function getFilterQuery() {
+    protected function getFilterWhere() {
         $search = $this->filterForm->getValue('search');
         $result = [];
         if ($search) {
             $searchLike = '%'.$search.'%';
-            $result[] = [
+            $result[] = ['or', [
                 ['name', 'like', $searchLike],
                 ['title', 'like', $searchLike]
-            ];
+            ]];
         }
         return $result;
     }

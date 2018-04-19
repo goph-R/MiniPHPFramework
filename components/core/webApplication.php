@@ -27,7 +27,7 @@ class WebApplication {
      */
     protected $logger;
 
-    public static function initialize($configPath, $environment) {
+    public static function dispatch($configPath, $environment, $components) {
         $im = InstanceManager::getInstance();
         $config = new Config($configPath, $environment);
         $im->add('config', $config);
@@ -40,7 +40,10 @@ class WebApplication {
         $im->add('user', new User());
         $im->add('mailer', new Mailer());
         $im->add('translation', new Translation());
-        $im->add('app', new WebApplication());
+        $app = new WebApplication();
+        $im->add('app', $app);
+        $im->initComponents($components);
+        $app->run();
     }
 
     public function __construct() {
@@ -60,8 +63,10 @@ class WebApplication {
             $this->sendInternalServerError();
         }
     }
-
+    
     private function runCore() {
+        $this->im->get('translation')->add('core', 'components/core/translations');
+        $this->im->get('view')->addPath('core', 'components/core/templates');
         $this->im->init();
         $route = $this->router->queryCurrent();
         $found = false;

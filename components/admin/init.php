@@ -1,0 +1,12 @@
+<?php
+
+$im = InstanceManager::getInstance();
+
+$im->add('adminMenu', new AdminMenu());
+
+$view = $im->get('view');
+$view->addPath('admin', 'components/admin/templates');
+$view->addPath(':core/formError', 'components/admin/templates/formError');
+
+$translation = $im->get('translation');
+$translation->add('admin', 'components/admin/translations');

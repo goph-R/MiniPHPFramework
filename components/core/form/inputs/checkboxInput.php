@@ -8,7 +8,14 @@ class CheckboxInput extends Input {
     public function __construct($name, $defaultValue='', $label='', $checked=false) {
         parent::__construct($name, $defaultValue);
         $this->checked = $checked;
-        $this->suffixLabel = $label;
+        if (is_array($label) && count($label) == 2) {
+            $im = InstanceManager::getInstance();
+            $t = $im->get('translation');
+            $this->suffixLabel = $t->get($label[0], $label[1]);
+        } else {
+            $this->suffixLabel = $label;
+        }
+        $this->required = false;
     }
 
     public function setValue($value) {

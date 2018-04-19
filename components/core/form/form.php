@@ -57,7 +57,11 @@ abstract class Form {
             $this->order[] = $name;
         }        
         $this->inputs[$name] = $input;
-        $input->setLabel($label);
+        if (is_array($label) && count($label) == 2) {
+            $input->setLabel($this->translation->get($label[0], $label[1]));
+        } else {
+            $input->setLabel($label);
+        }
         $input->setDescription($description);
         $input->setForm($this);
     }
@@ -153,30 +157,31 @@ abstract class Form {
     }
 
     private function validateInputs() {
-        $result = true;
-        foreach ($this->validators as $inputName => $validatorList) {
-            foreach ($validatorList as $validator) {
-                if (!$this->validateInput($inputName, $validator)) {
-                    $result = false;
-                    break;
-                }
+        $result = true;        
+        foreach ($this->inputs as $inputName => $input) {
+            if ($input->isRequired() && $input->isEmpty()) {
+                $error = $this->translation->get('core', 'cant_be_empty');
+                $input->setError($error);
+                $result = false;
+            } else if (!$input->isRequired() && $input->isEmpty()) {
+                continue;
+            } else if (isset($this->validators[$inputName])) {
+                $validatorList = $this->validators[$inputName];
+                $result &= $this->validateInput($input, $validatorList);
             }
         }
         return $result;
     }
     
-    private function validateInput($inputName, $validator) {
-        if (!$this->inputs[$inputName]->isRequired() && $this->inputs[$inputName]->isEmpty()) {            
-            return true;
-        }
-        $result = $validator->validate(
-            $this->inputs[$inputName]->getLabel(),
-            $this->inputs[$inputName]->getValue()
-        );
-        if (!$result) {
-            $this->inputs[$inputName]->setError($validator->getMessage());
-        }    
-        return $result;
+    private function validateInput($input, $validatorList) {
+        foreach ($validatorList as $validator) {
+            $result = $validator->validate($input->getLabel(), $input->getValue());
+            if (!$result) {
+                $input->setError($validator->getMessage());
+                return false;
+            }                
+        }        
+        return true;
     }
 
     private function postValidate() {
@@ -193,8 +198,8 @@ abstract class Form {
 
     public function fetch($path = ':core/form') {
         foreach ($this->inputs as $input) {
-            foreach ($input->getStyles() as $style) {
-                $this->view->addStyle($style);
+            foreach ($input->getStyles() as $style => $media) {
+                $this->view->addStyle($style, $media);
             }
             foreach ($input->getScripts() as $script) {
                 $this->view->addScript($script);

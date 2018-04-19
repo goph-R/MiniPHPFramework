@@ -10,6 +10,7 @@ class CheckboxGroupInput extends Input {
         $this->checks = $checks;
         $this->labels = array_values($labelsByValues);
         $this->trimValue = false;
+        $this->required = false;
     }
 
     public function setValue($value) {

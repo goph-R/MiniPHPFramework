@@ -24,13 +24,20 @@ class UserAdminController extends AdminController {
             new BooleanColumnView('active', $this->translation->get('userAdmin', 'active'), 'center')
         ];
     }
+    
+    protected function getActionButtons() {
+        return [
+            new ActionButton($this->editRoute, 'pencil-alt'),
+            new UserDeleteConfirmActionButton($this->deleteRoute, 'trash')
+        ];
+    }    
 
     protected function getForm(Record $record) {       
         return new UserAdminForm($record);
     }
     
     protected function getFilterForm() {
-        return new UserFilterForm();
+        return new AdminSearchForm();
     }
 
     protected function getListParams() {
@@ -39,7 +46,7 @@ class UserAdminController extends AdminController {
         return $result;
     }
 
-    protected function getFilterQuery() {
+    protected function getFilterWhere() {
         $search = $this->filterForm->getValue('search');
         $result = [];
         if ($search) {

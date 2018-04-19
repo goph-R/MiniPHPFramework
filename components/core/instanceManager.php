@@ -25,10 +25,14 @@ class InstanceManager {
             $this->order[] = $name;
         }
     }
-
+    
+    public function initComponents($componentNames) {
+        foreach ($componentNames as $componentName) {
+            require_once "components/$componentName/init.php";
+        }
+    }
+    
     public function init() {
-        $this->get('translation')->add('core', 'components/core/translations');
-        $this->get('view')->addPath('core', 'components/core/templates');
         foreach ($this->order as $name) {
             $instance = $this->data[$name];
             if ($instance instanceof Initiable) {
@@ -52,15 +56,20 @@ class InstanceManager {
         }
         if (is_string($this->data[$name])) {
             $className = $this->data[$name];
-            $reflect = new ReflectionClass($className);
-            $instance = $reflect->newInstanceArgs($args);
-            if ($instance instanceof Initiable) {
-                $instance->init();
-            }
+            $instance = $this->createInstance($className, $args);
             $this->data[$name] = $instance;
         }
         return $this->data[$name];
     }
+    
+    private function createInstance($className, $args) {
+        $reflect = new ReflectionClass($className);
+        $instance = $reflect->newInstanceArgs($args);
+        if ($instance instanceof Initiable) {
+            $instance->init();
+        }
+        return $instance;
+    }    
 
     public function getAll() {
         return $this->data;
