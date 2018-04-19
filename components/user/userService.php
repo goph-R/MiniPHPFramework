@@ -1,6 +1,6 @@
 <?php
 
-class UserService implements Initiable {
+class UserService {
 
     /**
      * @var Config
@@ -52,17 +52,25 @@ class UserService implements Initiable {
      */
     protected $userPermissionTable;
 
-    public function init() {
+    public function __construct() {
         $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
         $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');
         $this->translation = $im->get('translation');
         $this->request = $im->get('request');
-        $this->userTable = $im->get('userTable');
-        $this->permissionTable = $im->get('permissionTable');
-        $this->userPermissionTable = $im->get('userPermissionTable');
+        $userTableFactory = $im->get('userTableFactory');
+        $this->userTable = $userTableFactory->createUser();
+        $this->permissionTable = $userTableFactory->createPermission();
+        $this->userPermissionTable = $userTableFactory->createUserPermission();
         $this->rememberLogin();
+    }
+
+    /**
+     * @return Record
+     */
+    public function createRecord() {
+        return new Record($this->userTable);
     }
 
     public function hash($value) {
@@ -172,6 +180,16 @@ class UserService implements Initiable {
         ]);
     }
 
+    public function emailExistsExcept($email, Record $exceptRecord) {
+        $where = [];
+        $where[] = ['not', $this->userTable->getConditionsForRecord($exceptRecord)];
+        $where[] = ['email', '=', $email];
+        if ($this->userTable->findOne(null, ['where' => $where])) {
+            return false;
+        }
+        return true;
+    }
+
     public function login($email, $password, $remember) {
         $record = $this->findActiveByEmailAndPassword($email, $password);
         if (!$record) {
@@ -214,7 +232,7 @@ class UserService implements Initiable {
     public function register($values) {
         $fields = ['email'];
         $hash = $this->hash(time());
-        $record = new Record($this->userTable);
+        $record = $this->createRecord();
         $record->setAll($fields, $values);
         $record->set('password', $this->hash($values['password']));
         $record->set('activation_hash', $hash);

@@ -1,6 +1,6 @@
 <?php
 
-abstract class Table {
+class Table {
 
     const VALID_OPERATORS = ['<', '>', '<=', '>=', '=', 'like'];
     const VALID_JOIN_TYPES = ['left', 'right', 'inner'];
@@ -23,9 +23,10 @@ abstract class Table {
     protected $primaryKeys = [];
     protected $name = null;
 
-    public function __construct() {
+    public function __construct($name) {
         $im = InstanceManager::getInstance();
         $this->db = $im->get('db');
+        $this->name = $name;
     }
 
     public function addColumn(Column $column, $defaultValue=null, $primaryKey=false, $autoIncrement=false) {

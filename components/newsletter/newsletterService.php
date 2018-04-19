@@ -5,11 +5,12 @@ class NewsletterService {
     /**
      * @var NewsletterSubscriberTable
      */
-    private $table;
+    private $subscriberTable;
     
     public function __construct() {
         $im = InstanceManager::getInstance();
-        $this->table = $im->get('newsletterSubscriberTable');
+        $tableFactory = $im->get('newsletterTableFactory');
+        $this->subscriberTable = $tableFactory->createSubscriber();
     }
     
     /**
@@ -17,7 +18,7 @@ class NewsletterService {
      * @return Record
      */
     public function findByEmail($email) {
-        return $this->table->findOne(null, [
+        return $this->subscriberTable->findOne(null, [
             'where' => [
                 ['email', '=', $email]
             ]
@@ -27,7 +28,7 @@ class NewsletterService {
     public function subscribe($email) {        
         $record = $this->findByEmail($email);
         if (!$record) {
-            $record = new Record($this->table);
+            $record = new Record($this->subscriberTable);
             $record->set('email', $email);
         }
         $record->set('active', 1);

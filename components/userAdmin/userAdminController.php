@@ -2,8 +2,15 @@
 
 class UserAdminController extends AdminController {
 
+    /**
+     * @var UserTableFactory
+     */
+    private $userTableFactory;
+
     public function __construct() {
         parent::__construct();
+        $im = InstanceManager::getInstance();
+        $this->userTableFactory = $im->get('userTableFactory');
         $this->indexTitle = $this->translation->get('userAdmin', 'users');
         $this->addRoute = 'admin/user/add';
         $this->addTitle = $this->translation->get('userAdmin', 'add_user');
@@ -13,8 +20,7 @@ class UserAdminController extends AdminController {
     }
 
     protected function getTable() {
-        $im = InstanceManager::getInstance();
-        return $im->get('userTable');
+        return $this->userTableFactory->createUser();
     }
 
     protected function getColumnViews() {

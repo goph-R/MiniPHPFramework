@@ -5,9 +5,7 @@ $router = $im->get('router');
 $translation = $im->get('translation');
 $view = $im->get('view');
 
-$im->add('userTable', new UserTable());
-$im->add('permissionTable', new PermissionTable());
-$im->add('userPermissionTable', new UserPermissionTable());
+$im->add('userTableFactory', 'UserTableFactory');
 $im->add('userService', 'UserService');
 $im->add('userFormFactory', 'UserFormFactory');
 

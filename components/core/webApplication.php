@@ -67,7 +67,6 @@ class WebApplication {
     private function runCore() {
         $this->im->get('translation')->add('core', 'components/core/translations');
         $this->im->get('view')->addPath('core', 'components/core/templates');
-        $this->im->init();
         $route = $this->router->queryCurrent();
         $found = false;
         if ($route) {

@@ -2,8 +2,15 @@
 
 class PageAdminController extends AdminController {
 
+    /**
+     * @var PageTableFactory
+     */
+    private $pageTableFactory;
+
     public function __construct() {
         parent::__construct();
+        $im = InstanceManager::getInstance();
+        $this->pageTableFactory = $im->get('pageTableFactory');
         $this->indexRoute = 'admin/page';
         $this->indexTitle = $this->translation->get('pageAdmin', 'pages');
         $this->editRoute = 'admin/page/edit';
@@ -12,8 +19,7 @@ class PageAdminController extends AdminController {
     }
 
     protected function getTable() {
-        $im = InstanceManager::getInstance();
-        return $im->get('pageTable');
+        return $this->pageTableFactory->createPage();
     }
 
     protected function getColumnViews() {

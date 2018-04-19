@@ -6,7 +6,8 @@ class PageService {
     
     public function __construct() {
         $im = InstanceManager::getInstance();
-        $this->table = $im->get('pageTable');
+        $tableFactory = $im->get('pageTableFactory');
+        $this->table = $tableFactory->createPage();
     }
     
     public function findByLocaleAndName($locale, $name) {

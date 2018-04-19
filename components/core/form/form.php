@@ -62,7 +62,11 @@ class Form {
         } else {
             $input->setLabel($label);
         }
-        $input->setDescription($description);
+        if (is_array($description) && count($description) == 2) {
+            $input->setDescription($this->translation->get($description[0], $description[1]));
+        } else {
+            $input->setDescription($description);
+        }
         $input->setForm($this);
     }
 

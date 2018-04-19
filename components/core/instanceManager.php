@@ -32,15 +32,6 @@ class InstanceManager {
         }
     }
     
-    public function init() {
-        foreach ($this->order as $name) {
-            $instance = $this->data[$name];
-            if ($instance instanceof Initiable) {
-                $instance->init();
-            }
-        }
-    }
-
     public function finish() {
         foreach (array_reverse($this->order) as $name) {
             $instance = $this->data[$name];
@@ -56,18 +47,15 @@ class InstanceManager {
         }
         if (is_string($this->data[$name])) {
             $className = $this->data[$name];
-            $instance = $this->createInstance($className, $args);
+            $instance = $this->create($className, $args);
             $this->data[$name] = $instance;
         }
         return $this->data[$name];
     }
     
-    private function createInstance($className, $args) {
+    public function create($className, $args) {
         $reflect = new ReflectionClass($className);
         $instance = $reflect->newInstanceArgs($args);
-        if ($instance instanceof Initiable) {
-            $instance->init();
-        }
         return $instance;
     }    
 

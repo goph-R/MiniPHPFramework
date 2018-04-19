@@ -2,8 +2,8 @@
 
 $im = InstanceManager::getInstance();
 
-$im->add('pageTable', new PageTable());
-$im->add('pageService', new PageService());
+$im->add('pageTableFactory', 'PageTableFactory');
+$im->add('pageService', 'PageService');
 
 $router = $im->get('router');
 $router->add('page/:name', 'PageController', 'index');
