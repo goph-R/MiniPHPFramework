@@ -105,7 +105,8 @@ abstract class AdminController extends Controller {
         $record = new Record($table);
         $form = $this->formFactory->createForm($record);
         if ($form->processInput()) {
-            $form->save();
+            $this->saveForm($record, $form);
+            $record->save();
             return $this->redirect($this->indexRoute, $params);
         }
         $this->view->set([
