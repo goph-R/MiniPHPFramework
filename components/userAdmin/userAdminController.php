@@ -32,14 +32,10 @@ class UserAdminController extends AdminController {
         ];
     }    
 
-    protected function getForm(Record $record) {       
-        return new UserAdminForm($record);
+    protected function getFormFactory() {
+        return new UserAdminFormFactory();
     }
     
-    protected function getFilterForm() {
-        return new AdminSearchForm();
-    }
-
     protected function getListParams() {
         $result = parent::getListParams();
         $result['orderby'] = $this->request->get('orderby', 'email');

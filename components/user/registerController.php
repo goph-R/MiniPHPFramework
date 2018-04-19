@@ -6,8 +6,7 @@ class RegisterController extends UserController {
         if ($this->user->isLoggedIn()) {
             return $this->redirect();
         }
-        $im = InstanceManager::getInstance();
-        $form = $im->get('registerForm');
+        $form = $this->formFactory->createRegisterForm();
         if ($form->processInput()) {
             $values = $form->getValues();
             $record = $this->userService->register($values);

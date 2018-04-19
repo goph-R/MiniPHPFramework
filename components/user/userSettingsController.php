@@ -7,8 +7,7 @@ class UserSettingsController extends UserController {
             return $this->redirect();
         }
         $userRecord = $this->userService->findById($this->user->get('id'));
-        $im = InstanceManager::getInstance();
-        $form = $im->get('userSettingsForm', [$userRecord]);
+        $form = $this->formFactory->createSettingsForm($userRecord);
         if ($form->processInput()) {
             $messages = $this->save($form);
             if ($messages) {

@@ -6,7 +6,7 @@ class LoginController extends UserController {
         if ($this->user->isLoggedIn()) {
             return $this->redirect();
         }
-        $form = new LoginForm();
+        $form = $this->formFactory->createLoginForm();
         if ($form->processInput()) {
             $email = $form->getValue('email');
             $password = $form->getValue('password');

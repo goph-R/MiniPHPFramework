@@ -1,6 +1,6 @@
 <?php
 
-abstract class Form {
+class Form {
 
     /**
      * @var InstanceManager

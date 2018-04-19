@@ -1,20 +1,18 @@
 <?php
 
 $im = InstanceManager::getInstance();
+$router = $im->get('router');
+$translation = $im->get('translation');
+$view = $im->get('view');
 
 $im->add('userTable', new UserTable());
 $im->add('permissionTable', new PermissionTable());
 $im->add('userPermissionTable', new UserPermissionTable());
-$im->add('userService', new UserService());
-$im->add('registerForm', 'RegisterForm');
-$im->add('forgotNewPasswordForm', 'ForgotNewPasswordForm');
-$im->add('userSettingsForm', 'UserSettingsForm');
+$im->add('userService', 'UserService');
+$im->add('userFormFactory', 'UserFormFactory');
 
-$router = $im->get('router');
-$translation = $im->get('translation');
 $translation->add('user', 'components/user/translations');
 
-$view = $im->get('view');
 $view->addPath('user', 'components/user/templates');
 
 $router->add('login', 'LoginController', 'index');

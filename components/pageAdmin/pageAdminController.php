@@ -31,14 +31,10 @@ class PageAdminController extends AdminController {
         ];
     }
 
-    protected function getForm(Record $record) {       
-        return new PageAdminForm($record);
+    protected function getFormFactory() {
+        return new PageAdminFormFactory();
     }
     
-    protected function getFilterForm() {
-        return new AdminSearchForm();
-    }
-
     protected function getListParams() {
         $result = parent::getListParams();
         $result['orderby'] = $this->request->get('orderby', 'name');

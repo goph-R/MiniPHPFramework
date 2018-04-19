@@ -6,7 +6,7 @@ class ForgotController extends UserController {
         if ($this->user->isLoggedIn()) {
             return $this->redirect();
         }
-        $form = new ForgotForm();
+        $form = $this->formFactory->createForgotForm();
         if ($form->processInput()) {
             if ($this->userService->sendForgotEmail($form->getValue('email'))) {
                 return $this->redirect('forgot/sent');
@@ -31,8 +31,7 @@ class ForgotController extends UserController {
         if (!$record) {
             return $this->message('error', 'password_changing', 'activation_not_found');
         }
-        $im = InstanceManager::getInstance();
-        $form = $im->get('forgotNewPasswordForm');
+        $form = $this->formFactory->createNewPasswordForm();
         if ($form->processInput()) {
             $this->userService->changeForgotPassword($record, $form->getValue('password'));
             return $this->redirect('forgot/success');

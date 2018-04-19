@@ -11,9 +11,14 @@ abstract class AdminController extends Controller {
     protected $deleteRoute = 'admin/delete';
 
     /**
+     * @var AdminFormFactory
+     */
+    protected $formFactory;
+
+    /**
      * @var Form
      */
-    protected $filterForm = null;
+    protected $filterForm;
 
     public function __construct() {
         parent::__construct();
@@ -23,6 +28,7 @@ abstract class AdminController extends Controller {
         $this->view->addStyle('components/admin/static/admin.css');
         $this->view->addScript('components/admin/static/admin.js');
         $this->view->set('adminMenu', $im->get('adminMenu'));
+        $this->formFactory = $this->getFormFactory();
     }
 
     public function index() {
@@ -54,7 +60,7 @@ abstract class AdminController extends Controller {
     }
     
     private function processFilterForm() {
-        $this->filterForm = $this->getFilterForm();
+        $this->filterForm = $this->formFactory->createFilterForm();
         if ($this->filterForm) {
             $this->filterForm->bind();
             $this->filterForm->validate();
@@ -70,7 +76,7 @@ abstract class AdminController extends Controller {
         $this->processFilterForm();
         $params = $pkValues + $this->getListParams();
         $record = $table->findOneByPrimaryKeys($pkValues);
-        $form = $this->getForm($record);
+        $form = $this->formFactory->createForm($record);
         if ($form->processInput()) {
             $this->saveForm($record, $form);
             $record->save();
@@ -92,7 +98,7 @@ abstract class AdminController extends Controller {
         $this->processFilterForm();
         $params = $this->getListParams();
         $record = new Record($table);
-        $form = $this->getForm($record);
+        $form = $this->formFactory->createForm($record);
         if ($form->processInput()) {
             $form->save();
             return $this->redirect($this->indexRoute, $params);
@@ -125,13 +131,6 @@ abstract class AdminController extends Controller {
         }
         return $result;
     }        
-    
-    /**
-     * @return Form
-     */
-    protected function getFilterForm() {
-        return null;
-    }
     
     protected function getListParams() {
         $result = [
@@ -173,10 +172,9 @@ abstract class AdminController extends Controller {
     abstract protected function getColumnViews();
 
     /**
-     * @param Record
-     * @return Form
+     * @return AdminFormFactory
      */
-    abstract protected function getForm(Record $record);
+    abstract protected function getFormFactory();
 
     /**
      * @param Record
