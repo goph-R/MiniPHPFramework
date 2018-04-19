@@ -43,6 +43,7 @@ class UserFormFactory {
      * @return Form
      */
     public function createSettingsForm(Record $record) {
+        // TODO: a post validator for the passwords
         $emailDesc = $this->translation->get('user', 'email_change_description');
         if ($record->get('new_email')) {
             $emailDesc = $this->translation->get('user', 'waits_for_activation', ['email' => $record->get('new_email')]);

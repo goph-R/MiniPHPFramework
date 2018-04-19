@@ -42,7 +42,7 @@ class Logger {
     }
 
     public function handleError($errno, $errstr, $errfile, $errline) {
-        $message = $errstr." (".$errno.")\r\nFile: ".$errfile."\r\nLine: ".$errline."\r\n";
+        $message = $errstr." (Code: ".$errno.")\r\nFile: ".$errfile."\r\nLine: ".$errline."\r\n";
         $this->error($message);
         // TODO: better solution
         if ($this->enviroment == 'dev') {

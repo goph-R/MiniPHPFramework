@@ -1,11 +1,20 @@
 <?php
 
 class UserDeleteConfirmActionButton extends ConfirmActionButton {
-    
-    public function fetch(Record $record, $params=[]) {
+
+    /**
+     * @var User
+     */
+    private $user;
+
+    public function __construct($route, $icon) {
+        parent::__construct($route, $icon);
         $im = InstanceManager::getInstance();
-        $user = $im->get('user');
-        if ($user->get('id') == $record->get('id')) {
+        $this->user = $im->get('user');
+    }
+
+    public function fetch(Record $record, $params=[]) {
+        if ($this->user->get('id') == $record->get('id')) {
             return '';
         }
         return parent::fetch($record, $params);
