@@ -7,10 +7,16 @@ class UserAdminController extends AdminController {
      */
     private $userTableFactory;
 
+    /**
+     * @var UserService
+     */
+    private $userService;
+
     public function __construct() {
         parent::__construct();
         $im = InstanceManager::getInstance();
         $this->userTableFactory = $im->get('userTableFactory');
+        $this->userService = $im->get('userService');
         $this->indexTitle = $this->translation->get('userAdmin', 'users');
         $this->addRoute = 'admin/user/add';
         $this->addTitle = $this->translation->get('userAdmin', 'add_user');
@@ -19,11 +25,11 @@ class UserAdminController extends AdminController {
         $this->deleteRoute = 'admin/user/delete';
     }
 
-    protected function getTable() {
+    protected function createTable() {
         return $this->userTableFactory->createUser();
     }
 
-    protected function getColumnViews() {
+    protected function createColumnViews() {
         return [
             new ColumnView('id', 'ID', 'right'),
             new ColumnView('email', 'Email', 'left', '100%'),
@@ -31,14 +37,14 @@ class UserAdminController extends AdminController {
         ];
     }
     
-    protected function getActionButtons() {
+    protected function createActionButtons() {
         return [
             new ActionButton($this->editRoute, 'pencil-alt'),
             new UserDeleteConfirmActionButton($this->deleteRoute, 'trash')
         ];
     }    
 
-    protected function getFormFactory() {
+    protected function createFormFactory() {
         return new UserAdminFormFactory();
     }
     
@@ -61,13 +67,11 @@ class UserAdminController extends AdminController {
     }
     
     protected function saveForm(Record $record, Form $form) {
-        $record->set('email', $form->getValue('email'));
         if ($form->hasInput('password')) {
-            $im = InstanceManager::getInstance();
-            $userService = $im->get('userService');
-            $record->set('password', $userService->hash($form->getValue('password')));
+            $record->set('password', $this->userService->hash($form->getValue('password')));
         }
-        $record->set('active', $form->getValue('active'));
+        $fields = ['email', 'active'];
+        $record->setAll($fields, $form->getValues());
         return $record;
     }
 }

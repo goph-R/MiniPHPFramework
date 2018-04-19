@@ -18,11 +18,11 @@ class PageAdminController extends AdminController {
         $this->view->addPath(':admin/listButtons', 'components/pageAdmin/templates/empty');
     }
 
-    protected function getTable() {
+    protected function createTable() {
         return $this->pageTableFactory->createPage();
     }
 
-    protected function getColumnViews() {
+    protected function createColumnViews() {
         return [
             new ColumnView('id', 'ID', 'right'),
             new ColumnView('locale', $this->translation->get('pageAdmin', 'locale')),
@@ -31,13 +31,13 @@ class PageAdminController extends AdminController {
         ];
     }
     
-    protected function getActionButtons() {
+    protected function createActionButtons() {
         return [
             new ActionButton($this->editRoute, 'pencil-alt')
         ];
     }
 
-    protected function getFormFactory() {
+    protected function createFormFactory() {
         return new PageAdminFormFactory();
     }
     
@@ -61,8 +61,8 @@ class PageAdminController extends AdminController {
     }
 
     protected function saveForm(Record $record, Form $form) {
-        $record->set('title', $form->getValue('title'));
-        $record->set('content', $form->getValue('content'));
+        $fields = ['title', 'content'];
+        $record->setAll($fields, $form->getValues());
         return $record;
     }
 }

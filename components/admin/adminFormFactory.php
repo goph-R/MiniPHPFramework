@@ -3,14 +3,21 @@
 abstract class AdminFormFactory {
 
     /**
-     * @throws Exception
+     * @var Request
+     */
+    private $request;
+
+    public function __construct() {
+        $im = InstanceManager::getInstance();
+        $this->request = $im->get('request');
+    }
+
+    /**
      * @return Form
      */
     public function createFilterForm() {
-        $im = InstanceManager::getInstance();
-        $request = $im->get('request');
         $form = new Form();
-        $form->addInput('', new TextInput('search', $request->get('search')));
+        $form->addInput('', new TextInput('search', $this->request->get('search')));
         $form->setRequired('search', false);
         return $form;
     }

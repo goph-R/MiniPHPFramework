@@ -15,7 +15,7 @@ class ForgotController extends UserController {
             }
         }
         $this->view->set('form', $form);
-        return $this->responseLayout(':core/layout', ':user/forgot');
+        return $this->respondLayout(':core/layout', ':user/forgot');
     }
 
     public function sent() {
@@ -38,9 +38,11 @@ class ForgotController extends UserController {
         }
         $form->setValue('password', '');
         $form->setValue('password_again', '');
-        $this->view->set('hash', $hash);
-        $this->view->set('form', $form);
-        return $this->responseLayout(':core/layout', ':user/forgotNewPassword');
+        $this->view->set([
+            'hash' => $hash,
+            'form' => $form
+        ]);
+        return $this->respondLayout(':core/layout', ':user/forgotNewPassword');
     }
 
     public function success() {
@@ -48,10 +50,12 @@ class ForgotController extends UserController {
     }
 
     private function message($type, $title, $message) {
-        $this->view->set('messageType', $type);
-        $this->view->set('title', $this->translation->get('user', $title));
-        $this->view->set('message', $this->translation->get('user', $message));
-        $this->responseLayout(':core/layout', ':user/message');
+        $this->view->set([
+            'title'       => $this->translation->get('user', $title),
+            'message'     => $this->translation->get('user', $message),
+            'messageType' => $type
+        ]);
+        $this->respondLayout(':core/layout', ':user/message');
     }
 
 }

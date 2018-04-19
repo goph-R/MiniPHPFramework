@@ -1,18 +1,27 @@
 <?php
 
 class PageController extends Controller {
-    
+
+    /**
+     * @var PageService
+     */
+    private $pageService;
+
+    public function __construct() {
+        parent::__construct();
+        $im = InstanceManager::getInstance();
+        $this->pageService = $im->get('pageService');
+    }
+
     public function index() {
         $locale = $this->request->get('locale');
         $name = $this->request->get('name');
-        $im = InstanceManager::getInstance();
-        $pageService = $im->get('pageService');
-        $pageRecord = $pageService->findByLocaleAndName($locale, $name);
+        $pageRecord = $this->pageService->findByLocaleAndName($locale, $name);
         if (!$pageRecord) {
-            return $this->response404();
+            return $this->respond404();
         }
         $this->view->set('pageRecord', $pageRecord);
-        return $this->responseLayout(':core/layout', ':page/view');
+        return $this->respondLayout(':core/layout', ':page/view');
     }
     
 }

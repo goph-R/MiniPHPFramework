@@ -64,35 +64,34 @@ abstract class Controller {
         }
     }
 
-    public function responseView($template) {
+    public function respondView($template) {
         $this->response->setContent($this->view->fetch($template));
     }
 
-    public function responseLayout($layout, $template) {
+    public function respondLayout($layout, $template) {
         $this->view->set('content', $this->view->fetch($template));
         $this->response->setContent($this->view->fetch($layout));
     }
 
-    public function responseJson($data) {
+    public function respondJson($data) {
         $this->response->setContent(json_encode($data));
     }
         
-    public function response404() {
+    public function respond404() {
         $this->app->sendNotFound();
     }
     
-    public function response500() {
+    public function respond500() {
         $this->app->sendInternalServerError();
-    }    
+    }
 
     public function redirect($route = '', $params=[]) {
-        return $this->redirectToUrl($this->router->getUrl($route, $params, false));
+        $this->redirectToUrl($this->router->getUrl($route, $params, false));
     }
 
     public function redirectToUrl($url) {
         $this->response->setHeader('Location', $url);
         $this->response->setContent('');
-        return true;
     }
 
 }

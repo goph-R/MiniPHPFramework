@@ -23,19 +23,20 @@ abstract class AdminController extends Controller {
     public function __construct() {
         parent::__construct();
         $im = InstanceManager::getInstance();
+        $adminMenu = $im->get('adminMenu');
         $this->view->addStyle('components/admin/static/reset.css');
         $this->view->addStyle('components/admin/static/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css');
         $this->view->addStyle('components/admin/static/admin.css');
         $this->view->addScript('components/admin/static/admin.js');
-        $this->view->set('adminMenu', $im->get('adminMenu'));
-        $this->formFactory = $this->getFormFactory();
+        $this->view->set('adminMenu', $adminMenu);
+        $this->formFactory = $this->createFormFactory();
     }
 
     public function index() {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-        $table = $this->getTable();        
+        $table = $this->createTable();
         $this->processFilterForm();
         $listParams = $this->getListParams();
         $query = [];
@@ -46,17 +47,19 @@ abstract class AdminController extends Controller {
         $query['order'] = [$listParams['orderby'] => $listParams['orderdir']];
         $query['limit'] = [$pager->getPage() * $pager->getStep(), $pager->getStep()];
         $records = $table->find($this->getListColumns(), $query);
-        $this->view->set('columnViews', $this->getColumnViews());
-        $this->view->set('actionButtons', $this->getActionButtons());
-        $this->view->set('listParams', $listParams);
-        $this->view->set('filterForm', $this->filterForm);
-        $this->view->set('title', $this->indexTitle);
-        $this->view->set('records', $records);
-        $this->view->set('pager', $pager);
-        $this->view->set('addTitle', $this->addTitle);
-        $this->view->set('addRoute', $this->addRoute);
-        $this->view->set('indexRoute', $this->indexRoute);
-        return $this->responseLayout(':admin/layout', ':admin/index');
+        $this->view->set([
+            'columnViews'   => $this->createColumnViews(),
+            'actionButtons' => $this->createActionButtons(),
+            'listParams'    => $listParams,
+            'filterForm'    => $this->filterForm,
+            'title'         => $this->indexTitle,
+            'records'       => $records,
+            'pager'         => $pager,
+            'addTitle'      => $this->addTitle,
+            'addRoute'      => $this->addRoute,
+            'indexRoute'    => $this->indexRoute
+        ]);
+        return $this->respondLayout(':admin/layout', ':admin/index');
     }
     
     private function processFilterForm() {
@@ -71,9 +74,9 @@ abstract class AdminController extends Controller {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-        $table = $this->getTable();
-        $pkValues = $this->getPrimaryKeyValues($table);
         $this->processFilterForm();
+        $table = $this->createTable();
+        $pkValues = $this->getPrimaryKeyValues($table);
         $params = $pkValues + $this->getListParams();
         $record = $table->findOneByPrimaryKeys($pkValues);
         $form = $this->formFactory->createForm($record);
@@ -81,20 +84,22 @@ abstract class AdminController extends Controller {
             $this->saveForm($record, $form);
             $record->save();
             return $this->redirect($this->indexRoute, $params);
-        }        
-        $this->view->set('params', $params);
-        $this->view->set('form', $form);
-        $this->view->set('indexRoute', $this->indexRoute);
-        $this->view->set('title', $this->editTitle);
-        $this->view->set('action', $this->router->getUrl($this->editRoute, $params));
-        return $this->responseLayout(':admin/layout', ':admin/adminForm');
+        }
+        $this->view->set([
+            'params'     => $params,
+            'form'       => $form,
+            'indexRoute' => $this->indexRoute,
+            'title'      => $this->editTitle,
+            'action'     => $this->router->getUrl($this->editRoute, $params)
+        ]);
+        return $this->respondLayout(':admin/layout', ':admin/adminForm');
     }
 
     public function add() {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-        $table = $this->getTable();
+        $table = $this->createTable();
         $this->processFilterForm();
         $params = $this->getListParams();
         $record = new Record($table);
@@ -103,19 +108,21 @@ abstract class AdminController extends Controller {
             $form->save();
             return $this->redirect($this->indexRoute, $params);
         }
-        $this->view->set('params', $params);
-        $this->view->set('form', $form);
-        $this->view->set('indexRoute', $this->indexRoute);
-        $this->view->set('title', $this->addTitle);
-        $this->view->set('action', $this->router->getUrl($this->addRoute, $params));
-        return $this->responseLayout(':admin/layout', ':admin/adminForm');
+        $this->view->set([
+            'params'     => $params,
+            'form'       => $form,
+            'indexRoute' => $this->indexRoute,
+            'title'      => $this->addTitle,
+            'action'     => $this->router->getUrl($this->addRoute, $params)
+        ]);
+        return $this->respondLayout(':admin/layout', ':admin/adminForm');
     }
 
     public function delete() {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-        $table = $this->getTable();
+        $table = $this->createTable();
         $pkValues = $this->getPrimaryKeyValues($table);
         $record = $table->findOneByPrimaryKeys($pkValues);
         if ($record) {
@@ -134,9 +141,9 @@ abstract class AdminController extends Controller {
     
     protected function getListParams() {
         $result = [
-            'page' => $this->request->get('page', 0),
-            'step' => $this->request->get('step', 10),
-            'orderby' => $this->request->get('orderby', 'id'),
+            'page'     => $this->request->get('page', 0),
+            'step'     => $this->request->get('step', 10),
+            'orderby'  => $this->request->get('orderby', 'id'),
             'orderdir' => $this->request->get('orderdir', 'asc')
         ];
         if ($this->filterForm) {
@@ -156,8 +163,11 @@ abstract class AdminController extends Controller {
     protected function getFilterJoins() {
         return null;
     }
-    
-    protected function getActionButtons() {
+
+    /**
+     * @return ActionButton[]
+     */
+    protected function createActionButtons() {
         return [
             new ActionButton($this->editRoute, 'pencil-alt'),
             new ConfirmActionButton($this->deleteRoute, 'trash')
@@ -167,14 +177,17 @@ abstract class AdminController extends Controller {
     /**
      * @return Table
      */
-    abstract protected function getTable();
+    abstract protected function createTable();
 
-    abstract protected function getColumnViews();
+    /**
+     * @return ColumnView[]
+     */
+    abstract protected function createColumnViews();
 
     /**
      * @return AdminFormFactory
      */
-    abstract protected function getFormFactory();
+    abstract protected function createFormFactory();
 
     /**
      * @param Record

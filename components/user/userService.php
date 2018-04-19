@@ -241,10 +241,7 @@ class UserService {
     }
 
     public function sendRegisterEmail($values, $hash) {
-        if (!isset($values['email'])) {
-            throw new Exception('There is no email in the values.');
-        }
-        $this->mailer->init();        
+        $this->mailer->init();
         $this->mailer->addAddress($values['email']);
         foreach ($values as $name => $value) {
             $this->mailer->set($name, $value);

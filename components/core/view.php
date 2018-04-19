@@ -43,8 +43,12 @@ class View {
         return $this->styles;
     }
 
-    public function set($name, $value) {
-        $this->attributes[$name] = $value;
+    public function set($name, $value=null) {
+        if (is_array($name)) {
+            $this->attributes += $name;
+        } else {
+            $this->attributes[$name] = $value;
+        }
     }
 
     public function get($name, $defaultValue = '') {

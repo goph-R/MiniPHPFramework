@@ -2,7 +2,7 @@
 
 $im = InstanceManager::getInstance();
 
-$im->add('adminMenu', new AdminMenu());
+$im->add('adminMenu', 'AdminMenu');
 
 $view = $im->get('view');
 $view->addPath('admin', 'components/admin/templates');

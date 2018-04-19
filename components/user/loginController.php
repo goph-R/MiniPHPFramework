@@ -19,7 +19,7 @@ class LoginController extends UserController {
         }
         $form->setValue('password', '');
         $this->view->set('form', $form);
-        $this->responseLayout(':core/layout', ':user/login');
+        $this->respondLayout(':core/layout', ':user/login');
     }
 
 }

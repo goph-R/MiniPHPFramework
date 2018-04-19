@@ -18,7 +18,7 @@ class RegisterController extends UserController {
         $form->setValue('password', '');
         $form->setValue('password_again', '');
         $this->view->set('form', $form);
-        $this->responseLayout(':core/layout', ':user/register');
+        $this->respondLayout(':core/layout', ':user/register');
     }
 
     public function activation() {
@@ -37,10 +37,12 @@ class RegisterController extends UserController {
     }
 
     private function message($type, $title, $message) {
-        $this->view->set('messageType', $type);
-        $this->view->set('title', $this->translation->get('user', $title));
-        $this->view->set('message', $this->translation->get('user', $message));
-        $this->responseLayout(':core/layout', ':user/message');
+        $this->view->set([
+            'title'       => $this->translation->get('user', $title),
+            'message'     => $this->translation->get('user', $message),
+            'messageType' => $type
+        ]);
+        $this->respondLayout(':core/layout', ':user/message');
     }
 
 }
