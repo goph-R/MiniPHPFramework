@@ -92,7 +92,7 @@ class Form {
     
     public function checkInputExistance($inputName) {
         if (!$this->hasInput($inputName)) {
-            throw new Exception("Input doesn't exist: $inputName");
+            throw new RuntimeException("Input doesn't exist: $inputName");
         }
     }
 

@@ -70,7 +70,7 @@ class UserService {
      * @return Record
      */
     public function createRecord() {
-        return new Record($this->userTable);
+        return $this->userTable->createRecord();
     }
 
     public function hash($value) {
@@ -323,11 +323,10 @@ class UserService {
         $this->mailer->addAddress($email);
         $this->mailer->set('id', $id);
         $this->mailer->set('hash', $hash);
-        $result = $this->mailer->send(
+        return $this->mailer->send(
             $this->translation->get('user', 'new_email_address'),
             ':user/newAddressEmail'
         );
-        return $result;
     }
     
     public function activateNewEmail($id, $hash) {

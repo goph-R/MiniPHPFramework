@@ -54,7 +54,7 @@ class Logger {
         $text = date('Y-m-d H:i:s').' ['.$label.'] '.$message."\r\n";
         $result = file_put_contents($this->path, $text, FILE_APPEND | LOCK_EX);
         if ($result === false) {
-            throw new Exception("Can't write to ".$this->path);
+            throw new RuntimeException("Can't write to ".$this->path);
         }
     }
 

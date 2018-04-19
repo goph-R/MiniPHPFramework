@@ -2,10 +2,14 @@
 
 class StringColumn extends Column {
 
-    private $maxLength = 255;
+    private $maxLength;
 
-    public function __construct($table, $name, $maxLength=255) {
-        parent::__construct($table, $name);
+    public function __construct($name, $maxLength=255) {
+        parent::__construct($name);
         $this->maxLength = $maxLength;
+    }
+
+    public function getMaxLength() {
+        return $this->maxLength;
     }
 }

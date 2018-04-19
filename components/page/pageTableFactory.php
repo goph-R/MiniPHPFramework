@@ -15,11 +15,11 @@ class PageTableFactory {
      */
     public function createPage() {
         $table = new Table('page');
-        $table->addColumn(new IntegerColumn($table, 'id'), null, true, true);
-        $table->addColumn(new StringColumn($table, 'locale', 2), $this->defaultLocale);
-        $table->addColumn(new StringColumn($table, 'name', 255));
-        $table->addColumn(new StringColumn($table, 'title', 255));
-        $table->addColumn(new StringColumn($table, 'content'));
+        $table->addColumn(new IntegerColumn('id'), null, true, true);
+        $table->addColumn(new StringColumn('locale', 2), $this->defaultLocale);
+        $table->addColumn(new StringColumn('name', 255));
+        $table->addColumn(new StringColumn('title', 255));
+        $table->addColumn(new StringColumn('content'));
         return $table;
     }
     

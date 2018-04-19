@@ -3,17 +3,11 @@
 class Column {
 
     protected $name;
-
-    /**
-     * @var Table
-     */
-    protected $table;
     protected $autoIncrement;
     protected $defaultValue = null;
     // TODO: current_timestamp
 
-    public function __construct($table, $name) {
-        $this->table = $table;
+    public function __construct($name) {
         $this->name = $name;
     }
 

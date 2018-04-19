@@ -1,3 +1,3 @@
 <?php
 
-class DBException extends Exception {}
+class DBException extends RuntimeException {}

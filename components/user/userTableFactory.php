@@ -7,16 +7,16 @@ class UserTableFactory {
      */
     public function createUser() {
         $table = new Table('user');
-        $table->addColumn(new IntegerColumn($table, 'id'), null, true, true);
-        $table->addColumn(new StringColumn($table, 'email', 255));
-        $table->addColumn(new StringColumn($table, 'password', 255));
-        $table->addColumn(new IntegerColumn($table, 'last_login'), 0);
-        $table->addColumn(new BooleanColumn($table, 'active'), 0);
-        $table->addColumn(new StringColumn($table, 'activation_hash', 32), null);
-        $table->addColumn(new StringColumn($table, 'forgot_hash', 32), null);
-        $table->addColumn(new StringColumn($table, 'remember_hash', 32), null);
-        $table->addColumn(new StringColumn($table, 'new_email', 255), null);
-        $table->addColumn(new StringColumn($table, 'new_email_hash', 32), null);
+        $table->addColumn(new IntegerColumn('id'), null, true, true);
+        $table->addColumn(new StringColumn('email', 255));
+        $table->addColumn(new StringColumn('password', 255));
+        $table->addColumn(new IntegerColumn('last_login'), 0);
+        $table->addColumn(new BooleanColumn('active'), 0);
+        $table->addColumn(new StringColumn('activation_hash', 32), null);
+        $table->addColumn(new StringColumn('forgot_hash', 32), null);
+        $table->addColumn(new StringColumn('remember_hash', 32), null);
+        $table->addColumn(new StringColumn('new_email', 255), null);
+        $table->addColumn(new StringColumn('new_email_hash', 32), null);
         return $table;
     }
 
@@ -25,8 +25,8 @@ class UserTableFactory {
      */
     public function createPermission() {
         $table = new Table('permission');
-        $table->addColumn(new IntegerColumn($table, 'id'), null, true);
-        $table->addColumn(new StringColumn($table, 'name', 50));
+        $table->addColumn(new IntegerColumn('id'), null, true);
+        $table->addColumn(new StringColumn('name', 50));
         return $table;
     }
 
@@ -35,8 +35,8 @@ class UserTableFactory {
      */
     public function createUserPermission() {
         $table = new Table('user_permission');
-        $table->addColumn(new IntegerColumn($table, 'user_id'), null, true);
-        $table->addColumn(new IntegerColumn($table, 'permission_id'), null, true);
+        $table->addColumn(new IntegerColumn('user_id'), null, true);
+        $table->addColumn(new IntegerColumn('permission_id'), null, true);
         return $table;
     }
 

@@ -4,8 +4,8 @@ class ArrayStringColumn extends Column {
 
     private $maxLength = 255;
 
-    public function __construct($table, $name, $maxLength=255) {
-        parent::__construct($table, $name);
+    public function __construct($name, $maxLength=255) {
+        parent::__construct($name);
         $this->maxLength = $maxLength;
     }
     

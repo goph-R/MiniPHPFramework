@@ -59,6 +59,13 @@ class Table {
         $record->setNew(false);
     }
 
+    /**
+     * @return Record
+     */
+    public function createRecord() {
+        return new Record($this);
+    }
+
     private function checkOperator($op) {
         $ret = $op;
         if (!in_array($op, self::VALID_OPERATORS)) {

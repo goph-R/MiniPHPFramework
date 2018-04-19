@@ -104,7 +104,6 @@ class Mailer {
 
     private function setDefaults(PHPMailer $mail) {
         $mail->isHTML(true);
-        //$mail->SMTPDebug = 2;
         $mail->isSMTP();
         $mail->Host = $this->config->get('mailer.host');
         $mail->SMTPAuth = true;

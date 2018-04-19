@@ -43,7 +43,7 @@ class InstanceManager {
 
     public function get($name, $args=[]) {
         if (!isset($this->data[$name])) {
-            throw new Exception("Instance not exists: ".$name);
+            throw new RuntimeException("Instance not exists: ".$name);
         }
         if (is_string($this->data[$name])) {
             $className = $this->data[$name];

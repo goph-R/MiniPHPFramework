@@ -41,6 +41,9 @@ class UserSettingsController extends UserController {
     }
     
     public function activate() {
+        if (!$this->user->isLoggedIn()) {
+            return $this->redirect();
+        }
         $data = ['title' => $this->translation->get('user', 'new_email_address')];
         if ($this->userService->activateNewEmail($this->request->get('id'), $this->request->get('hash'))) {
             $data['messageType'] = 'info';
