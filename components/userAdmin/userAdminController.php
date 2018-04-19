@@ -57,4 +57,15 @@ class UserAdminController extends AdminController {
         }
         return $result;
     }
+    
+    protected function saveForm(Record $record, Form $form) {
+        $record->set('email', $form->getValue('email'));
+        if ($form->hasInput('password')) {
+            $im = InstanceManager::getInstance();
+            $userService = $im->get('userService');
+            $record->set('password', $userService->hash($form->getValue('password')));
+        }
+        $record->set('active', $form->getValue('active'));
+        return $record;
+    }
 }

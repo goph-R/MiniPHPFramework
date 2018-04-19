@@ -72,7 +72,8 @@ abstract class AdminController extends Controller {
         $record = $table->findOneByPrimaryKeys($pkValues);
         $form = $this->getForm($record);
         if ($form->processInput()) {
-            $form->save();
+            $this->saveForm($record, $form);
+            $record->save();
             return $this->redirect($this->indexRoute, $params);
         }        
         $this->view->set('params', $params);
@@ -168,12 +169,20 @@ abstract class AdminController extends Controller {
      * @return Table
      */
     abstract protected function getTable();
+
     abstract protected function getColumnViews();
 
     /**
      * @param Record
-     * @return AdminForm
+     * @return Form
      */
     abstract protected function getForm(Record $record);
+
+    /**
+     * @param Record
+     * @param Form
+     * @return Record
+     */
+    abstract protected function saveForm(Record $record, Form $form);
 
 }

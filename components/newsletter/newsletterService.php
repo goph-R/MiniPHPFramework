@@ -29,9 +29,8 @@ class NewsletterService {
         if (!$record) {
             $record = new Record($this->table);
             $record->set('email', $email);
-        } else if (!$record->get('active')) {
-            $record->set('active', 1);
         }
+        $record->set('active', 1);
         $record->save();
     }
     

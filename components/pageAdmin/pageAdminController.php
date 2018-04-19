@@ -57,4 +57,10 @@ class PageAdminController extends AdminController {
         }
         return $result;
     }
+
+    protected function saveForm(Record $record, Form $form) {
+        $record->set('title', $form->getValue('title'));
+        $record->set('content', $form->getValue('content'));
+        return $record;
+    }
 }

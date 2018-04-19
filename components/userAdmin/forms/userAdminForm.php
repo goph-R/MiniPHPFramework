@@ -1,9 +1,9 @@
 <?php
 
-class UserAdminForm extends AdminForm {
+class UserAdminForm extends Form {
 
     public function __construct(Record $record) {
-        parent::__construct($record);        
+        parent::__construct();
         $this->addInput('Email', new TextInput('email', $record->get('email')));
         $this->addValidator('email', new EmailValidator());
         $this->addValidator('email', new EmailExistsExceptValidator($record));
@@ -13,17 +13,6 @@ class UserAdminForm extends AdminForm {
         }
         $activeCheckbox = new CheckboxInput('active', '1', ['userAdmin', 'active'], $record->get('active'));
         $this->addInput('', $activeCheckbox);
-    }
-    
-    public function save() {
-        $this->record->set('email', $this->getValue('email'));
-        if ($this->hasInput('password')) {
-            $im = InstanceManager::getInstance();
-            $userService = $im->get('userService');
-            $this->record->set('password', $userService->hash($this->getValue('password')));            
-        }
-        $this->record->set('active', $this->getValue('active'));
-        $this->record->save();
     }
 
 }

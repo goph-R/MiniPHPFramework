@@ -2,7 +2,7 @@
 
 class UserDeleteConfirmActionButton extends ConfirmActionButton {
     
-    public function fetch($record, $params=[]) {
+    public function fetch(Record $record, $params=[]) {
         $im = InstanceManager::getInstance();
         $user = $im->get('user');
         if ($user->get('id') == $record->get('id')) {
