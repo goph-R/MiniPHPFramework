@@ -23,19 +23,48 @@ class MessageWriteController extends MessageController {
         if (!$this->user->isLoggedIn()) {
             $this->redirect();
         }
-        $toUserId = $this->request->get('user_id');
-        $userRecord = $this->userService->findById($toUserId);
-        if (!$userRecord) {
-            $this->respond404();
+        $recipientId = $this->request->get('recipient_id');
+        $this->processForm($recipientId, 'message/write/'.$recipientId, null);
+    }
+
+    public function reply() {
+        if (!$this->user->isLoggedIn()) {
+            $this->redirect();
         }
-        $form = $this->formFactory->createWriteForm();
-        if ($form->processInput()) {            
-            $this->messageService->send($this->user->get('id'), $toUserId, $form->getValue('message'));
+        $replyTo = $this->request->get('reply_to');
+        $message = $this->messageService->findById($replyTo);
+        if (!$this->messageService->isOwned($message)) {
+            return $this->redirect();
+        }
+        $replyOwn = $this->user->get('id') == $message->get('sender_id');
+        $recipientId = $replyOwn ? $message->get('recipient_id') : $message->get('sender_id');
+        $this->focusMessageInput();
+        $this->processForm($recipientId, 'message/reply/'.$replyTo, $message);
+    }
+
+    protected function focusMessageInput() {
+        $this->view->addScriptContent("document.getElementById('form_text').focus();");
+    }
+
+    protected function processForm($recipientId, $action, $message) {
+        $recipient = $this->userService->findActiveById($recipientId);
+        if (!$recipient) {
+            return $this->respond404();
+        }
+        $form = $this->formFactory->createWriteForm($message);
+        if ($form->processInput()) {
+            $senderId = $this->user->get('id');
+            $replyTo = $message ? $message->get('id') : null;
+            $this->messageService->send($senderId, $recipientId, $replyTo, $form->getValues());
             $this->user->setFlash('message_sent', $this->translation->get('message', 'message_sent'));
             return $this->redirect('messages');
         }
-        $this->view->set('toUserId', $toUserId);
-        $this->view->set('form', $form);
+        $this->view->set([
+            'action'      => $action,
+            'recipient'   => $recipient,
+            'form'        => $form,
+            'userService' => $this->userService
+        ]);
         $this->respondLayout(':core/layout', ':message/write');
     }
     

@@ -1,3 +1,6 @@
+<h1><?= $translation->get('message', 'my_messages') ?></h1>
+<?= $this->fetch(':message/menu') ?>
+<h2><?= $subtitle ?></h2>
 <?php if ($user->hasFlash('message_sent')): ?>
     <div class="info-box">
         <?= $user->getFlash('message_sent') ?>
@@ -5,22 +8,9 @@
 <?php endif; ?>
 <div class="message-list">
     <?php if ($messages): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>Text</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($messages as $message): ?>
-                    <tr>
-                        <td><a href="<?= $router->getUrl('message/view/'.$message->get('id')) ?>"><?= $message->get('text') ?></a></td>
-                        <td><?= $messageService->formatTimestamp($message->get('created_on')) ?></td>
-                    </tr>
-                <?php endforeach ?>
-            </tbody>
-        </table>
+        <?= $this->fetch(':core/pager') ?>
+        <?= $this->fetch(':message/listTable') ?>
+        <?= $this->fetch(':core/pager') ?>
     <?php else: ?>
         <p><?= $translation->get('message', 'no_results') ?></p>
     <?php endif; ?>

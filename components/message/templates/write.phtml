@@ -1,7 +1,8 @@
-<h1><?= $translation->get('message', 'write_message') ?></h1>
-<form action="<?= $router->getUrl('message/write/'.$toUserId) ?>" method="post">
+<h1><?= $translation->get('message', 'send_message') ?></h1>
+<?= $this->fetch(':message/menu') ?>
+<form action="<?= $router->getUrl($action) ?>" method="post">
     <?= $form->fetch() ?>
     <div class="form-row">
-        <input type="submit" value="<?= $translation->get('message', 'send') ?>">
+        <input type="submit" value="<?= $translation->get('message', 'send_message') ?>">
     </div>
 </form>

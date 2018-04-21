@@ -20,16 +20,20 @@ abstract class AdminController extends Controller {
      */
     protected $filterForm;
 
+    /**
+     * @var ConfirmScript
+     */
+    protected $confirmScript;
+
     public function __construct() {
         parent::__construct();
         $im = InstanceManager::getInstance();
-        $adminMenu = $im->get('adminMenu');
+        $this->confirmScript = $im->get('confirmScript');
+        $this->formFactory = $this->createFormFactory();
         $this->view->addStyle('components/admin/static/reset.css');
         $this->view->addStyle('components/admin/static/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css');
         $this->view->addStyle('components/admin/static/admin.css');
-        $this->view->addScript('components/admin/static/admin.js');
-        $this->view->set('adminMenu', $adminMenu);
-        $this->formFactory = $this->createFormFactory();
+        $this->view->set('adminMenu', $im->get('adminMenu'));
     }
 
     public function index() {
@@ -47,6 +51,7 @@ abstract class AdminController extends Controller {
         $query['order'] = [$listParams['orderby'] => $listParams['orderdir']];
         $query['limit'] = [$pager->getPage() * $pager->getStep(), $pager->getStep()];
         $records = $table->find($this->getListColumns(), $query);
+        $this->confirmScript->add();
         $this->view->set([
             'columnViews'   => $this->createColumnViews(),
             'actionButtons' => $this->createActionButtons(),
@@ -59,6 +64,7 @@ abstract class AdminController extends Controller {
             'addRoute'      => $this->addRoute,
             'indexRoute'    => $this->indexRoute
         ]);
+
         return $this->respondLayout(':admin/layout', ':admin/index');
     }
     

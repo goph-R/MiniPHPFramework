@@ -1,0 +1,20 @@
+<table>
+    <thead>
+    <tr>
+        <th>Subject</th>
+        <th>Text</th>
+        <th>Time</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($messages as $message): ?>
+            <tr>
+                <td><a href="<?= $router->getUrl('message/view/'.$message->get('id')) ?>"><?= $message->get('subject') ?></a></td>
+                <td><a href="<?= $router->getUrl('message/view/'.$message->get('id')) ?>"><?= $this->escape($message->get('text')) ?></a></td>
+                <td><?= $messageService->formatTimestamp($message->get('created_on')) ?></td>
+                <td><a href="javascript:Confirm.redirect('delete', '<?= $router->getUrl('message/delete/'.$message->get('id')) ?>')">Delete</a></td>
+            </tr>
+        <?php endforeach ?>
+    </tbody>
+</table>

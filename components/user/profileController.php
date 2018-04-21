@@ -7,7 +7,10 @@ class ProfileController extends UserController {
         if (!$record || !$record->get('active')) {
             return $this->respond404();
         }
-        $this->view->set('record', $record);
+        $this->view->set([
+            'record'      => $record,
+            'userService' => $this->userService
+        ]);
         return $this->respondLayout(':core/layout', ':user/profile');
     }
 

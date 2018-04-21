@@ -1,1 +1,2 @@
 <h1><?= $translation->get('user', 'profile') ?></h1>
+<div><?= $translation->get('user', 'last_login') ?>: <?= $userService->formatTimestamp($record->get('last_login')) ?></div>

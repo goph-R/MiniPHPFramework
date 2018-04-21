@@ -4,7 +4,12 @@ class TextareaInput extends Input {
 
     protected $type = 'text';    
     protected $placeholder = '';
-    
+
+    public function __construct($name, $defaultValue = '') {
+        parent::__construct($name, $defaultValue);
+        $this->trimValue = false;
+    }
+
     public function setPlaceholder($placeholder) {
         $this->placeholder = $placeholder;
     }

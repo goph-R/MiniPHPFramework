@@ -2,6 +2,7 @@
 
 $im = InstanceManager::getInstance();
 
+$im->add('confirmScript', 'ConfirmScript');
 $im->add('adminMenu', 'AdminMenu');
 
 $view = $im->get('view');

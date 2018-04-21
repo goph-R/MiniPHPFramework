@@ -4,14 +4,21 @@ class Pager {
 
     const MAX_STEP = 100;
 
+    /**
+     * @var Router
+     */
+    private $router;
+
     private $page;
     private $step;
+    private $route;
     private $count;
     private $maxPage;
     private $params;
 
     public function __construct($route, $params=[]) {
         $im = InstanceManager::getInstance();
+        $this->router = $im->get('router');
         $this->page = (int)$params['page'];
         if ($this->page < 0) {
             $this->page = 0;
@@ -24,7 +31,6 @@ class Pager {
         }
         $this->params = $params;
         $this->route = $route;
-        $this->router = $im->get('router');
     }
 
     public function setCount($count) {

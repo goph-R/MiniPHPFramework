@@ -97,7 +97,7 @@ class UserService {
             'where' => [
                 ['email', '=', $email],
                 ['password', '=', $this->hash($password)],
-                ['active', '=', 1]
+                ['active', '=', true]
             ]
         ]);
         return $record;
@@ -114,6 +114,20 @@ class UserService {
             ]
         ]);
     }
+
+    /**
+     * @param $id
+     * @return Record
+     */
+    public function findActiveById($id) {
+        return $this->userTable->findOne(null, [
+            'where' => [
+                ['id', '=', $id],
+                ['active', '=', true]
+            ]
+        ]);
+    }
+
 
     /**
      * @param $email
@@ -347,5 +361,8 @@ class UserService {
         return true;
     }
 
+    public function formatTimestamp($timestamp) {
+        return date('Y-m-d H:i', $timestamp);
+    }
 
 }

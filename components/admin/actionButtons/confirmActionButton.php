@@ -3,7 +3,7 @@
 class ConfirmActionButton extends ActionButton {
 
     protected function fetchUrl($params) {
-        return "javascript:Admin.confirmRedirect('Are you sure?', '".$this->router->getUrl($this->route, $params)."')";
+        return "javascript:Confirm.redirect('delete', '".$this->router->getUrl($this->route, $params)."')";
     }
 
 }
