@@ -45,7 +45,7 @@ class MessageService {
     public function findById($id) {        
         return $this->userMessageTable->findOne($this->getColumnNames(), [
             'where' => [
-                ['id', '=', $id]
+                ['message_user.id', '=', $id]
             ],
             'join' => $this->getMessageJoin()
         ]);
@@ -81,7 +81,14 @@ class MessageService {
             'message_id' => $message->get('id')
         ]);
     }
+
+    public function formatTimestamp($timestamp) {
+        return date('Y-m-d H:i', $timestamp);
+    }
     
+    public function formatMessage($message) {
+        return nl2br(htmlspecialchars($message->get('text')));
+    }
     
     
 }

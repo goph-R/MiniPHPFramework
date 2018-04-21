@@ -8,13 +8,15 @@
         <table>
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Text</th>
+                    <th>Time</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($messages as $message): ?>
                     <tr>
-                        <td><?= $message->get('text') ?></td>
+                        <td><a href="<?= $router->getUrl('message/view/'.$message->get('id')) ?>"><?= $message->get('text') ?></a></td>
+                        <td><?= $messageService->formatTimestamp($message->get('created_on')) ?></td>
                     </tr>
                 <?php endforeach ?>
             </tbody>

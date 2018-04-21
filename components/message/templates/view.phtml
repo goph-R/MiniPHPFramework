@@ -1,6 +1,6 @@
 <h1><?= $translation->get('message', 'read_message') ?></h1>
-<a href="<?= $router->getUrl('profile/'.$message->get('user_id')) ?>">View sender profile</a>
+<a href="<?= $router->getUrl('profile/'.$message->get('user_id')) ?>"><?= $translation->get('message', 'view_sender_profile') ?></a>
 <div class="message-container">
-    <?= $view->escape($message->get('text')) ?>
+    <?= $messageService->formatMessage($message) ?>
 </div>
 
