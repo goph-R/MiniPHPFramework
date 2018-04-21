@@ -76,39 +76,4 @@ class DB implements Finishable {
         return $this->conn->insert_id;
     }
 
-
-    public function escapeTableName($name) {
-        return '`'.$name.'`';
-    }
-
-    public function escapeName($name) {
-        $as = '';
-        if (is_array($name)) {
-            $keys = array_keys($name);
-            $values = array_values($name);
-            $name = $keys[0];
-            $as = $values[0];
-        }
-        if (strpos($name, '.') == -1) {
-            $name = $this->name.'.'.$name;
-        }
-        $names = str_replace('.', '`.`', $name);
-        $postfix = $as ? ' AS `'.$as.'`' : '';
-        return '`'.$names.'`'.$postfix;
-    }
-
-    public function escapeValue($value) {
-        if ($value === null) {
-            return 'NULL';
-        }
-        if (is_array($value)) {
-            return $this->escapeName($value[0]);
-        }
-        $ret = $this->escape($value);
-        if (!is_numeric($value)) {
-            $ret = '"'.$value.'"';
-        }
-        return $ret;
-    }
-
 }

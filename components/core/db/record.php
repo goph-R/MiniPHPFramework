@@ -58,11 +58,17 @@ class Record {
         return $this->attributes;
     }
 
-    public function set($name, $value, $modified=true) {
-        $column = $this->getColumn($name);
-        $this->attributes[$name] = $column->convertTo($value);
-        if ($modified && !in_array($name, $this->modified)) {
-            $this->modified[] = $name;
+    public function set($name, $value=null, $modified=true) {
+        if (is_array($name)) {
+            foreach ($name as $n => $value) {
+                $this->set($n, $value);
+            }            
+        } else {
+            $column = $this->getColumn($name);
+            $this->attributes[$name] = $column->convertTo($value);
+            if ($modified && !in_array($name, $this->modified)) {
+                $this->modified[] = $name;
+            }
         }
     }
 

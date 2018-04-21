@@ -1,0 +1,25 @@
+<?php if ($user->hasFlash('message_sent')): ?>
+    <div class="info-box">
+        <?= $user->getFlash('message_sent') ?>
+    </div>
+<?php endif; ?>
+<div class="message-list">
+    <?php if ($messages): ?>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($messages as $message): ?>
+                    <tr>
+                        <td><?= $message->get('text') ?></td>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p><?= $translation->get('message', 'no_results') ?></p>
+    <?php endif; ?>
+</div>
