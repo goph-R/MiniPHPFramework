@@ -38,7 +38,7 @@ abstract class AdminController extends Controller {
 
     public function index() {
         if (!$this->user->hasPermission('admin')) {
-            return $this->redirect();
+            return $this->redirect('login', ['ref' => 'admin']);
         }
         $table = $this->createTable();
         $this->processFilterForm();

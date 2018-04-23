@@ -1,6 +1,7 @@
 .idea/*
 logs/*
 components/kfz/*
+components/hartai/*
 config.ini.php
 index.php
 info.php
