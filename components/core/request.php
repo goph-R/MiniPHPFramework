@@ -2,10 +2,14 @@
 
 class Request {
 
-    private $data;
+    private $data;    
     private $headers;
+    
+    /**
+     * @var Config
+     */
     private $config;
-
+    
     const ONE_YEAR_SECONDS = 31536000;
 
     public function __construct() {
@@ -61,6 +65,7 @@ class Request {
     }
 
     public function getDefaultLocale() {
+        
         if ($this->config->get('router.use_locale') && isset($this->headers['HTTP_ACCEPT_LANGUAGE'])) {
             return mb_strtolower(mb_substr($this->headers['HTTP_ACCEPT_LANGUAGE'], 0, 2));
         }

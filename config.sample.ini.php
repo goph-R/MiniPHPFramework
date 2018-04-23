@@ -14,6 +14,7 @@ router.base_url = "the://url/to/the/application/"
 router.default.controller = WelcomeController 
 router.default.method = index
 translation.default = en
+translation.all = "en,hu"
 view.template.extension = phtml 
 user.salt = "Us34Pr0p4rS4ltH3r3"
 mailer.host =

@@ -1,4 +1,6 @@
-<div class="message-menu">
-    <a href="<?= $router->getUrl('messages') ?>"><?= $translation->get('message', 'inbox') ?></a>
-    | <a href="<?= $router->getUrl('messages/sent') ?>"><?= $translation->get('message', 'sent') ?></a>
+<div class="tabs">
+    <ul>
+        <li<?= $active == 'inbox' ? ' class="active"' : '' ?>><a href="<?= $router->getUrl('messages') ?>"><?= $translation->get('message', 'inbox') ?></a></li>
+        <li<?= $active == 'sent' ? ' class="active"' : '' ?>><a href="<?= $router->getUrl('messages/sent') ?>"><?= $translation->get('message', 'sent') ?></a></li>
+    </ul>
 </div>

@@ -1,5 +1,4 @@
 <h1><?= $translation->get('message', 'send_message') ?></h1>
-<?= $this->fetch(':message/menu') ?>
 <form action="<?= $router->getUrl($action) ?>" method="post">
     <?= $form->fetch() ?>
     <div class="form-row">

@@ -98,6 +98,23 @@ class MessageService {
             'user_id'    => $recipientId
         ]);
     }
+    
+    public function markAsRead($message) {
+        if ($message->get('read')) {
+            return;
+        }
+        $message->set('read', true);
+        $message->save();        
+    }
+    
+    public function findUnreadCountByUserId($userId) {
+        return $this->userMessageTable->count([
+            'where' => [
+                ['user_id', '=', $userId],
+                ['read', '=', false]
+            ]
+        ]);
+    }
 
     protected function getMessageValues($senderId, $recipientId, $replyTo, $values) {
         return [

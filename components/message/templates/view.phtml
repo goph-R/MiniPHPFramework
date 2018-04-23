@@ -1,19 +1,18 @@
 <h1><?= $translation->get('message', 'my_messages') ?></h1>
-<?= $this->fetch(':message/menu') ?>
 <h2><?= $this->escape($message->get('subject')) ?></h2>
 <a href="<?= $router->getUrl('message/reply/'.$message->get('id')) ?>">Reply</a>
 <table class="message-head">
     <tr>
-        <td>From:</td>
+        <td><?= $translation->get('message', 'from') ?>:</td>
         <td><a href="<?= $router->getUrl('profile/'.$message->get('sender_id')) ?>"><?= $translation->get('message', 'view_sender_profile') ?></a></td>
     </tr>
     <tr>
-        <td>Date:</td>
+        <td><?= $translation->get('message', 'time') ?>:</td>
         <td><?= $messageService->formatTimestamp($message->get('created_on')) ?></td>
     </tr>
 </table>
 <div class="message-body">
     <?= $messageService->formatText($message->get('text')) ?>
 </div>
-<p><a href="<?= $router->getUrl('message/reply/'.$message->get('id')) ?>">Reply</a></p>
+<p><a href="<?= $router->getUrl('message/reply/'.$message->get('id')) ?>"><?= $translation->get('message', 'reply') ?></a></p>
 

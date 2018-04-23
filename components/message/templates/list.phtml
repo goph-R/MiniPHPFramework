@@ -1,5 +1,5 @@
 <h1><?= $translation->get('message', 'my_messages') ?></h1>
-<?= $this->fetch(':message/menu') ?>
+<?= $this->fetch(':message/menu', ['active' => $sent ? 'sent' : 'inbox']) ?>
 <h2><?= $subtitle ?></h2>
 <?php if ($user->hasFlash('message_sent')): ?>
     <div class="info-box">

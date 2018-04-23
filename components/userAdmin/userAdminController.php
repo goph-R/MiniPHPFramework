@@ -59,9 +59,7 @@ class UserAdminController extends AdminController {
         $result = [];
         if ($search) {
             $searchLike = '%'.$search.'%';
-            $result[] = [
-                ['email', 'like', $searchLike]
-            ];
+            $result[] = ['email', 'like', $searchLike];
         }
         return $result;
     }

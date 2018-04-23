@@ -9,7 +9,8 @@ class MessageViewController extends MessageController {
         $message = $this->messageService->findById($this->request->get('id'));
         if (!$this->messageService->isOwned($message)) {
             return $this->redirect();
-        }        
+        }
+        $this->messageService->markAsRead($message);
         $this->view->set([
             'message'        => $message,
             'messageService' => $this->messageService

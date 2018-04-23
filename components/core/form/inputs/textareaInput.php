@@ -10,10 +10,6 @@ class TextareaInput extends Input {
         $this->trimValue = false;
     }
 
-    public function setPlaceholder($placeholder) {
-        $this->placeholder = $placeholder;
-    }
-
     public function fetch() {
         $result = '<textarea';
         $result .= ' id="'.$this->getId().'"';

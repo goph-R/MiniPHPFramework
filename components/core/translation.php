@@ -8,16 +8,29 @@ class Translation {
     private $request;
     private $paths;
     private $data;
-    private $default;
+    private $defaultLocale;
+    private $allLocales;
 
     public function __construct() {
         $im = InstanceManager::getInstance();
         $this->request = $im->get('request');
+        $config = $im->get('config');
+        $this->defaultLocale = $config->get('translation.default');
+        $all = $config->get('translation.all', $this->defaultLocale);
+        $this->allLocales = explode(',', $all);
     }
 
     public function add($namespace, $path) {
         $this->data[$namespace] = false;
         $this->paths[$namespace] = $path;
+    }
+    
+    public function getAllLocales() {
+        return $this->allLocales;
+    }
+    
+    public function getDefaultLocale() {
+        return $this->defaultLocale;
     }
 
     public function get($namespace, $name, $params=[]) {

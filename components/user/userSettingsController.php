@@ -6,8 +6,8 @@ class UserSettingsController extends UserController {
         if (!$this->user->isLoggedIn()) {
             return $this->redirect();
         }
-        $userRecord = $this->userService->findById($this->user->get('id'));
-        $form = $this->formFactory->createSettingsForm($userRecord);
+        $record = $this->userService->findById($this->user->get('id'));
+        $form = $this->formFactory->createSettingsForm($record);
         if ($form->processInput()) {
             $messages = $this->save($form);
             if ($messages) {
