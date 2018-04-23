@@ -34,8 +34,12 @@ class ColumnView {
     public function fetch(Record $record) {
         $columnName = $this->alias ? $this->alias : $this->columnName;
         $value = htmlspecialchars($record->get($columnName));
-        $value = str_replace(['-', ' '], ['&#8209;', '&nbsp;'], $value);
+        $value = $this->removeBreaks($value);
         return $value;
+    }
+
+    protected function removeBreaks($value) {
+        return str_replace(['-', ' '], ['&#8209;', '&nbsp;'], $value);
     }
 
     public function fetchHeader($listParams, $indexRoute) {

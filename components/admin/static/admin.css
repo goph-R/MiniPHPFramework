@@ -185,7 +185,7 @@ h1 {
 .form-row {
     padding-bottom: 10px;
 }
-.form-row input {
+.form-row input, textarea {
     font-size: 14px;
     font-family: Arial, sans-serif;
     border-left: 1px solid #eee;
@@ -193,12 +193,10 @@ h1 {
     border-bottom: 1px solid #eee;
     border-top: 2px solid #bbb;
     padding: 7px;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5e5e5+2,ffffff+28 */
-    background: #e5e5e5; /* Old browsers */
-    background: -moz-linear-gradient(top, #e5e5e5 2%, #ffffff 28%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #e5e5e5 2%,#ffffff 28%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #e5e5e5 2%,#ffffff 28%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */    
+}
+.form-row textarea {
+    min-height: 100px;
+    min-width: 400px;
 }
 .clear {
     clear: both;
