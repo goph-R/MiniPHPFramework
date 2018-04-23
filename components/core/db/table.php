@@ -376,7 +376,7 @@ class Table {
         }
         $ret = $this->db->escape($value);
         if (!is_numeric($value)) {
-            $ret = '"'.$value.'"';
+            $ret = "'".$value."'";
         }
         return $ret;
     }

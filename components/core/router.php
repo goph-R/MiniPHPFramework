@@ -31,7 +31,9 @@ class Router {
     }
 
     private function findLocale() {
+        $defaultLocale = $this->request->getDefaultLocale();
         if (!$this->useLocale) {
+            $this->request->set('locale', $defaultLocale);
             return;
         }
         $route = $this->getRoute();
@@ -39,7 +41,7 @@ class Router {
         if (isset($parts[0]) && $parts[0]) {
             $this->request->set('locale', $parts[0]);
         } else {
-            $this->request->set('locale', $this->request->getDefaultLocale());
+            $this->request->set('locale', $defaultLocale);
         }
     }
 

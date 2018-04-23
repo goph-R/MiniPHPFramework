@@ -1,5 +1,5 @@
 <h1><?= $translation->get('user', 'login') ?></h1>
-<form action="<?= $router->getUrl('login') ?>" method="post">
+<form action="<?= $router->getUrl('login', ['ref' => $request->get('ref')]) ?>" method="post">
     <?= $form->fetch() ?>
     <div class="form-row">
         <a href="<?= $router->getUrl('forgot') ?>"><?= $translation->get('user', 'forgotten_password') ?></a>
