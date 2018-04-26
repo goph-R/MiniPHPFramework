@@ -1,0 +1,11 @@
+<?php if ($user->hasFlash('contact_message')): ?>
+    <div class="info-box">
+        <?= $user->getFlash('contact_message') ?>
+    </div>
+<?php endif ?>
+<form action="<?= $action ?>" method="post">
+    <?= $form->fetch() ?>
+    <div class="form-row">
+        <input type="submit" value="<?= $translation->get('contact', 'send_message') ?>">
+    </div>
+</form>

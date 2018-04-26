@@ -1,6 +1,6 @@
 <?php
 
-abstract class AdminFormFactory {
+class AdminFormFactory {
 
     /**
      * @var Request
@@ -26,6 +26,8 @@ abstract class AdminFormFactory {
      * @param Record
      * @return Form
      */
-    abstract public function createForm(Record $record);
+    public function createForm(Record $record) {
+        return null;
+    }
 
 }

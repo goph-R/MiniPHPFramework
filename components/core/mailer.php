@@ -45,8 +45,14 @@ class Mailer {
         ];
     }
 
-    public function set($name, $value) {
-        $this->vars[$name] = $value;
+    public function set($name, $value=null) {
+        if (is_array($name)) {
+            foreach ($name as $n => $v) {
+                $this->vars[$n] = $v;
+            }
+        } else {
+            $this->vars[$name] = $value;
+        }
     }
 
     public function send($subject, $templatePath) {
