@@ -11,3 +11,9 @@ $view->addPath(':core/formError', 'components/admin/templates/formError');
 
 $translation = $im->get('translation');
 $translation->add('admin', 'components/admin/translations');
+
+// add media browser
+$im->add('mediaTableFactory', 'MediaTableFactory');
+$im->add('mediaService', 'mediaService');
+$router->add('mediabrowser', 'MediaBrowserController', 'index');
+$view->addPath('browser', 'components/admin/mediabrowser/templates');

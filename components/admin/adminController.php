@@ -30,9 +30,6 @@ abstract class AdminController extends Controller {
         $im = InstanceManager::getInstance();
         $this->confirmScript = $im->get('confirmScript');
         $this->formFactory = $this->createFormFactory();
-        $this->view->addStyle('components/admin/static/reset.css');
-        $this->view->addStyle('components/admin/static/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css');
-        $this->view->addStyle('components/admin/static/admin.css');
         $this->view->set('adminMenu', $im->get('adminMenu'));
     }
 

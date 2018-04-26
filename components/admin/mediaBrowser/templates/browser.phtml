@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="vendor/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="components/admin/static/reset.css" media="all">
+    <link rel="stylesheet" type="text/css" href="components/admin/mediaBrowser/static/browser.css" media="all">
+</head>
+<body class="wrapper">
+    <header>
+        Media
+    </header>
+    <nav>
+        <div class="nav-grid">
+            <div class="buttons">
+                <a href="#" title="Add"><i class="fa fa-plus-circle"></i></a>
+                <a href="#" title="Rename"><i class="fa fa-pencil-alt"></i></a>
+                <a href="#" title="Delete"><i class="fa fa-trash"></i></a>
+                <div class="clear"></div>        
+            </div>
+            <ul>
+                <li><a style="padding-left: 0px" href="#"><i class="fa fa-folder-open"></i><span>Home</span></a></li>
+                <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder-open"></i><span>Folder 1</span></a></li>
+                <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 1</span></a></li>
+                <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
+                <li class="selected"><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
+                <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
+                <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <a href="javascript:window.opener.CKEDITOR.tools.callFunction(<?= $request->get('CKEditorFuncNum') ?>, 'http://dynart.net/images/logo2.png')" class="insert"><i class="fa fa-check-circle"></i>Use the selected</a>
+        <div class="path">
+            <a href="#">Home</a> /
+            <a href="#">Folder 1</a> /
+            Folder 3
+        </div>
+        <div class="buttons">
+            <a href="#" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
+            <a href="#" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
+            <a href="#" style="width:auto;"><i class="fa fa-upload"></i> Upload</a>
+            <div class="clear"></div>        
+        </div>
+        <div class="items">
+            <a href="#" class="item">            
+                <i class="fa fa-file"></i>
+                File-1.txt
+            </a>
+            <a href="#" class="item">            
+                <i class="fa fa-file"></i>
+                Very-Long-Filename-Because-Why-Not.txt
+            </a>
+            <a href="#" class="item selected">            
+                <i class="fa fa-file"></i>
+                VeryLongFilenameBecauseWhyNot.txt
+            </a>            
+            <?php for ($i = 2; $i < 15; $i++): ?>
+                <a href="#" class="item">            
+                    <i class="fa fa-file"></i>
+                    File-<?= $i ?>.txt
+                </a>
+            <?php endfor ?>
+        </div>        
+    </main>
+    
+    
+</body>
+</html>

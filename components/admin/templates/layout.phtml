@@ -3,6 +3,9 @@
 <head>
     <base href="<?= $router->getBaseUrl() ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="vendor/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="components/admin/static/reset.css" media="all">
+    <link rel="stylesheet" type="text/css" href="components/admin/static/admin.css" media="all">
     <?php foreach ($view->getStyles() as $style): ?>
         <link rel="stylesheet" type="text/css" href="<?= $style['source'] ?>" media="<?= $style['media'] ?>">
     <?php endforeach ?>

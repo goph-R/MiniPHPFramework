@@ -7,17 +7,21 @@ class CkEditorInput extends Input {
     public function __construct($name, $defaultValue='', $options=[]) {
         parent::__construct($name, $defaultValue);
         $this->options = $options;
-        $this->view->addScript('//cdn.ckeditor.com/4.9.1/standard/ckeditor.js');
+        $this->view->addScript('vendor/ckeditor/ckeditor.js');
+        
     }
     
     public function fetch() {
-        $result = '<textarea ';
+        $result = '<textarea ';        
         $result .= ' id="'.$this->getId().'"';
         $result .= ' name="'.$this->getName().'"';
         $result .= $this->getClassHtml();        
         $result .= '>'.$this->getValue().'</textarea>';
-        $options = json_encode($this->options);
-        $this->view->addScriptContent("CKEDITOR.replace('".htmlspecialchars($this->getId())."', ".$options.");");
+        $options = [
+            'language' => $this->request->get('locale')
+        ];
+        $optionsStr = json_encode(array_merge($options, $this->options));
+        $this->view->addScriptContent("CKEDITOR.replace('".htmlspecialchars($this->getId())."', ".$optionsStr.");");
         return $result;
     }
     
