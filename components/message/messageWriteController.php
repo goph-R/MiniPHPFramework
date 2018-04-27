@@ -21,7 +21,7 @@ class MessageWriteController extends MessageController {
         
     public function index() {
         if (!$this->user->isLoggedIn()) {
-            $this->redirect();
+            return $this->redirect();
         }
         $recipientId = $this->request->get('recipient_id');
         $this->processForm($recipientId, 'message/write/'.$recipientId, null);
@@ -29,7 +29,7 @@ class MessageWriteController extends MessageController {
 
     public function reply() {
         if (!$this->user->isLoggedIn()) {
-            $this->redirect();
+            return $this->redirect();
         }
         $replyTo = $this->request->get('reply_to');
         $message = $this->messageService->findById($replyTo);
