@@ -92,6 +92,7 @@ abstract class Controller {
     public function redirectToUrl($url) {
         $this->response->setHeader('Location', $url);
         $this->response->setContent('');
+        $this->response->send();
         $this->app->finish();
         exit();
     }
