@@ -85,7 +85,11 @@ class WebApplication {
         } else {   
             $this->response->send();
         }
-        $this->im->finish();        
+        $this->finish();
+    }
+    
+    public function finish() {
+        $this->im->finish();
     }
 
     public function sendNotFound() {
