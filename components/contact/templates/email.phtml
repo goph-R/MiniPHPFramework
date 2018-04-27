@@ -1,9 +1,12 @@
 <html>
 <body>
-Email: <?= $this->escape($values['email']) ?><br>
-Name: <?= $this->escape($values['name']) ?>
-<p>
-<?= nl2br($this->escape($values['message'])) ?>
-</p>
+    <p><b><?= $translation->get('contact', 'contact') ?></b></p>
+    <p>
+        Email: <?= $this->escape($email) ?><br>
+        <?= $translation->get('contact', 'name') ?>: <?= $this->escape($name) ?>
+    </p>
+    <p>
+        <?= nl2br($this->escape($message)) ?>
+    </p>
 </body>
 </html>

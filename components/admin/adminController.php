@@ -43,7 +43,7 @@ abstract class AdminController extends Controller {
         $query = [];
         $query['where'] = $this->getFilterWhere();
         $query['join'] = $this->getFilterJoins();
-        $pager = new Pager('admin', $listParams);
+        $pager = new Pager($this->indexRoute, $listParams);
         $pager->setCount($table->count($query));
         $query['order'] = [$listParams['orderby'] => $listParams['orderdir']];
         $query['limit'] = [$pager->getPage() * $pager->getStep(), $pager->getStep()];
@@ -65,7 +65,7 @@ abstract class AdminController extends Controller {
         return $this->respondLayout(':admin/layout', ':admin/index');
     }
     
-    private function processFilterForm() {
+    protected function processFilterForm() {
         $this->filterForm = $this->formFactory->createFilterForm();
         if ($this->filterForm) {
             $this->filterForm->bind();

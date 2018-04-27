@@ -1,0 +1,19 @@
+<h1><?= $translation->get('contactAdmin', 'view_contact') ?></h1>
+<table>
+    <tr>
+        <td>Email:&nbsp;&nbsp;&nbsp;</td>
+        <td><?= $this->escape($contact->get('email')) ?></td>
+    </tr>    
+    <tr>
+        <td><?= $translation->get('contact', 'name') ?>:&nbsp;&nbsp;&nbsp;</td>
+        <td><?= $this->escape($contact->get('name')) ?></td>
+    </tr>
+    <tr>
+        <td><?= $translation->get('contactAdmin', 'created_on') ?>:&nbsp;&nbsp;&nbsp;</td>
+        <td><?= date('Y-m-d H:i', $contact->get('created_on')) ?></td>
+    </tr>
+</table>
+<div style="margin: 20px 0px">
+    <?= nl2br($this->escape($contact->get('message'))) ?>
+</div>
+<a href="<?= $router->getUrl($indexRoute, $params) ?>" class="button"><i class="fa fa-chevron-circle-left"></i> <?= $translation->get('admin', 'back') ?></a>

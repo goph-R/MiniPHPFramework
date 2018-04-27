@@ -11,7 +11,7 @@ class PageAdminController extends AdminController {
         parent::__construct();
         $im = InstanceManager::getInstance();
         $this->pageTableFactory = $im->get('pageTableFactory');
-        $this->indexRoute = 'admin/page';
+        $this->indexRoute = 'admin/pages';
         $this->indexTitle = $this->translation->get('pageAdmin', 'pages');
         $this->editRoute = 'admin/page/edit';
         $this->editTitle = $this->translation->get('pageAdmin', 'edit_page');

@@ -37,11 +37,11 @@ class User {
     }
 
     public function setLoggedIn($in) {
-        $this->set('user.hash', $in ? $this->getHash() : '');
+        $this->set('hash', $in ? $this->getHash() : '');
     }
 
     public function isLoggedIn() {
-        return $this->get('user.hash') == $this->getHash();
+        return $this->get('hash') == $this->getHash();
     }
 
     public function destroy() {
@@ -49,16 +49,16 @@ class User {
     }
 
     public function setFlash($name, $message) {
-        $this->set('user.flash.'.$name, $message);
+        $this->set('flash.'.$name, $message);
     }
 
     public function hasFlash($name) {
-        return $this->get('user.flash.'.$name, '') ? true : false;
+        return $this->get('flash.'.$name, '') ? true : false;
     }
 
     public function getFlash($name) {
-        $result = $this->get('user.flash.'.$name, '');
-        $this->setFlash($name, '');
+        $result = $this->get('flash.'.$name, '');
+        $this->set('flash.'.$name, null);
         return $result;
     }
 

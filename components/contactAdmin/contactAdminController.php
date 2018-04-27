@@ -30,7 +30,8 @@ class ContactAdminController extends AdminController {
 
     protected function createActionButtons() {
         return [
-            new ActionButton('admin/contact/view', 'eye')
+            new ActionButton('admin/contact/view', 'eye'),
+            new ConfirmActionButton('admin/contact/delete', 'trash')
         ];
     }
 
@@ -60,5 +61,20 @@ class ContactAdminController extends AdminController {
 
     protected function saveForm(Record $record, Form $form) {
         return null;
+    }
+    
+    public function view() {
+        if (!$this->user->hasPermission('admin')) {
+            return $this->redirect();
+        }
+        $this->processFilterForm();
+        $params = $this->getListParams();
+        $table = $this->createTable();
+        $pkValues = $this->getPrimaryKeyValues($table);
+        $contact = $table->findOneByPrimaryKeys($pkValues);
+        $this->view->set('contact', $contact);
+        $this->view->set('indexRoute', $this->indexRoute);
+        $this->view->set('params', $params);
+        $this->respondLayout(':admin/layout', ':contactAdmin/view');
     }
 }

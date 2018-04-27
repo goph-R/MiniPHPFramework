@@ -22,7 +22,7 @@ class ContactController extends Controller {
     public function index() {
         $form = $this->contactFormFactory->createContactForm();
         if ($this->contactService->processForm($form)) {
-            return $this->redirect();
+            return $this->redirect('contact');
         }
         $this->view->set('form', $form);
         $this->respondLayout(':core/layout', ':contact/contact');

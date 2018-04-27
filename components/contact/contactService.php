@@ -21,12 +21,18 @@ class ContactService {
      * @var Translation
      */
     private $translation;
+    
+    /**
+     * @var Config
+     */
+    private $config;
 
     public function __construct() {
         $im = InstanceManager::getInstance();
         $this->user = $im->get('user');
         $this->mailer = $im->get('mailer');
         $this->translation = $im->get('translation');
+        $this->config = $im->get('config');
         $tableFactory = $im->get('contactTableFactory');
         $this->table = $tableFactory->createContact();
 
@@ -42,7 +48,7 @@ class ContactService {
 
     private function sendEmail($values) {
         $this->mailer->init();
-        $this->mailer->addAddress($values['email']);
+        $this->mailer->addAddress($this->config->get('application.admin_email'));
         $this->mailer->set($values);
         return $this->mailer->send('Contact', ':contact/email');
     }

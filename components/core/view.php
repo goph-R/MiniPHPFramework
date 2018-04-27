@@ -6,6 +6,11 @@ class View {
      * @var Config
      */
     private $config;
+    
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     private $attributes = [];
     private $scripts = [];
@@ -16,6 +21,7 @@ class View {
     public function __construct() {
         $im = InstanceManager::getInstance();
         $this->config = $im->get('config');
+        $this->logger = $im->get('logger');
     }
 
     public function addScript($script) {
@@ -94,6 +100,7 @@ class View {
     }
 
     public function fetch($path, $vars=[]) {
+        $this->logger->info("Fetching: $path");
         $path = $this->findPath($path);
         ob_start();
         extract($this->attributes);
