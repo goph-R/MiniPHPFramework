@@ -20,8 +20,15 @@ header {
     line-height: 40px;
     padding-left: 10px;
 }
-header div {
+header .icons {
     float: right;
+}
+header .icons a {
+    color: #aaa;
+    padding-right: 10px;
+}
+header .icons a:hover {
+    color: #eee;
 }
 nav {
     grid-area: nav;

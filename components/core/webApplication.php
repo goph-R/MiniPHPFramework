@@ -37,9 +37,11 @@ class WebApplication {
         $im->add('response', new Response());
         $im->add('router', new Router());
         $im->add('view', new View());
+        $im->get('view')->addPath('core', 'components/core/templates');
         $im->add('user', new User());
         $im->add('mailer', new Mailer());
         $im->add('translation', new Translation());
+        $im->get('translation')->add('core', 'components/core/translations');
         $app = new WebApplication();
         $im->add('app', $app);
         $im->initComponents($components);
@@ -65,8 +67,6 @@ class WebApplication {
     }
     
     private function runCore() {
-        $this->im->get('translation')->add('core', 'components/core/translations');
-        $this->im->get('view')->addPath('core', 'components/core/templates');
         $route = $this->router->queryCurrent();
         $found = false;
         if ($route) {

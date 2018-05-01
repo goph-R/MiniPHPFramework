@@ -25,7 +25,8 @@ class ConfirmScript {
 
     protected function getTexts() {
         return [
-            'delete' => $this->translation->get('core', 'confirm_delete')
+            'delete' => $this->translation->get('core', 'confirm_delete'),
+            'logout' => $this->translation->get('core', 'confirm_logout')
         ];
     }
 

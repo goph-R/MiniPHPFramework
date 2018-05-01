@@ -15,3 +15,9 @@ $translation->add('admin', 'components/admin/translations');
 // add media browser
 $router->add('mediabrowser', 'MediaBrowserController', 'index');
 $view->addPath('browser', 'components/admin/mediabrowser/templates');
+
+// add settings
+$router->add('admin/settings', 'AdminSettingsController', 'index');
+
+$confirmScript = $im->get('confirmScript');
+$confirmScript->add();

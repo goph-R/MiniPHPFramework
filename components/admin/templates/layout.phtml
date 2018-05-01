@@ -13,6 +13,10 @@
 <body class="wrapper">
     <header>
         Admin
+        <div class="icons">
+            <a href="<?= $router->getUrl('admin/settings') ?>" title="<?= $translation->get('user', 'settings') ?>"><i class="fa fa-cog"></i></a>
+            <a href="javascript:Confirm.redirect('logout', '<?= $router->getUrl('logout') ?>')" title="<?= $translation->get('user', 'logout') ?>"><i class="fa fa-power-off"></i></a>
+        </div>
     </header>
     <nav>
         <ul>

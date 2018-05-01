@@ -12,6 +12,7 @@ class ContactFormFactory {
         $form->addValidator('email', new EmailValidator());
         $form->addInput(['contact', 'name'], new TextInput('name'));
         $form->addInput(['contact', 'message'], new TextareaInput('message'));
+        $form->addInput('', new CheckboxInput('check', 1, "Check"));
         return $form;
     }
 

@@ -40,6 +40,8 @@ class Form {
     protected $errors = [];
     protected $name = 'form';
 
+    protected $action;
+
     public function __construct() {
         $im = InstanceManager::getInstance();
         $this->request = $im->get('request');

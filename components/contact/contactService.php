@@ -57,6 +57,9 @@ class ContactService {
         if (!$form->processInput()) {
             return false;
         }
+        if ($form->getValue('check')) {
+            return false;
+        }
         $values = $form->getValues();
         $this->add($values);
         if (!$this->sendEmail($values)) {

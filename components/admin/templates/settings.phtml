@@ -1,0 +1,16 @@
+<h1><?= $translation->get('user', 'settings') ?></h1>
+<?php if ($user->hasFlash('settings_messages')): ?>
+    <div class="info-box">
+        <ul>
+            <?php foreach ($user->getFlash('settings_messages') as $message): ?>
+                <li><?= $message ?></li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+<?php endif ?>
+<form action="<?= $router->getUrl('admin/settings') ?>" method="post">
+    <?= $form->fetch() ?>
+    <div class="form-row">
+        <button class="default-button" type="submit"><i class="fa fa-pencil-alt"></i> <?= $translation->get('user', 'save_settings') ?></button>
+    </div>
+</form>
