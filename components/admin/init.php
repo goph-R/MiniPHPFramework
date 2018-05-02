@@ -14,7 +14,9 @@ $translation->add('admin', 'components/admin/translations');
 
 // add media browser
 $router->add('mediabrowser', 'MediaBrowserController', 'index');
-$view->addPath('browser', 'components/admin/mediabrowser/templates');
+$router->add('mediabrowser/folders/:id', 'MediaBrowserController', 'folders');
+$view->addPath('browser', 'components/admin/mediaBrowser/templates');
+
 
 // add settings
 $router->add('admin/settings', 'AdminSettingsController', 'index');

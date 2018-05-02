@@ -10,22 +10,24 @@
         Media
     </header>
     <nav>
-        <div class="nav-grid">
+        <div>
             <div class="buttons">
                 <a href="#" title="Add"><i class="fa fa-plus-circle"></i></a>
                 <a href="#" title="Rename"><i class="fa fa-pencil-alt"></i></a>
                 <a href="#" title="Delete"><i class="fa fa-trash"></i></a>
                 <div class="clear"></div>        
             </div>
-            <ul>
-                <li><a style="padding-left: 0px" href="#"><i class="fa fa-folder-open"></i><span>Home</span></a></li>
-                <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder-open"></i><span>Folder 1</span></a></li>
-                <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 1</span></a></li>
-                <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
-                <li class="selected"><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
-                <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
-                <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
-            </ul>
+            <div id="folders">
+                <ul>
+                    <li><a style="padding-left: 0px" href="#"><i class="fa fa-folder-open"></i><span>Home</span></a></li>
+                    <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder-open"></i><span>Folder 1</span></a></li>
+                    <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 1</span></a></li>
+                    <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
+                    <li class="selected"><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
+                    <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
+                    <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
+                </ul>
+            </div>
         </div>
     </nav>
     <main>
@@ -62,6 +64,16 @@
             <?php endfor ?>
         </div>        
     </main>
+    
+    <script type="text/javascript" src="components/admin/mediaBrowser/static/browser.js"></script>
+    <script type="text/javascript">
+        MediaBrowser.init({
+            foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>'
+        });
+        MediaBrowser.addFolder(<?= json_encode($folder) ?>);
+        
+        MediaBrowser.renderFolders();
+    </script>
     
     
 </body>

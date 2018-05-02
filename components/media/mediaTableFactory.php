@@ -11,6 +11,7 @@ class MediaTableFactory {
         $table->addColumn(new IntegerColumn('created_on'));
         $table->addColumn(new StringColumn('name', 255));
         $table->addColumn(new StringColumn('extension', 255));
+        $table->addColumn(new StringColumn('hash', 255));
         return $table;
     }
     
