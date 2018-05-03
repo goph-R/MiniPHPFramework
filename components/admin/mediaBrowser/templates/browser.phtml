@@ -17,17 +17,7 @@
                 <a href="#" title="Delete"><i class="fa fa-trash"></i></a>
                 <div class="clear"></div>        
             </div>
-            <div id="folders">
-                <ul>
-                    <li><a style="padding-left: 0px" href="#"><i class="fa fa-folder-open"></i><span>Home</span></a></li>
-                    <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder-open"></i><span>Folder 1</span></a></li>
-                    <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 1</span></a></li>
-                    <li><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
-                    <li class="selected"><a style="padding-left: 48px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
-                    <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 2</span></a></li>
-                    <li><a style="padding-left: 24px" href="#"><i class="fa fa-folder"></i><span>Folder 3</span></a></li>
-                </ul>
-            </div>
+            <div id="folders"></div>
         </div>
     </nav>
     <main>
@@ -43,36 +33,18 @@
             <a href="#" style="width:auto;"><i class="fa fa-upload"></i> Upload</a>
             <div class="clear"></div>        
         </div>
-        <div class="items">
-            <a href="#" class="item">            
-                <i class="fa fa-file"></i>
-                File-1.txt
-            </a>
-            <a href="#" class="item">            
-                <i class="fa fa-file"></i>
-                Very-Long-Filename-Because-Why-Not.txt
-            </a>
-            <a href="#" class="item selected">            
-                <i class="fa fa-file"></i>
-                VeryLongFilenameBecauseWhyNot.txt
-            </a>            
-            <?php for ($i = 2; $i < 15; $i++): ?>
-                <a href="#" class="item">            
-                    <i class="fa fa-file"></i>
-                    File-<?= $i ?>.txt
-                </a>
-            <?php endfor ?>
-        </div>        
+        <div id="files" class="items"></div>
     </main>
     
     <script type="text/javascript" src="components/admin/mediaBrowser/static/browser.js"></script>
     <script type="text/javascript">
         MediaBrowser.init({
-            foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>'
+            foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>',
+            filesRequestUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
+            thumbnailRequestUrl: '<?= $router->getUrl('mediabrowser/thumbnail') ?>'
         });
         MediaBrowser.addFolder(<?= json_encode($folder) ?>);
-        
-        MediaBrowser.renderFolders();
+        MediaBrowser.clickFolder(<?= $folder['id'] ?>);
     </script>
     
     

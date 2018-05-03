@@ -55,7 +55,11 @@ class Record {
     }
 
     public function getAttributes() {
-        return $this->attributes;
+        $result = [];
+        foreach (array_keys($this->attributes) as $name) {
+            $result[$name] = $this->get($name);
+        }
+        return $result;
     }
 
     public function set($name, $value=null, $modified=true) {

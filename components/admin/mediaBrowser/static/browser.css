@@ -91,6 +91,7 @@ main .buttons a {
     font-size: 80px;
     display: block;
     margin-bottom: 5px;
+    height: 90px;
 }
 .item {
     text-align: center;
@@ -104,6 +105,19 @@ main .buttons a {
     color: #444;
     text-overflow: ellipsis;
     overflow: hidden;    
+}
+.item span {
+    position: relative;
+    display: block;
+    height: 90px;
+}
+.item span img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 a.item:hover {
     color: #000;
