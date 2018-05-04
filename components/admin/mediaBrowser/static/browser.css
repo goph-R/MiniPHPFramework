@@ -88,9 +88,9 @@ main .buttons a {
     margin-left: 5px;
 }
 .item i {
-    font-size: 80px;
+    font-size: 70px;
+    line-height: 90px;
     display: block;
-    margin-bottom: 5px;
     height: 90px;
 }
 .item {
@@ -165,7 +165,9 @@ nav li span {
 .clear {
     clear: both;
 }
-
+#file_use_button {
+    display: none;
+}
 @media (min-width: 768px) {
     .wrapper {
         grid-template-rows: 40px auto 0px;

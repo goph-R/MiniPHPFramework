@@ -12,25 +12,25 @@
     <nav>
         <div>
             <div class="buttons">
-                <a href="#" title="Add"><i class="fa fa-plus-circle"></i></a>
-                <a href="#" title="Rename"><i class="fa fa-pencil-alt"></i></a>
-                <a href="#" title="Delete"><i class="fa fa-trash"></i></a>
+                <a id="folder_add_button" class="disabled" title="Add"><i class="fa fa-plus-circle"></i></a>
+                <a id="folder_rename_button" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
+                <a id="folder_delete_button" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
                 <div class="clear"></div>        
             </div>
             <div id="folders"></div>
         </div>
     </nav>
     <main>
-        <a href="javascript:window.opener.CKEDITOR.tools.callFunction(<?= $request->get('CKEditorFuncNum') ?>, 'http://dynart.net/images/logo2.png')" class="insert"><i class="fa fa-check-circle"></i>Use the selected</a>
+        <a id="file_use_button" href="javascript:window.opener.CKEDITOR.tools.callFunction(<?= $request->get('CKEditorFuncNum') ?>, 'http://dynart.net/images/logo2.png')" class="insert"><i class="fa fa-check-circle"></i>Use the selected</a>
         <div class="path">
             <a href="#">Home</a> /
             <a href="#">Folder 1</a> /
             Folder 3
         </div>
         <div class="buttons">
-            <a href="#" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
-            <a href="#" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
-            <a href="#" style="width:auto;"><i class="fa fa-upload"></i> Upload</a>
+            <a id="file_delete_button" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
+            <a id="file_rename_button" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
+            <a id="file_upload_button" class="disabled" style="width:auto;"><i class="fa fa-upload"></i> Upload</a>
             <div class="clear"></div>        
         </div>
         <div id="files" class="items"></div>
@@ -39,11 +39,14 @@
     <script type="text/javascript" src="components/admin/mediaBrowser/static/browser.js"></script>
     <script type="text/javascript">
         MediaBrowser.init({
+            locale: '<?= $request->get('locale') ?>',
             foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>',
             filesRequestUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
-            thumbnailRequestUrl: '<?= $router->getUrl('mediabrowser/thumbnail') ?>'
+            thumbnailRequestUrl: '<?= $router->getUrl('mediabrowser/thumbnail') ?>',            
+            newFolderRequestUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
+            renameFolderRequestUrl: '<?= $router->getUrl('mediabrowser/renamefolder') ?>'
         });
-        MediaBrowser.addFolder(<?= json_encode($folder) ?>);
+        MediaBrowser.pushFolder(<?= json_encode($folder) ?>);
         MediaBrowser.clickFolder(<?= $folder['id'] ?>);
     </script>
     

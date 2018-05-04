@@ -18,6 +18,11 @@ class MediaService {
      */
     private $table;
     
+    /**
+     * @var User
+     */
+    private $user;
+    
     private $mediaPath;
     private $thumbQuality;
     private $path;
@@ -26,6 +31,7 @@ class MediaService {
         $im = InstanceManager::getInstance();
         $config = $im->get('config');
         $tableFactory = $im->get('mediaTableFactory');
+        $this->user = $im->get('user');
         $this->table = $tableFactory->createMedia();
         $defaultPath = $config->get('application.path').'media/';
         $this->mediaPath = $config->get('media.path', $defaultPath);        
@@ -44,6 +50,19 @@ class MediaService {
             ]
         ]);        
     }
+    
+    /**
+     * @param int $id
+     * @return Record
+     */
+    public function findByParentIdAndName($parentId, $name) {
+        return $this->table->findOne(null, [
+            'where' => [
+                ['parent_id', '=', $parentId],
+                [['LOWER(name)'], '=', mb_strtolower($name)]
+            ]
+        ]);        
+    }    
     
     /**
      * @param int
@@ -85,6 +104,25 @@ class MediaService {
         ]);        
     }
     
+    private function getFilePath($hash) {        
+        $firstDir = mb_substr($hash, 0, 2).'/';
+        $secondDir = mb_substr($hash, 2, 2).'/';
+        return $this->mediaPath.$firstDir.$secondDir.$hash;
+    }
+    
+    private function createThumbPath($hash, $width, $height) {
+        $parts = ['thumbs', $width.'x'.$height, mb_substr($hash, 0, 2), mb_substr($hash, 2, 2)];
+        $path = $this->mediaPath;
+        foreach ($parts as $part) {
+            $path .= $part.'/';
+            if (!file_exists($path)) {
+                mkdir($path, 0755);
+            }
+        }
+        $path .= $hash;
+        return $path;
+    }
+    
     /**
      * @param Record
      * @param int
@@ -93,16 +131,11 @@ class MediaService {
      */
     public function createThumbnail($media, $width, $height) {
         $hash = $media->get('hash');
-        $firstDir = mb_substr($hash, 0, 2).'/';
-        $secondDir = mb_substr($hash, 2, 2).'/';
-        $basename = $firstDir.$secondDir.$hash;
-        $filePath = $this->mediaPath.$basename;
-        $thumbsPath = $this->mediaPath.'/thumbs/';
-        $thumbPath = $thumbsPath.$basename;
+        $filePath = $this->getFilePath($hash);
+        $thumbPath = $this->createThumbPath($hash, $width, $height);
         if (file_exists($thumbPath)) {
             return $thumbPath;
         }
-        $this->createThumbnailDirectories($thumbsPath, $firstDir, $secondDir);
         $srcImg = $this->createImage($filePath);
         $dstImg = $this->resizeImageKeepRatio($srcImg, $width, $height);
         imagejpeg($dstImg, $thumbPath, $this->thumbQuality);
@@ -138,16 +171,23 @@ class MediaService {
         return $srcImg;
     }
     
-    private function createThumbnailDirectories($thumbsPath, $firstDir, $secondDir) {
-        if (!file_exists($thumbsPath)) {
-            mkdir($thumbsPath, 0755);
-        }
-        if (!file_exists($thumbsPath.$firstDir)) {
-            mkdir($thumbsPath.$firstDir, 0755);
-        }
-        if (!file_exists($thumbsPath.$firstDir.$secondDir)) {
-            mkdir($thumbsPath.$firstDir.$secondDir, 0755);
-        }
+    public function newFolder($parentId, $name) {
+        $record = $this->table->createRecord([
+            'parent_id' => $parentId,
+            'name' => $name,            
+            'extension' => '',
+            'type' => self::TYPE_FOLDER,
+            'user_id' => $this->user->get('id'),
+            'created_on' => time(),
+            'hash' => ''
+        ]);
+        $record->save();
+    }
+    
+    public function renameFolder($id, $name) {
+        $record = $this->findById($id);
+        $record->set('name', $name);
+        $record->save();
     }
     
 }

@@ -17,6 +17,21 @@ class Request {
         $this->data = $_REQUEST;
         $this->headers = $_SERVER;
         $this->config = $im->get('config');
+        $this->processJsonData();
+    }
+    
+    private function processJsonData() {
+        $json = file_get_contents('php://input');
+        if (!$json) {
+            return;
+        }
+        $data = json_decode($json, true);
+        if (!is_array($data)) {
+            return;
+        }
+        foreach ($data as $name => $value) {
+            $this->set($name, $value);
+        }
     }
 
     public function get($name, $defaultValue = null) {

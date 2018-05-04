@@ -4,7 +4,17 @@ var MediaBrowser = {
     files: [],
     selectedFile: -1,
     openedFolders: [],
-    selectedFolder: -1,    
+    selectedFolder: -1,
+    
+    locale: 'en',
+    
+    folderDeleteButton: document.getElementById('folder_delete_button'),
+    folderRenameButton: document.getElementById('folder_rename_button'),
+    folderAddButton: document.getElementById('folder_add_button'),
+    fileDeleteButton: document.getElementById('file_delete_button'),
+    fileRenameButton: document.getElementById('file_rename_button'),
+    fileUploadButton: document.getElementById('file_upload_button'),    
+    fileUseButton: document.getElementById('file_use_button'),
     
     iconByExtension: {
         'doc': 'word',
@@ -38,28 +48,40 @@ var MediaBrowser = {
         'gif': 'image'
     },
     
+    imageExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+    
     init: function(options) {
+        MediaBrowser.locale = options.locale || 'en';
         MediaBrowser.foldersRequestUrl = options.foldersRequestUrl || '';
         MediaBrowser.filesRequestUrl = options.filesRequestUrl || '';
         MediaBrowser.thumbnailRequestUrl = options.thumbnailRequestUrl || '';
+        MediaBrowser.newFolderRequestUrl = options.newFolderRequestUrl || '';
+        MediaBrowser.renameFolderRequestUrl = options.renameFolderRequestUrl || '';
+        MediaBrowser.folderAddButton.addEventListener('click', MediaBrowser.newFolder);
+        MediaBrowser.folderRenameButton.addEventListener('click', MediaBrowser.renameFolder);
     },
     
     ajaxRequest: function(options) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                options.success(xhr);
+            if (this.readyState !== 4) {
+                return;
             }
-            if ((this.readyState === 3 || this.readyState === 4) && this.status !== 200) {
+            if (this.status === 200) {
+                options.success(xhr);
+            } else {
                 alert('Request failed (Status: ' + this.status + ')');
             }
         };
-        var method = options.method || 'get';
+        var method = options.method || 'post';
         var async = options.async || true;
-        var data = options.data || {};
+        var data = options.data || {};        
         var url = options.url;
-        xhr.open(method.toUpperCase(), url, async);
-        xhr.send(data);
+        data['locale'] = MediaBrowser.locale;
+        method = method.toUpperCase();
+        xhr.open(method, url, async);
+        xhr.overrideMimeType('application/json');
+        xhr.send(JSON.stringify(data));
     },
             
     escapeString: function(str) {
@@ -73,6 +95,26 @@ var MediaBrowser = {
         });
     },
     
+    adjustButtons: function() {
+        var folderAddUploadClassName = 'disabled';
+        var folderDeleteRenameClassName = 'disabled';
+        var fileClassName = MediaBrowser.selectedFile === -1 ? 'disabled' : '';
+        if (MediaBrowser.selectedFolder !== -1) {
+            folderAddUploadClassName = '';
+            var folder = MediaBrowser.findFolderById(MediaBrowser.selectedFolder, MediaBrowser.folders);
+            if (folder.parent_id) {
+                folderDeleteRenameClassName = '';
+            }
+        }
+        MediaBrowser.fileUseButton.style.display = MediaBrowser.selectedFile === -1 ? 'none' : 'block';
+        MediaBrowser.folderAddButton.className = folderAddUploadClassName;
+        MediaBrowser.folderDeleteButton.className = folderDeleteRenameClassName;
+        MediaBrowser.folderRenameButton.className = folderDeleteRenameClassName;
+        MediaBrowser.fileUploadButton.className = folderAddUploadClassName;
+        MediaBrowser.fileDeleteButton.className = fileClassName;
+        MediaBrowser.fileRenameButton.className = fileClassName;
+    },
+    
     refreshFolder: function(oldFolder, folder) {
         for (var prop in folder) {
             if (folder.hasOwnProperty(prop)) {
@@ -81,28 +123,42 @@ var MediaBrowser = {
         }        
     },
     
-    addFolder: function(folder) {
-        var folders = MediaBrowser.folders;
-        var oldFolder = MediaBrowser.findFolderById(folder.id, folders);
+    pushFolder: function(folder) {        
+        // check for existing folder
+        var oldFolder = MediaBrowser.findFolderById(folder.id, MediaBrowser.folders);
         if (oldFolder !== null) {
             return MediaBrowser.refreshFolder(oldFolder, folder);
         }
-        var parent = MediaBrowser.findFolderById(folder.parent_id, folders);
-        if (parent !== null) {
-            folders = parent.folders;
-        }
+        // init folder's children
         folder.folders = [];
-        folders.push(folder);
+        // find parent
+        var parentFolders = MediaBrowser.folders;
+        var parent = MediaBrowser.findFolderById(folder.parent_id, MediaBrowser.folders);
+        if (parent !== null) {
+            parentFolders = parent.folders;
+        }        
+        // add the folder to the parent's folder list while keeping alphabetic order
+        for (var i = 0; i < parentFolders.length; i++) {
+            var f = parentFolders[i];
+            if (folder.name < f.name) {
+                parentFolders.splice(i, 0, folder);
+                return;
+            }
+        }
+        parentFolders.push(folder);
     },
     
     findFolderById: function(folderId, folders) {
-        for (var i = 0; i < folders.length; i++) {
+        for (var i = 0; i < folders.length; i++) {            
             var f = folders[i];
             if (f.id === folderId) {
                 return f;
             }
             if (f.folders.length) {
-                return MediaBrowser.findFolderById(folderId, f.folders);
+                var found = MediaBrowser.findFolderById(folderId, f.folders);
+                if (found) {
+                    return found;
+                }
             }
         }
         return null;
@@ -120,26 +176,28 @@ var MediaBrowser = {
         }
     },
     
-    requireFolders: function(id, callback) {
+    requestFolders: function(id) {
         MediaBrowser.ajaxRequest({
             url: MediaBrowser.foldersRequestUrl + '/' + id,
-            method: 'post',
             success: function(xhr) {
                 var folders = JSON.parse(xhr.responseText);
                 for (var i = 0; i < folders.length; i++) {
-                    MediaBrowser.addFolder(folders[i]);
+                    MediaBrowser.pushFolder(folders[i]);
                 }
-                callback();
+                MediaBrowser.renderFolders();
+                MediaBrowser.adjustButtons();
             }
         });
     },
     
-    requireFiles: function(id) {
+    requestFiles: function(id) {
         MediaBrowser.ajaxRequest({
             url: MediaBrowser.filesRequestUrl + '/' + id,
             success: function(xhr) {
+                MediaBrowser.selectedFile = -1;
                 MediaBrowser.files = JSON.parse(xhr.responseText);
                 MediaBrowser.renderFiles();
+                MediaBrowser.adjustButtons();
             }            
         });
     },
@@ -150,20 +208,91 @@ var MediaBrowser = {
         var selected = id === MediaBrowser.selectedFolder;
         if (!selected) {
             MediaBrowser.selectedFolder = id;
-            MediaBrowser.requireFiles(id);
+            MediaBrowser.adjustButtons();
+            MediaBrowser.requestFiles(id);
         }        
         if (selected && opened) {
             MediaBrowser.openedFolders.splice(index, 1);
             MediaBrowser.renderFolders();
         } else if (!opened) {
             MediaBrowser.openedFolders.push(id);
-            MediaBrowser.requireFolders(id, MediaBrowser.renderFolders);
+            MediaBrowser.requestFolders(id);
         } else {
             MediaBrowser.renderFolders();
         }        
     },
     
-    goToFolder: function(id) {
+    clickFile: function(id) {
+        var elem;
+        if (MediaBrowser.selectedFile !== -1) {
+            elem = document.querySelector('a[data-id="' + MediaBrowser.selectedFile + '"]');
+            elem.className = 'item';
+        }
+        MediaBrowser.selectedFile = id;
+        elem = document.querySelector('a[data-id="' + id + '"]');
+        elem.className = 'item selected';
+        MediaBrowser.adjustButtons();
+    },
+    
+    newFolder: function(event, defaultName) {
+        if (MediaBrowser.selectedFolder === -1) {
+            return alert('Please select a folder!');
+        }
+        var parentId = MediaBrowser.selectedFolder;
+        var name = prompt('New name', defaultName || '');
+        if (name === null) {
+            return;
+        }
+        MediaBrowser.ajaxRequest({
+            'url': MediaBrowser.newFolderRequestUrl,
+            'data': {
+                'name': name,
+                'parent_id': parentId
+            },
+            'success': function(xhr) {
+                var data = JSON.parse(xhr.responseText);
+                var error = data.error || '';
+                if (error) {
+                    alert(error);
+                    MediaBrowser.newFolder(event, name);
+                } else {
+                    MediaBrowser.requestFolders(parentId);
+                }                    
+            }
+        });
+    },
+    
+    renameFolder: function(event) {
+        if (MediaBrowser.selectedFolder === -1) {
+            return alert('Please select a folder!');
+        }
+        var id = MediaBrowser.selectedFolder;
+        var folder = MediaBrowser.findFolderById(id, MediaBrowser.folders);
+        var name = prompt('Rename', folder.name);
+        if (name === null || name === folder.name) {
+            return;
+        }
+        MediaBrowser.ajaxRequest({
+            'url': MediaBrowser.renameFolderRequestUrl,
+            'data': {
+                'name': name,
+                'parent_id': folder.parent_id,
+                'id': id
+            },
+            'success': function(xhr) {
+                var data = JSON.parse(xhr.responseText);
+                var error = data.error || '';
+                if (error) {
+                    alert(error);
+                    MediaBrowser.renameFolder(event);
+                } else {
+                    MediaBrowser.requestFolders(folder.parent_id);
+                }                    
+            }
+        });        
+    },
+    
+    goToFile: function(id) {
         
     },
     
@@ -192,28 +321,35 @@ var MediaBrowser = {
     renderFiles: function() {
         var html = '';
         for (var i = 0; i < MediaBrowser.files.length; i++) {
-            var f = MediaBrowser.files[i];
-            var name = f.name;
-            var icon = 'fa-file';
-            var ext = '';
-            if (f.extension) {
-                ext = f.extension.toLowerCase();
-                name += '.' + f.extension;
-                if (MediaBrowser.iconByExtension.hasOwnProperty(ext)) {
-                    icon += '-' + MediaBrowser.iconByExtension[ext];
-                }
-            }            
-            html += '<a href="#" class="item">';
-            if (ext === 'jpeg' || ext === 'jpg' || ext === 'png' || ext === 'gif') {
-                html += '<span><img src="' + MediaBrowser.thumbnailRequestUrl + '/' + f.id+ '"></span>';
-            } else {
-                html += '<i class="fa ' + icon + '"></i>';
-            }
-            html += name;
-            html += '</a>';
+            html += MediaBrowser.renderFile(MediaBrowser.files[i]);
         }
         var elem = document.getElementById('files');
         elem.innerHTML = html;        
+    },
+    
+    renderFile: function(f) {
+        var html = '';
+        var name = f.name;
+        var icon = 'fa-file';
+        var ext = '';
+        if (f.extension) {
+            ext = f.extension.toLowerCase();
+            name += '.' + f.extension;
+            if (MediaBrowser.iconByExtension.hasOwnProperty(ext)) {
+                icon += '-' + MediaBrowser.iconByExtension[ext];
+            }
+        }            
+        var isImage = MediaBrowser.imageExtensions.indexOf(ext) !== -1;
+        html += '<a href="javascript:MediaBrowser.clickFile(' + f.id + ')" class="item" data-id="' + f.id + '">';
+        if (isImage) {
+            var src = MediaBrowser.thumbnailRequestUrl + '/' + f.id;
+            html += '<span><img src="' + src + '"></span>';
+        } else {
+            html += '<i class="fa ' + icon + '"></i>';
+        }
+        html += name;
+        html += '</a>';
+        return html;
     }
     
 };

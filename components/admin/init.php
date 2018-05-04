@@ -17,6 +17,8 @@ $router->add('mediabrowser', 'MediaBrowserController', 'index');
 $router->add('mediabrowser/folders/:id', 'MediaBrowserController', 'folders');
 $router->add('mediabrowser/files/:id', 'MediaBrowserController', 'files');
 $router->add('mediabrowser/thumbnail/:id', 'MediaBrowserController', 'thumbnail');
+$router->add('mediabrowser/newfolder', 'MediaBrowserController', 'newFolder');
+$router->add('mediabrowser/renamefolder', 'MediaBrowserController', 'renameFolder');
 $view->addPath('browser', 'components/admin/mediaBrowser/templates');
 
 

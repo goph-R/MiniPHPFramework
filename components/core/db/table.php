@@ -354,11 +354,15 @@ class Table {
     public function escapeName($name) {
         $as = '';
         if (is_array($name)) {
+            if (count($name) == 1) {
+                return $name[0];
+            }
             $keys = array_keys($name);
-            $values = array_values($name);
+            $values = array_values($name);            
             $name = $keys[0];
             $as = $values[0];
         }
+        $name = str_replace('`', '', $name);
         if (strpos($name, '.') == -1) {
             $name = $this->name.'.'.$name;
         }
@@ -375,9 +379,9 @@ class Table {
             return $this->escapeName($value[0]);
         }
         $ret = $this->db->escape($value);
-        if (!is_numeric($value)) {
-            $ret = "'".$value."'";
-        }
+        //if (!is_numeric($value)) {
+        $ret = "'".$value."'";
+        //}
         return $ret;
     }
     

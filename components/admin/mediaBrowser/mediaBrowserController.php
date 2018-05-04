@@ -61,7 +61,7 @@ class MediaBrowserController extends Controller {
         $media = $this->mediaService->findById($id);
         if (!$media) {
             return $this->respond404();
-        }        
+        }
         $oneYearInSecs = 60*60*24*365;
         $path = $this->mediaService->createThumbnail($media, 90, 90);
         $expTime = gmdate('D, d M Y H:i:s', time() + $oneYearInSecs).' GMT';
@@ -71,6 +71,40 @@ class MediaBrowserController extends Controller {
         $this->response->setHeader('Pragma', 'cache');
         $this->response->setHeader('Cache-Control', 'max-age=$oneYearInSecs');
         $this->response->setContent(file_get_contents($path));
+    }
+    
+    public function newFolder() {
+        $parentId = $this->request->get('parent_id');
+        $name = trim($this->request->get('name'));
+        if ($this->folderNameIsOk($parentId, $name)) {
+            $this->mediaService->newFolder($parentId, $name);
+            $this->respondJson('ok');
+        }
+    }
+    
+    public function renameFolder() {
+        $parentId = $this->request->get('parent_id');
+        $name = trim($this->request->get('name'));
+        $id = $this->request->get('id');
+        if ($this->folderNameIsOk($parentId, $name)) {
+            $this->mediaService->renameFolder($id, $name);
+            $this->respondJson('ok');
+        }
+    }
+    
+    private function folderNameIsOk($parentId, $name) {
+        if (!$this->user->hasPermission('admin')) {
+            return false;
+        }
+        $folder = $this->mediaService->findById($parentId);
+        if (!$folder) {
+            return $this->respond404();
+        } else if ($name == '') {
+            return $this->respondJson(['error' => 'Please provide a name!']);
+        } else if ($this->mediaService->findByParentIdAndName($parentId, $name)) {
+            return $this->respondJson(['error' => 'The folder name exists.']);
+        }
+        return true;        
     }
     
 }
