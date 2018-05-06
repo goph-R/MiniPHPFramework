@@ -44,7 +44,8 @@
             filesRequestUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
             thumbnailRequestUrl: '<?= $router->getUrl('mediabrowser/thumbnail') ?>',            
             newFolderRequestUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
-            renameFolderRequestUrl: '<?= $router->getUrl('mediabrowser/renamefolder') ?>'
+            renameFolderRequestUrl: '<?= $router->getUrl('mediabrowser/renamefolder') ?>',
+            deleteFolderRequestUrl: '<?= $router->getUrl('mediabrowser/deletefolder') ?>'
         });
         MediaBrowser.pushFolder(<?= json_encode($folder) ?>);
         MediaBrowser.clickFolder(<?= $folder['id'] ?>);

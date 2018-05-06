@@ -2,9 +2,9 @@ var MediaBrowser = {
   
     folders: [],
     files: [],
-    selectedFile: -1,
+    selectedFile: null,
     openedFolders: [],
-    selectedFolder: -1,
+    selectedFolder: null,
     
     locale: 'en',
     
@@ -51,18 +51,26 @@ var MediaBrowser = {
     imageExtensions: ['jpg', 'jpeg', 'png', 'gif'],
     
     init: function(options) {
-        MediaBrowser.locale = options.locale || 'en';
-        MediaBrowser.foldersRequestUrl = options.foldersRequestUrl || '';
-        MediaBrowser.filesRequestUrl = options.filesRequestUrl || '';
-        MediaBrowser.thumbnailRequestUrl = options.thumbnailRequestUrl || '';
-        MediaBrowser.newFolderRequestUrl = options.newFolderRequestUrl || '';
-        MediaBrowser.renameFolderRequestUrl = options.renameFolderRequestUrl || '';
-        MediaBrowser.folderAddButton.addEventListener('click', MediaBrowser.newFolder);
-        MediaBrowser.folderRenameButton.addEventListener('click', MediaBrowser.renameFolder);
+        this.locale = options.locale || 'en';
+        this.foldersRequestUrl = options.foldersRequestUrl || '';
+        this.filesRequestUrl = options.filesRequestUrl || '';
+        this.thumbnailRequestUrl = options.thumbnailRequestUrl || '';
+        this.newFolderRequestUrl = options.newFolderRequestUrl || '';
+        this.renameFolderRequestUrl = options.renameFolderRequestUrl || '';
+        this.deleteFolderRequestUrl = options.deleteFolderRequestUrl || '';
+        this.folderAddButton.addEventListener('click', this.newFolder.bind(this));
+        this.folderRenameButton.addEventListener('click', this.renameFolder.bind(this));
+        this.folderDeleteButton.addEventListener('click', this.deleteFolder.bind(this));
     },
     
     ajaxRequest: function(options) {
         var xhr = new XMLHttpRequest();
+        var method = options.method || 'post';
+        var async = options.async || true;
+        var data = options.data || {};
+        var url = options.url;
+        data.locale = this.locale;
+        method = method.toUpperCase();
         xhr.onreadystatechange = function() {
             if (this.readyState !== 4) {
                 return;
@@ -73,12 +81,6 @@ var MediaBrowser = {
                 alert('Request failed (Status: ' + this.status + ')');
             }
         };
-        var method = options.method || 'post';
-        var async = options.async || true;
-        var data = options.data || {};        
-        var url = options.url;
-        data['locale'] = MediaBrowser.locale;
-        method = method.toUpperCase();
         xhr.open(method, url, async);
         xhr.overrideMimeType('application/json');
         xhr.send(JSON.stringify(data));
@@ -98,21 +100,20 @@ var MediaBrowser = {
     adjustButtons: function() {
         var folderAddUploadClassName = 'disabled';
         var folderDeleteRenameClassName = 'disabled';
-        var fileClassName = MediaBrowser.selectedFile === -1 ? 'disabled' : '';
-        if (MediaBrowser.selectedFolder !== -1) {
+        var fileClassName = this.selectedFile === null ? 'disabled' : '';
+        if (this.selectedFolder !== null) {
             folderAddUploadClassName = '';
-            var folder = MediaBrowser.findFolderById(MediaBrowser.selectedFolder, MediaBrowser.folders);
-            if (folder.parent_id) {
+            if (this.selectedFolder.parent_id) {
                 folderDeleteRenameClassName = '';
             }
         }
-        MediaBrowser.fileUseButton.style.display = MediaBrowser.selectedFile === -1 ? 'none' : 'block';
-        MediaBrowser.folderAddButton.className = folderAddUploadClassName;
-        MediaBrowser.folderDeleteButton.className = folderDeleteRenameClassName;
-        MediaBrowser.folderRenameButton.className = folderDeleteRenameClassName;
-        MediaBrowser.fileUploadButton.className = folderAddUploadClassName;
-        MediaBrowser.fileDeleteButton.className = fileClassName;
-        MediaBrowser.fileRenameButton.className = fileClassName;
+        this.fileUseButton.style.display = this.selectedFile === null ? 'none' : 'block';
+        this.folderAddButton.className = folderAddUploadClassName;
+        this.folderDeleteButton.className = folderDeleteRenameClassName;
+        this.folderRenameButton.className = folderDeleteRenameClassName;
+        this.fileUploadButton.className = folderAddUploadClassName;
+        this.fileDeleteButton.className = fileClassName;
+        this.fileRenameButton.className = fileClassName;
     },
     
     refreshFolder: function(oldFolder, folder) {
@@ -125,15 +126,15 @@ var MediaBrowser = {
     
     pushFolder: function(folder) {        
         // check for existing folder
-        var oldFolder = MediaBrowser.findFolderById(folder.id, MediaBrowser.folders);
+        var oldFolder = this.findFolderById(folder.id, this.folders);
         if (oldFolder !== null) {
-            return MediaBrowser.refreshFolder(oldFolder, folder);
+            return this.refreshFolder(oldFolder, folder);
         }
         // init folder's children
         folder.folders = [];
         // find parent
-        var parentFolders = MediaBrowser.folders;
-        var parent = MediaBrowser.findFolderById(folder.parent_id, MediaBrowser.folders);
+        var parentFolders = this.folders;
+        var parent = this.findFolderById(folder.parent_id, this.folders);
         if (parent !== null) {
             parentFolders = parent.folders;
         }        
@@ -155,7 +156,7 @@ var MediaBrowser = {
                 return f;
             }
             if (f.folders.length) {
-                var found = MediaBrowser.findFolderById(folderId, f.folders);
+                var found = this.findFolderById(folderId, f.folders);
                 if (found) {
                     return found;
                 }
@@ -167,18 +168,18 @@ var MediaBrowser = {
     findAllFoldersForRender: function(allFolders, folders, level) {
         for (var i = 0; i < folders.length; i++) {
             var f = folders[i];
-            var index = MediaBrowser.openedFolders.indexOf(f.id);
+            var index = this.openedFolders.indexOf(f.id);
             f.level = level;
             allFolders.push(f);
             if (f.folders.length && index !== -1) {
-                MediaBrowser.findAllFoldersForRender(allFolders, f.folders, level + 1);
+                this.findAllFoldersForRender(allFolders, f.folders, level + 1);
             }
         }
     },
     
     requestFolders: function(id) {
-        MediaBrowser.ajaxRequest({
-            url: MediaBrowser.foldersRequestUrl + '/' + id,
+        this.ajaxRequest({
+            url: this.foldersRequestUrl + '/' + id,
             success: function(xhr) {
                 var folders = JSON.parse(xhr.responseText);
                 for (var i = 0; i < folders.length; i++) {
@@ -191,65 +192,90 @@ var MediaBrowser = {
     },
     
     requestFiles: function(id) {
-        MediaBrowser.ajaxRequest({
-            url: MediaBrowser.filesRequestUrl + '/' + id,
+        this.ajaxRequest({
+            url: this.filesRequestUrl + '/' + id,
             success: function(xhr) {
-                MediaBrowser.selectedFile = -1;
+                MediaBrowser.selectedFile = null;
                 MediaBrowser.files = JSON.parse(xhr.responseText);
                 MediaBrowser.renderFiles();
                 MediaBrowser.adjustButtons();
             }            
         });
     },
+
+    getSelectedFolderId: function() {
+        if (this.selectedFolder !== null) {
+            return this.selectedFolder.id;
+        }
+        return 0;
+    },
+
+    getSelectedFileId: function() {
+        if (this.selectedFile !== null) {
+            return this.selectedFile.id;
+        }
+        return 0;
+    },
     
     clickFolder: function(id) {
-        var index = MediaBrowser.openedFolders.indexOf(id);
+        var index = this.openedFolders.indexOf(id);
         var opened = index !== -1;
-        var selected = id === MediaBrowser.selectedFolder;
+        var selected = id === this.getSelectedFolderId();
         if (!selected) {
-            MediaBrowser.selectedFolder = id;
-            MediaBrowser.adjustButtons();
-            MediaBrowser.requestFiles(id);
+            this.selectedFolder = this.findFolderById(id, this.folders);
+            this.selectedFile = null;
+            this.adjustButtons();
+            this.requestFiles(id);
         }        
         if (selected && opened) {
-            MediaBrowser.openedFolders.splice(index, 1);
-            MediaBrowser.renderFolders();
+            this.openedFolders.splice(index, 1);
+            this.renderFolders();
         } else if (!opened) {
-            MediaBrowser.openedFolders.push(id);
-            MediaBrowser.requestFolders(id);
+            this.openedFolders.push(id);
+            this.requestFolders(id);
         } else {
-            MediaBrowser.renderFolders();
+            this.renderFolders();
         }        
+    },
+
+    findFileById: function(id) {
+        for (var i = 0; i < this.files.length; i++) {
+            var f = this.files[i];
+            if (f.id === id) {
+                return f;
+            }
+        }
+        return null;
     },
     
     clickFile: function(id) {
         var elem;
-        if (MediaBrowser.selectedFile !== -1) {
-            elem = document.querySelector('a[data-id="' + MediaBrowser.selectedFile + '"]');
+        if (this.selectedFile !== null) {
+            elem = document.querySelector('a[data-id="' + this.selectedFile.id + '"]');
             elem.className = 'item';
         }
-        MediaBrowser.selectedFile = id;
+        this.selectedFile = this.findFileById(id);
         elem = document.querySelector('a[data-id="' + id + '"]');
         elem.className = 'item selected';
-        MediaBrowser.adjustButtons();
+        this.adjustButtons();
     },
     
     newFolder: function(event, defaultName) {
-        if (MediaBrowser.selectedFolder === -1) {
+        if (this.selectedFolder === null) {
             return alert('Please select a folder!');
         }
-        var parentId = MediaBrowser.selectedFolder;
+        var parentId = this.selectedFolder.id;
         var name = prompt('New name', defaultName || '');
         if (name === null) {
             return;
         }
-        MediaBrowser.ajaxRequest({
-            'url': MediaBrowser.newFolderRequestUrl,
-            'data': {
+        this.ajaxRequest({
+            url: this.newFolderRequestUrl,
+            data: {
                 'name': name,
                 'parent_id': parentId
             },
-            'success': function(xhr) {
+            success: function(xhr) {
                 var data = JSON.parse(xhr.responseText);
                 var error = data.error || '';
                 if (error) {
@@ -261,25 +287,35 @@ var MediaBrowser = {
             }
         });
     },
-    
-    renameFolder: function(event) {
-        if (MediaBrowser.selectedFolder === -1) {
+
+    getSelectedFolderForRenameOrDelete: function() {
+        var folder = this.selectedFolder;
+        if (folder === null) {
             return alert('Please select a folder!');
         }
-        var id = MediaBrowser.selectedFolder;
-        var folder = MediaBrowser.findFolderById(id, MediaBrowser.folders);
+        if (!folder.parent_id) {
+            return;
+        }
+        return folder;
+    },
+    
+    renameFolder: function(event) {
+        var folder = this.getSelectedFolderForRenameOrDelete();
+        if (!folder) {
+            return;
+        }
         var name = prompt('Rename', folder.name);
         if (name === null || name === folder.name) {
             return;
         }
-        MediaBrowser.ajaxRequest({
-            'url': MediaBrowser.renameFolderRequestUrl,
-            'data': {
+        this.ajaxRequest({
+            url: this.renameFolderRequestUrl,
+            data: {
                 'name': name,
                 'parent_id': folder.parent_id,
-                'id': id
+                'id': folder.id
             },
-            'success': function(xhr) {
+            success: function(xhr) {
                 var data = JSON.parse(xhr.responseText);
                 var error = data.error || '';
                 if (error) {
@@ -291,6 +327,26 @@ var MediaBrowser = {
             }
         });        
     },
+
+    deleteFolder: function(event) {
+        var folder = this.getSelectedFolderForRenameOrDelete();
+        if (!folder) {
+            return;
+        }
+        this.ajaxRequest({
+            url: this.deleteFolderRequestUrl,
+            data: {'id': folder.id},
+            success: function(xhr) {
+                var data = JSON.parse(xhr.responseText);
+                var error = data.error || '';
+                if (error) {
+                    alert(error);
+                } else {
+                    MediaBrowser.requestFolders(folder.parent_id);
+                }
+            }
+        });
+    },
     
     goToFile: function(id) {
         
@@ -298,32 +354,36 @@ var MediaBrowser = {
     
     renderFolders: function() {
         var allFolders = [];
-        MediaBrowser.findAllFoldersForRender(allFolders, MediaBrowser.folders, 0);
         var html = '<ul>';
+        var elem = document.getElementById('folders');
+        this.findAllFoldersForRender(allFolders, this.folders, 0);
         for (var i = 0; i < allFolders.length; i++) {
-            var f = allFolders[i];
-            var index = MediaBrowser.openedFolders.indexOf(f.id);
-            var selected = MediaBrowser.selectedFolder === f.id;
-            var icon = index === -1 ? '' : '-open';
-            html += '<li' + (selected ? ' class="selected"' : '') + '>';
-            html += '<a style="padding-left: ' + (f.level * 24) + 'px"';
-            html += ' href="javascript:MediaBrowser.clickFolder(' + f.id + ')">';
-            html += '<i class="fa fa-folder' + icon + '"></i>';
-            html += '<span>' + MediaBrowser.escapeString(f.name) + '</span>';
-            html += '</a>';
-            html += '</li>';
+            html += this.renderFolder(allFolders[i]);
         }
         html += '</ul>';
-        var elem = document.getElementById('folders');
         elem.innerHTML = html;
+    },
+
+    renderFolder: function(f) {
+        var index = this.openedFolders.indexOf(f.id);
+        var icon = index === -1 ? '' : '-open';
+        var selected = f.id === this.getSelectedFolderId();
+        var html = '<li' + (selected ? ' class="selected"' : '') + '>';
+        html += '<a style="padding-left: ' + (f.level * 24) + 'px"';
+        html += ' href="javascript:MediaBrowser.clickFolder(' + f.id + ')">';
+        html += '<i class="fa fa-folder' + icon + '"></i>';
+        html += '<span>' + this.escapeString(f.name) + '</span>';
+        html += '</a>';
+        html += '</li>';
+        return html;
     },
     
     renderFiles: function() {
         var html = '';
-        for (var i = 0; i < MediaBrowser.files.length; i++) {
-            html += MediaBrowser.renderFile(MediaBrowser.files[i]);
-        }
         var elem = document.getElementById('files');
+        for (var i = 0; i < this.files.length; i++) {
+            html += this.renderFile(this.files[i]);
+        }
         elem.innerHTML = html;        
     },
     
@@ -332,18 +392,23 @@ var MediaBrowser = {
         var name = f.name;
         var icon = 'fa-file';
         var ext = '';
+        var selected = f.id === this.getSelectedFileId();
+        var imgSrc = this.thumbnailRequestUrl + '/' + f.id;
         if (f.extension) {
             ext = f.extension.toLowerCase();
             name += '.' + f.extension;
-            if (MediaBrowser.iconByExtension.hasOwnProperty(ext)) {
-                icon += '-' + MediaBrowser.iconByExtension[ext];
-            }
-        }            
-        var isImage = MediaBrowser.imageExtensions.indexOf(ext) !== -1;
-        html += '<a href="javascript:MediaBrowser.clickFile(' + f.id + ')" class="item" data-id="' + f.id + '">';
+        }
+        if (this.iconByExtension.hasOwnProperty(ext)) {
+            icon += '-' + this.iconByExtension[ext];
+        }
+        var isImage = this.imageExtensions.indexOf(ext) !== -1;
+        html += '<a href="javascript:MediaBrowser.clickFile(' + f.id + ')" class="item';
+        if (selected) {
+            html += ' selected';
+        }
+        html += '" data-id="' + f.id + '">';
         if (isImage) {
-            var src = MediaBrowser.thumbnailRequestUrl + '/' + f.id;
-            html += '<span><img src="' + src + '"></span>';
+            html += '<span><img src="' + imgSrc + '"></span>';
         } else {
             html += '<i class="fa ' + icon + '"></i>';
         }

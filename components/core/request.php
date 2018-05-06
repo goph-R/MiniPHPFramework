@@ -26,7 +26,7 @@ class Request {
             return;
         }
         $data = json_decode($json, true);
-        if (!is_array($data)) {
+        if ($data === false) {
             return;
         }
         foreach ($data as $name => $value) {

@@ -106,5 +106,13 @@ class MediaBrowserController extends Controller {
         }
         return true;        
     }
+
+    public function deleteFolder() {
+        if (!$this->user->hasPermission('admin')) {
+            return false;
+        }
+        $id = $this->request->get('id');
+        $this->mediaService->deleteFolder($id);
+    }
     
 }

@@ -5,7 +5,7 @@ class MediaService {
     const TYPE_FOLDER = 1;
     const TYPE_FILE = 2;
     
-    const FUNCTION_BY_MIME = [
+    private static $functionByMime = [
         'image/png'   => 'png',
         'image/jpg'   => 'jpeg',
         'image/jpeg'  => 'jpeg',
@@ -52,7 +52,8 @@ class MediaService {
     }
     
     /**
-     * @param int $id
+     * @param int $parentId
+     * @param string $name
      * @return Record
      */
     public function findByParentIdAndName($parentId, $name) {
@@ -160,10 +161,10 @@ class MediaService {
     private function createImage($path) {
         $size = getimagesize($path);
         $mime = isset($size['mime']) ? $size['mime'] : 'Unknown';
-        if (!isset(self::FUNCTION_BY_MIME[$mime])) {
+        if (!isset(self::$functionByMime[$mime])) {
             throw new RuntimeException("Can't find a thumbnail creator function for MIME: $mime");
         }
-        $func = 'imagecreatefrom'.self::FUNCTION_BY_MIME[$mime];
+        $func = 'imagecreatefrom'.self::$functionByMime[$mime];
         $srcImg = $func($path);
         if (!$srcImg) {
             throw new RuntimeException("Can't create an image from: $path");
