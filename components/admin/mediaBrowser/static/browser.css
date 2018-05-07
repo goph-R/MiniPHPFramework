@@ -37,6 +37,7 @@ nav {
 }
 .buttons a {
     text-decoration: none;
+    cursor: pointer;
     color: #b7d2ff;
     padding: 10px;
     background: #3153a0;
@@ -77,11 +78,6 @@ main .buttons a {
     float: right;
     margin-left: 5px;
     margin-right: 0;
-}
-.path {
-    float: left;
-    margin-top: 12px; 
-    margin-left: 12px;
 }
 .items {
     margin-top: 10px;
@@ -165,9 +161,45 @@ nav li span {
 .clear {
     clear: both;
 }
+
+#breadcrumb {
+    float: left;
+    margin-top: 12px; 
+    margin-left: 12px;
+}
+
 #file_use_button {
     display: none;
 }
+#upload_file {
+    display: none;
+}
+#upload_progress {
+    display: none;
+    z-index: 10000;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0.5, 0, 0, 0.5);
+}
+#upload_progress div {
+    position: fixed;
+    width: 250px;
+    height: 25px;
+    background: #464744;
+    top: 50%;
+    left: 50%;
+    margin-left: -125px;
+    margin-top: -12px;    
+    padding: 1px;
+}
+#upload_progress span {
+    display: block;
+    width: 50%;
+    height: 25px;
+    background: #b9f442;
+}
+
 @media (min-width: 768px) {
     .wrapper {
         grid-template-rows: 40px auto 0px;

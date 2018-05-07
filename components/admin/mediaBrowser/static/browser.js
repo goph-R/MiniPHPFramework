@@ -15,6 +15,8 @@ var MediaBrowser = {
     fileRenameButton: document.getElementById('file_rename_button'),
     fileUploadButton: document.getElementById('file_upload_button'),    
     fileUseButton: document.getElementById('file_use_button'),
+    fileInput: document.getElementById('upload_file'),
+    progressBar: document.getElementById('upload_progress'),
     
     iconByExtension: {
         'doc': 'word',
@@ -56,11 +58,16 @@ var MediaBrowser = {
         this.filesRequestUrl = options.filesRequestUrl || '';
         this.thumbnailRequestUrl = options.thumbnailRequestUrl || '';
         this.newFolderRequestUrl = options.newFolderRequestUrl || '';
-        this.renameFolderRequestUrl = options.renameFolderRequestUrl || '';
-        this.deleteFolderRequestUrl = options.deleteFolderRequestUrl || '';
+        this.renameRequestUrl = options.renameRequestUrl || '';
+        this.deleteRequestUrl = options.deleteRequestUrl || '';
+        this.uploadRequestUrl = options.uploadRequestUrl || '';
         this.folderAddButton.addEventListener('click', this.newFolder.bind(this));
         this.folderRenameButton.addEventListener('click', this.renameFolder.bind(this));
         this.folderDeleteButton.addEventListener('click', this.deleteFolder.bind(this));
+        this.fileRenameButton.addEventListener('click', this.renameFile.bind(this));
+        this.fileDeleteButton.addEventListener('click', this.deleteFile.bind(this));
+        this.fileUploadButton.addEventListener('click', this.uploadFileClicked.bind(this));
+        this.fileInput.addEventListener('change', this.uploadFile.bind(this));
     },
     
     ajaxRequest: function(options) {
@@ -69,7 +76,6 @@ var MediaBrowser = {
         var async = options.async || true;
         var data = options.data || {};
         var url = options.url;
-        data.locale = this.locale;
         method = method.toUpperCase();
         xhr.onreadystatechange = function() {
             if (this.readyState !== 4) {
@@ -148,6 +154,27 @@ var MediaBrowser = {
         }
         parentFolders.push(folder);
     },
+    
+    removeFolder: function(folder) {
+        var parentFolder = this.findFolderById(folder.parent_id, this.folders);
+        for (var i = 0; i < parentFolder.folders.length; i++) {
+            var f = parentFolder.folders[i];
+            if (f.id === folder.id) {
+                parentFolder.folders.splice(i, 1);
+                return;
+            }
+        }
+    },    
+    
+    removeFile: function(file) {
+        for (var i = 0; i < this.files.length; i++) {
+            var f = this.files[i];
+            if (f.id === file.id) {
+                this.files.splice(i, 1);
+                return;
+            }
+        }
+    },    
     
     findFolderById: function(folderId, folders) {
         for (var i = 0; i < folders.length; i++) {            
@@ -309,7 +336,7 @@ var MediaBrowser = {
             return;
         }
         this.ajaxRequest({
-            url: this.renameFolderRequestUrl,
+            url: this.renameRequestUrl,
             data: {
                 'name': name,
                 'parent_id': folder.parent_id,
@@ -333,19 +360,116 @@ var MediaBrowser = {
         if (!folder) {
             return;
         }
+        if (!confirm('Are you sure to delete?')) {
+            return;
+        }
         this.ajaxRequest({
-            url: this.deleteFolderRequestUrl,
+            url: this.deleteRequestUrl,
             data: {'id': folder.id},
+            success: function(xhr) {
+                MediaBrowser.removeFolder(folder);
+                MediaBrowser.selectedFolder = null;
+                MediaBrowser.selectedFile = null;
+                MediaBrowser.files = [];
+                MediaBrowser.adjustButtons();
+                MediaBrowser.renderFolders();
+                MediaBrowser.renderFiles();
+            }
+        });
+    },    
+    
+    renameFile: function(event) {
+        var file = this.selectedFile;
+        if (file === null) {
+            return alert('Please select a file!');
+        }
+        var fullName = file.name;
+        if (file.extension) {
+            fullName += '.' + file.extension;
+        }
+        var name = prompt('Rename', fullName);
+        if (name === null || name === fullName) {
+            return;
+        }
+        this.ajaxRequest({
+            url: this.renameRequestUrl,
+            data: {
+                'name': name,
+                'parent_id': file.parent_id,
+                'id': file.id
+            },
             success: function(xhr) {
                 var data = JSON.parse(xhr.responseText);
                 var error = data.error || '';
                 if (error) {
                     alert(error);
+                    MediaBrowser.renameFile(event);
                 } else {
-                    MediaBrowser.requestFolders(folder.parent_id);
-                }
+                    var lastIndex = name.lastIndexOf('.');
+                    file.name = name;
+                    file.extension = '';
+                    if (lastIndex !== -1) {
+                        file.name = name.substr(0, lastIndex);
+                        file.extension = name.substr(lastIndex + 1);
+                    }
+                    MediaBrowser.renderFiles();
+                }                    
+            }
+        });        
+    },
+
+    deleteFile: function(event) {
+        var file = this.selectedFile;
+        if (file === null) {
+            return alert('Please select a file!');
+        }
+        if (!confirm('Are you sure to delete?')) {
+            return;
+        }
+        this.ajaxRequest({
+            url: this.deleteRequestUrl,
+            data: {'id': file.id},
+            success: function(xhr) {
+                MediaBrowser.removeFile(file);
+                MediaBrowser.selectedFile = null;
+                MediaBrowser.adjustButtons();
+                MediaBrowser.renderFiles();
             }
         });
+    },
+    
+    uploadFileClicked: function(event) {
+        this.fileInput.click();
+    },
+    
+    uploadFile: function(event) {
+        if (this.selectedFolder === null) {
+            return alert('Please select a folder!');
+        }        
+        var progressBarLine = document.querySelector('#upload_progress span');
+        var file = this.fileInput.files[0];
+        var fd = new FormData();
+        var xhr = new XMLHttpRequest();
+        progressBarLine.style.width = '0px';                
+        fd.append('file', file);
+        fd.append('parent_id', this.selectedFolder.id);
+        xhr.open('POST', this.uploadRequestUrl, true);        
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                var percentComplete = (event.loaded / event.total) * 100;
+                progressBarLine.style.width = percentComplete + '%';
+            }
+        };        
+        xhr.onload = function() {
+            if (this.status === 200) {
+                MediaBrowser.requestFiles(MediaBrowser.selectedFolder.id);
+            } else {
+                alert('Upload error (Status: ' + this.status + ')');
+            }
+            MediaBrowser.progressBar.style.display = 'none';
+        };        
+        xhr.send(fd);        
+        this.progressBar.style.display = 'block';        
     },
     
     goToFile: function(id) {

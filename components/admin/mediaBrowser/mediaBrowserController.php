@@ -10,7 +10,6 @@ class MediaBrowserController extends Controller {
     public function __construct() {
         parent::__construct();
         $im = InstanceManager::getInstance();
-        $this->config = $im->get('config');
         $this->mediaService = $im->get('mediaService');
     }
     
@@ -19,7 +18,7 @@ class MediaBrowserController extends Controller {
             return $this->redirect();
         }
         $defaultFolderId = $this->config->get('mediabrowser.default_folder_id', 1);
-        $folder = $this->mediaService->findFolder($defaultFolderId);
+        $folder = $this->mediaService->findFolderById($defaultFolderId);
         if (!$folder) {
             throw new RuntimeException("Can't find the default folder: $defaultFolderId");
         }        
@@ -33,7 +32,7 @@ class MediaBrowserController extends Controller {
         }
         $parentId = $this->request->get('id');
         $result = [];
-        $folders = $this->mediaService->findByParentIdAndType($parentId, MediaService::TYPE_FOLDER);
+        $folders = $this->mediaService->findActiveByParentIdAndType($parentId, MediaService::TYPE_FOLDER);
         foreach ($folders as $folder) {
             $result[] = $folder->getAttributes();
         }
@@ -46,53 +45,33 @@ class MediaBrowserController extends Controller {
         }
         $parentId = $this->request->get('id');
         $result = [];
-        $files = $this->mediaService->findByParentIdAndType($parentId, MediaService::TYPE_FILE);
+        $files = $this->mediaService->findActiveByParentIdAndType($parentId, MediaService::TYPE_FILE);
         foreach ($files as $file) {
             $result[] = $file->getAttributes();
         }
         $this->respondJson($result);        
     }
     
-    public function thumbnail() {
-        if (!$this->user->hasPermission('admin')) {
-            return $this->redirect();
-        }
-        $id = $this->request->get('id');
-        $media = $this->mediaService->findById($id);
-        if (!$media) {
-            return $this->respond404();
-        }
-        $oneYearInSecs = 60*60*24*365;
-        $path = $this->mediaService->createThumbnail($media, 90, 90);
-        $expTime = gmdate('D, d M Y H:i:s', time() + $oneYearInSecs).' GMT';
-        $this->response->setHeader('Content-Type', 'image/jpeg');
-        $this->response->setHeader('Content-Length', filesize($path));
-        $this->response->setHeader('Expires', $expTime);
-        $this->response->setHeader('Pragma', 'cache');
-        $this->response->setHeader('Cache-Control', 'max-age=$oneYearInSecs');
-        $this->response->setContent(file_get_contents($path));
-    }
-    
     public function newFolder() {
         $parentId = $this->request->get('parent_id');
         $name = trim($this->request->get('name'));
-        if ($this->folderNameIsOk($parentId, $name)) {
+        if ($this->nameIsOk($parentId, $name)) {
             $this->mediaService->newFolder($parentId, $name);
             $this->respondJson('ok');
         }
     }
     
-    public function renameFolder() {
+    public function rename() {
         $parentId = $this->request->get('parent_id');
         $name = trim($this->request->get('name'));
         $id = $this->request->get('id');
-        if ($this->folderNameIsOk($parentId, $name)) {
-            $this->mediaService->renameFolder($id, $name);
+        if ($this->nameIsOk($parentId, $name)) {
+            $this->mediaService->rename($id, $name);
             $this->respondJson('ok');
         }
     }
     
-    private function folderNameIsOk($parentId, $name) {
+    private function nameIsOk($parentId, $name) {
         if (!$this->user->hasPermission('admin')) {
             return false;
         }
@@ -101,18 +80,30 @@ class MediaBrowserController extends Controller {
             return $this->respond404();
         } else if ($name == '') {
             return $this->respondJson(['error' => 'Please provide a name!']);
-        } else if ($this->mediaService->findByParentIdAndName($parentId, $name)) {
-            return $this->respondJson(['error' => 'The folder name exists.']);
+        } else if ($this->mediaService->findActiveByParentIdAndFullName($parentId, $name)) {
+            return $this->respondJson(['error' => 'The name exists.']);
         }
         return true;        
     }
 
-    public function deleteFolder() {
+    public function delete() {
         if (!$this->user->hasPermission('admin')) {
             return false;
         }
         $id = $this->request->get('id');
-        $this->mediaService->deleteFolder($id);
+        $this->mediaService->delete($id);
     }
     
+    public function upload() {
+        if (!$this->user->hasPermission('admin')) {
+            return false;
+        }
+        $parentId = $this->request->get('parent_id');
+        try {
+            $this->mediaService->upload('file', $parentId);
+        } catch (RuntimeException $e) {
+            return $this->respondJson(['error' => $e->getMessage()]);
+        }
+        return $this->respondJson('ok');
+    }
 }

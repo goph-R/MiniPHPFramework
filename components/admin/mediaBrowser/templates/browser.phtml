@@ -6,6 +6,9 @@
     <link rel="stylesheet" type="text/css" href="components/admin/mediaBrowser/static/browser.css" media="all">
 </head>
 <body class="wrapper">
+    <div id="upload_progress">
+        <div><span></span></div>
+    </div>
     <header>
         Media
     </header>
@@ -22,12 +25,13 @@
     </nav>
     <main>
         <a id="file_use_button" href="javascript:window.opener.CKEDITOR.tools.callFunction(<?= $request->get('CKEditorFuncNum') ?>, 'http://dynart.net/images/logo2.png')" class="insert"><i class="fa fa-check-circle"></i>Use the selected</a>
-        <div class="path">
+        <div id="breadcrumb" class="path">
             <a href="#">Home</a> /
             <a href="#">Folder 1</a> /
             Folder 3
         </div>
         <div class="buttons">
+            <input type="file" id="upload_file"> 
             <a id="file_delete_button" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
             <a id="file_rename_button" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
             <a id="file_upload_button" class="disabled" style="width:auto;"><i class="fa fa-upload"></i> Upload</a>
@@ -42,10 +46,11 @@
             locale: '<?= $request->get('locale') ?>',
             foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>',
             filesRequestUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
-            thumbnailRequestUrl: '<?= $router->getUrl('mediabrowser/thumbnail') ?>',            
+            thumbnailRequestUrl: '<?= $router->getUrl('media/thumbnail') ?>',            
             newFolderRequestUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
-            renameFolderRequestUrl: '<?= $router->getUrl('mediabrowser/renamefolder') ?>',
-            deleteFolderRequestUrl: '<?= $router->getUrl('mediabrowser/deletefolder') ?>'
+            renameRequestUrl: '<?= $router->getUrl('mediabrowser/rename') ?>',
+            deleteRequestUrl: '<?= $router->getUrl('mediabrowser/delete') ?>',
+            uploadRequestUrl: '<?= $router->getUrl('mediabrowser/upload') ?>'
         });
         MediaBrowser.pushFolder(<?= json_encode($folder) ?>);
         MediaBrowser.clickFolder(<?= $folder['id'] ?>);

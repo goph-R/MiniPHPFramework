@@ -23,18 +23,23 @@ class MediaService {
      */
     private $user;
     
+    /**
+     * @var Uploader
+     */
+    private $uploader;
+    
     private $mediaPath;
     private $thumbQuality;
-    private $path;
     
     public function __construct() {
         $im = InstanceManager::getInstance();
         $config = $im->get('config');
         $tableFactory = $im->get('mediaTableFactory');
         $this->user = $im->get('user');
+        $this->uploader = $im->get('uploader');
         $this->table = $tableFactory->createMedia();
         $defaultPath = $config->get('application.path').'media/';
-        $this->mediaPath = $config->get('media.path', $defaultPath);        
+        $this->mediaPath = $config->get('media.path', $defaultPath);
         $this->thumbQuality = $config->get('media.thumb_quality', 80);
     }
     
@@ -42,7 +47,7 @@ class MediaService {
      * @param int $id
      * @return Record
      */
-    public function findFolder($id) {
+    public function findFolderById($id) {
         return $this->table->findOne(null, [
             'where' => [
                 ['id', '=', $id],
@@ -53,14 +58,17 @@ class MediaService {
     
     /**
      * @param int $parentId
-     * @param string $name
+     * @param string $fullName
      * @return Record
      */
-    public function findByParentIdAndName($parentId, $name) {
+    public function findActiveByParentIdAndFullName($parentId, $fullName) {
+        $result = $this->getNameAndExtension($fullName);
         return $this->table->findOne(null, [
             'where' => [
                 ['parent_id', '=', $parentId],
-                [['LOWER(name)'], '=', mb_strtolower($name)]
+                [['LOWER(name)'], '=', mb_strtolower($result['name'])],
+                [['LOWER(extension)'], '=', mb_strtolower($result['extension'])],
+                ['deleted', '=', false]
             ]
         ]);        
     }    
@@ -69,27 +77,28 @@ class MediaService {
      * @param int
      * @return Record[]
      */
-    public function findByParentIdAndType($parentId, $type) {
+    public function findActiveByParentIdAndType($parentId, $type) {
         return $this->table->find(null, [
             'where' => [
                 ['parent_id', '=', $parentId],
-                ['type', '=', $type]
+                ['type', '=', $type],
+                ['deleted', '=', false]
             ],
             'order' => ['name' => 'asc']
         ]);
     }
     
-    private function findPathByParentId($parentId) {
+    private function findPathByParentId(&$path, $parentId) {
         $parent = $this->findById($parentId);
-        $this->path[] = $parent;
+        $path[] = $parent;
         if ($parent->get('parent_id') != null) {
-            $this->findPathByParentId($parent->get('parent_id'));
+            $this->findPathByParentId($path, $parent->get('parent_id'));
         }        
     }
         
     public function findPathByFile($file) {
-        $this->path = [];
-        $this->findPathByParentId($file->get('parent_id'));
+        $path = [];
+        $this->findPathByParentId($path, $file->get('parent_id'));
         return array_reverse($this->path);
     }
     
@@ -174,21 +183,75 @@ class MediaService {
     
     public function newFolder($parentId, $name) {
         $record = $this->table->createRecord([
-            'parent_id' => $parentId,
-            'name' => $name,            
-            'extension' => '',
-            'type' => self::TYPE_FOLDER,
-            'user_id' => $this->user->get('id'),
+            'parent_id'  => $parentId,
+            'name'       => $name,            
+            'extension'  => '',
+            'type'       => self::TYPE_FOLDER,
+            'user_id'    => $this->user->get('id'),
             'created_on' => time(),
-            'hash' => ''
+            'hash'       => ''
         ]);
         $record->save();
     }
     
-    public function renameFolder($id, $name) {
+    public function getNameAndExtension($fullName) {
+        $name = $fullName;
+        $extension = '';
+        $pos = mb_strrpos($fullName, '.');
+        if ($pos) {
+            $name = mb_substr($fullName, 0, $pos);
+            $extension = mb_substr($fullName, $pos+1, mb_strlen($fullName));
+        }
+        return ['name' => $name, 'extension' => $extension];
+    }
+    
+    public function rename($id, $fullName) {
         $record = $this->findById($id);
-        $record->set('name', $name);
+        $record->setAll(['name', 'extension'], $this->getNameAndExtension($fullName));
         $record->save();
+    }
+    
+    private function findAllActiveChildren(&$children, $parentId) {
+        $records = $this->table->find(null, [
+            'where' => [
+                ['parent_id', '=', $parentId],
+                ['deleted', '=', false]
+            ]
+        ]);
+        foreach ($records as $record) {
+            $children[] = $record;
+            if ($record->get('type') == self::TYPE_FOLDER) {
+                $this->findAllActiveChildren($children, $record->get('id'));                
+            }
+        }
+    }
+    
+    public function delete($id) {
+        $children = [];
+        $this->findAllActiveChildren($children, $id);
+        $children[] = $this->findById($id);
+        foreach ($children as $child) {
+            $child->set('deleted', true);
+            $child->save();
+        }
+    }
+    
+    public function upload($inputName, $parentId) {
+        $hash = md5(time());
+        $targetPath = $this->getFilePath($hash);
+        $this->uploader->upload($inputName, $targetPath);
+        $fullName = $this->getNameAndExtension($this->uploader->getBaseName($inputName));
+        $record = $this->table->createRecord([
+            'parent_id'  => $parentId,
+            'name'       => $fullName['name'],            
+            'extension'  => $fullName['extension'],
+            'type'       => self::TYPE_FILE,
+            'user_id'    => $this->user->get('id'),
+            'created_on' => time(),
+            'hash'       => $hash
+        ]);
+        $record->save();
+        return $record;
     }
     
 }

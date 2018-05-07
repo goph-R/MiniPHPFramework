@@ -86,5 +86,20 @@ class Request {
         }
         return $this->config->get('translation.default', 'en');
     }
+    
+    public function getFileTempPath($name) {
+        return isset($_FILES[$name]) ? $_FILES[$name]['tmp_name'] : '';
+    }
+    
+    public function getFileSize($name) {
+        return isset($_FILES[$name]) ? $_FILES[$name]['size'] : -1;
+    }
 
+    public function getFileName($name) {
+        return isset($_FILES[$name]) ? $_FILES[$name]['name'] : '';
+    }
+    
+    public function getFileError($name) {
+        return isset($_FILES[$name]) ? $_FILES[$name]['error'] : null;
+    }
 }

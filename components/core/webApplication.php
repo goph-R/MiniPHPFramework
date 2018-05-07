@@ -34,6 +34,7 @@ class WebApplication {
         $im->add('logger', new Logger($config));
         $im->add('db', new DB($config->get('db.name')));
         $im->add('request', new Request());
+        $im->add('uploader', new Uploader());
         $im->add('response', new Response());
         $im->add('router', new Router());
         $im->add('view', new View());
