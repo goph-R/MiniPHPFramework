@@ -9,6 +9,12 @@ class Response {
         $this->headers[$name] = $value;
     }
 
+    public function setHeaders($values) {
+        foreach ($values as $name => $value) {
+            $this->setHeader($name, $value);
+        }
+    }
+
     public function setContent($content) {
         $this->content = $content;
     }

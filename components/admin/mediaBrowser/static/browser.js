@@ -17,6 +17,7 @@ var MediaBrowser = {
     fileUseButton: document.getElementById('file_use_button'),
     fileInput: document.getElementById('upload_file'),
     progressBar: document.getElementById('upload_progress'),
+    breadcrumb: document.getElementById('breadcrumb'),
     
     iconByExtension: {
         'doc': 'word',
@@ -61,6 +62,8 @@ var MediaBrowser = {
         this.renameRequestUrl = options.renameRequestUrl || '';
         this.deleteRequestUrl = options.deleteRequestUrl || '';
         this.uploadRequestUrl = options.uploadRequestUrl || '';
+        this.mediaRequestUrl = options.mediaRequestUrl || '';
+        this.ckEditorFuncNum = options.ckEditorFuncNum || '';
         this.folderAddButton.addEventListener('click', this.newFolder.bind(this));
         this.folderRenameButton.addEventListener('click', this.renameFolder.bind(this));
         this.folderDeleteButton.addEventListener('click', this.deleteFolder.bind(this));
@@ -68,6 +71,7 @@ var MediaBrowser = {
         this.fileDeleteButton.addEventListener('click', this.deleteFile.bind(this));
         this.fileUploadButton.addEventListener('click', this.uploadFileClicked.bind(this));
         this.fileInput.addEventListener('change', this.uploadFile.bind(this));
+        this.fileUseButton.addEventListener('click', this.useButtonClicked.bind(this));
     },
     
     ajaxRequest: function(options) {
@@ -88,7 +92,7 @@ var MediaBrowser = {
             }
         };
         xhr.open(method, url, async);
-        xhr.overrideMimeType('application/json');
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(data));
     },
             
@@ -103,7 +107,7 @@ var MediaBrowser = {
         });
     },
     
-    adjustButtons: function() {
+    adjustUI: function() {
         var folderAddUploadClassName = 'disabled';
         var folderDeleteRenameClassName = 'disabled';
         var fileClassName = this.selectedFile === null ? 'disabled' : '';
@@ -122,6 +126,24 @@ var MediaBrowser = {
         this.fileRenameButton.className = fileClassName;
     },
     
+    renderBreadcrumb: function() {
+        var folders = [];
+        var html = '';
+        if (this.selectedFolder) {
+            var currentFolder = this.selectedFolder;
+            while (currentFolder !== null) {
+                folders.push(currentFolder);
+                currentFolder = this.findFolderById(currentFolder.parent_id, this.folders);
+            }            
+            for (var i = folders.length - 1; i > 0; i--) {
+                var f = folders[i];
+                html += '<a href="javascript:MediaBrowser.clickFolder(' + f.id + ')">' + f.name + '</a> / ';
+            }
+            html += folders[0].name;
+        }
+        this.breadcrumb.innerHTML = html;
+    },
+    
     refreshFolder: function(oldFolder, folder) {
         for (var prop in folder) {
             if (folder.hasOwnProperty(prop)) {
@@ -138,7 +160,7 @@ var MediaBrowser = {
         }
         // init folder's children
         folder.folders = [];
-        // find parent
+        // find parent's folder list
         var parentFolders = this.folders;
         var parent = this.findFolderById(folder.parent_id, this.folders);
         if (parent !== null) {
@@ -213,7 +235,7 @@ var MediaBrowser = {
                     MediaBrowser.pushFolder(folders[i]);
                 }
                 MediaBrowser.renderFolders();
-                MediaBrowser.adjustButtons();
+                MediaBrowser.adjustUI();
             }
         });
     },
@@ -225,7 +247,7 @@ var MediaBrowser = {
                 MediaBrowser.selectedFile = null;
                 MediaBrowser.files = JSON.parse(xhr.responseText);
                 MediaBrowser.renderFiles();
-                MediaBrowser.adjustButtons();
+                MediaBrowser.adjustUI();
             }            
         });
     },
@@ -251,7 +273,8 @@ var MediaBrowser = {
         if (!selected) {
             this.selectedFolder = this.findFolderById(id, this.folders);
             this.selectedFile = null;
-            this.adjustButtons();
+            this.adjustUI();
+            this.renderBreadcrumb();
             this.requestFiles(id);
         }        
         if (selected && opened) {
@@ -284,7 +307,7 @@ var MediaBrowser = {
         this.selectedFile = this.findFileById(id);
         elem = document.querySelector('a[data-id="' + id + '"]');
         elem.className = 'item selected';
-        this.adjustButtons();
+        this.adjustUI();
     },
     
     newFolder: function(event, defaultName) {
@@ -371,12 +394,23 @@ var MediaBrowser = {
                 MediaBrowser.selectedFolder = null;
                 MediaBrowser.selectedFile = null;
                 MediaBrowser.files = [];
-                MediaBrowser.adjustButtons();
+                MediaBrowser.adjustUI();
+                MediaBrowser.renderBreadcrumb();
                 MediaBrowser.renderFolders();
                 MediaBrowser.renderFiles();
             }
         });
-    },    
+    },
+    
+    setNameAndExtension: function(file, name) {
+        var lastIndex = name.lastIndexOf('.');
+        file.name = name;
+        file.extension = '';
+        if (lastIndex !== -1) {
+            file.name = name.substr(0, lastIndex);
+            file.extension = name.substr(lastIndex + 1);
+        }        
+    },
     
     renameFile: function(event) {
         var file = this.selectedFile;
@@ -395,7 +429,6 @@ var MediaBrowser = {
             url: this.renameRequestUrl,
             data: {
                 'name': name,
-                'parent_id': file.parent_id,
                 'id': file.id
             },
             success: function(xhr) {
@@ -405,13 +438,7 @@ var MediaBrowser = {
                     alert(error);
                     MediaBrowser.renameFile(event);
                 } else {
-                    var lastIndex = name.lastIndexOf('.');
-                    file.name = name;
-                    file.extension = '';
-                    if (lastIndex !== -1) {
-                        file.name = name.substr(0, lastIndex);
-                        file.extension = name.substr(lastIndex + 1);
-                    }
+                    MediaBrowser.setNameAndExtension(file, name);
                     MediaBrowser.renderFiles();
                 }                    
             }
@@ -432,7 +459,7 @@ var MediaBrowser = {
             success: function(xhr) {
                 MediaBrowser.removeFile(file);
                 MediaBrowser.selectedFile = null;
-                MediaBrowser.adjustButtons();
+                MediaBrowser.adjustUI();
                 MediaBrowser.renderFiles();
             }
         });
@@ -470,6 +497,16 @@ var MediaBrowser = {
         };        
         xhr.send(fd);        
         this.progressBar.style.display = 'block';        
+    },
+    
+    useButtonClicked: function(event) {        
+        if (this.ckEditorFuncNum) {            
+            var ckFunc = window.opener.CKEDITOR.tools.callFunction;
+            ckFunc(this.ckEditorFuncNum, this.mediaRequestUrl + '/' + this.selectedFile.id);
+            window.close();
+        } else {
+            
+        }
     },
     
     goToFile: function(id) {

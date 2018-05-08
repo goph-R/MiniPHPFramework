@@ -52,20 +52,20 @@ class MediaBrowserController extends Controller {
         $this->respondJson($result);        
     }
     
-    public function newFolder() {
+    public function createFolder() {
         $parentId = $this->request->get('parent_id');
         $name = trim($this->request->get('name'));
         if ($this->nameIsOk($parentId, $name)) {
-            $this->mediaService->newFolder($parentId, $name);
+            $this->mediaService->createFolder($parentId, $name);
             $this->respondJson('ok');
         }
     }
     
-    public function rename() {
-        $parentId = $this->request->get('parent_id');
+    public function rename() {        
         $name = trim($this->request->get('name'));
         $id = $this->request->get('id');
-        if ($this->nameIsOk($parentId, $name)) {
+        $record = $this->mediaService->findById($id);
+        if ($this->nameIsOk($record->get('parent_id'), $name)) {
             $this->mediaService->rename($id, $name);
             $this->respondJson('ok');
         }

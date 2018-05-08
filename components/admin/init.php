@@ -16,7 +16,7 @@ $translation->add('admin', 'components/admin/translations');
 $router->add('mediabrowser', 'MediaBrowserController', 'index');
 $router->add('mediabrowser/folders/:id', 'MediaBrowserController', 'folders');
 $router->add('mediabrowser/files/:id', 'MediaBrowserController', 'files');
-$router->add('mediabrowser/newfolder', 'MediaBrowserController', 'newFolder');
+$router->add('mediabrowser/newfolder', 'MediaBrowserController', 'createFolder');
 $router->add('mediabrowser/rename', 'MediaBrowserController', 'rename');
 $router->add('mediabrowser/delete', 'MediaBrowserController', 'delete');
 $router->add('mediabrowser/upload', 'MediaBrowserController', 'upload');

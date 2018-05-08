@@ -35,6 +35,9 @@ nav {
     font-size: 14px;
     padding: 5px;
 }
+.buttons-file {
+    float: right;    
+}
 .buttons a {
     text-decoration: none;
     cursor: pointer;
@@ -60,7 +63,7 @@ nav {
 .buttons a.disabled:hover {
     color: #aaa;
 }
-a.insert {
+#file_use_button {
     text-decoration: none;
     color: #fff;
     padding: 10px;
@@ -70,8 +73,9 @@ a.insert {
     position: fixed;
     right: 20px;
     bottom: 20px;
+    cursor: pointer;
 }
-a.insert i {
+#file_use_button i {
     padding-right: 8px;
 }
 main .buttons a {
@@ -163,9 +167,16 @@ nav li span {
 }
 
 #breadcrumb {
-    float: left;
-    margin-top: 12px; 
-    margin-left: 12px;
+    color: #7d8591;
+    margin-top: 18px; 
+    margin-left: 14px;
+    padding-bottom: 14px;    
+    font-size: 14px;
+    border-bottom: 1px solid #eee;    
+}
+#breadcrumb a {
+    text-decoration: underline;
+    color: #3153a0;
 }
 
 #file_use_button {

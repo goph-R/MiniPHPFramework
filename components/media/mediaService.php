@@ -114,7 +114,7 @@ class MediaService {
         ]);        
     }
     
-    private function getFilePath($hash) {        
+    public function getFilePath($hash) {        
         $firstDir = mb_substr($hash, 0, 2).'/';
         $secondDir = mb_substr($hash, 2, 2).'/';
         return $this->mediaPath.$firstDir.$secondDir.$hash;
@@ -181,7 +181,7 @@ class MediaService {
         return $srcImg;
     }
     
-    public function newFolder($parentId, $name) {
+    public function createFolder($parentId, $name) {
         $record = $this->table->createRecord([
             'parent_id'  => $parentId,
             'name'       => $name,            
@@ -211,7 +211,7 @@ class MediaService {
         $record->save();
     }
     
-    private function findAllActiveChildren(&$children, $parentId) {
+    public function findAllActiveChildren(&$children, $parentId) {
         $records = $this->table->find(null, [
             'where' => [
                 ['parent_id', '=', $parentId],

@@ -7,4 +7,5 @@ $im->add('mediaTableFactory', 'MediaTableFactory');
 $im->add('mediaService', 'mediaService');
 
 $router->add('media/thumbnail/:id', 'MediaController', 'thumbnail');
+$router->add('media/get/:id', 'MediaController', 'get');
 

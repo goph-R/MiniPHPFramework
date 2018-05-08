@@ -29,15 +29,21 @@ class MediaController extends Controller {
         $media = $this->mediaService->findById($id);
         if (!$media) {
             return $this->respond404(); // TODO: image not found picture
+        } else {
+            $path = $this->mediaService->createThumbnail($media, $width, $height);
         }
-        $oneYearInSecs = 60*60*24*365;
-        $path = $this->mediaService->createThumbnail($media, $width, $height);
-        $expTime = gmdate('D, d M Y H:i:s', time() + $oneYearInSecs).' GMT';
-        $this->response->setHeader('Content-Type', 'image/jpeg');
-        $this->response->setHeader('Content-Length', filesize($path));
-        $this->response->setHeader('Expires', $expTime);
-        $this->response->setHeader('Pragma', 'cache');
-        $this->response->setHeader('Cache-Control', 'max-age=$oneYearInSecs');
-        $this->response->setContent(file_get_contents($path));
-    }    
+        $this->respondCachableFile(file_get_contents($path), filesize($path), 'image/jpeg');
+    }
+    
+    public function get() {
+        $id = $this->request->get('id');
+        $media = $this->mediaService->findById($id);
+        if (!$media || $media->get('deleted') || !$media->get('hash')) {
+            return $this->respond404();
+        } else {
+            
+        }
+        $path = $this->mediaService->getFilePath($media->get('hash'));
+        $this->respondCachableFile(file_get_contents($path), filesize($path));
+    }
 }

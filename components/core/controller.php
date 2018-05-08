@@ -3,7 +3,7 @@
 abstract class Controller {
 
     const InstanceNames = ['config', 'request', 'response', 'router', 'db', 'view', 'user', 'app', 'translation'];
-
+    const OneYearInSeconds = 60*60*24*365;
     /**
      * @var InstanceManager
      */
@@ -83,6 +83,18 @@ abstract class Controller {
     
     public function respond500() {
         $this->app->sendInternalServerError();
+    }
+    
+    public function respondCachableFile($content, $size, $mime='text/plain', $expDelta=self::OneYearInSeconds) {
+        $expTime = gmdate('D, d M Y H:i:s', time() + $expDelta).' GMT';
+        $this->response->setHeaders([            
+            'Content-Type'   => $mime,
+            'Content-Length' => $size,
+            'Expires'        => $expTime,
+            'Pragma'         => 'cache',
+            'Cache-Control'  => "max-age=$expDelta"
+        ]);
+        $this->response->setContent($content);        
     }
 
     public function redirect($route = '', $params=[]) {

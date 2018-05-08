@@ -14,28 +14,28 @@
     </header>
     <nav>
         <div>
-            <div class="buttons">
+            <div class="buttons buttons-folder">
                 <a id="folder_add_button" class="disabled" title="Add"><i class="fa fa-plus-circle"></i></a>
                 <a id="folder_rename_button" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
                 <a id="folder_delete_button" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
-                <div class="clear"></div>        
+                <div class="clear"></div>
             </div>
             <div id="folders"></div>
         </div>
     </nav>
     <main>
-        <a id="file_use_button" href="javascript:window.opener.CKEDITOR.tools.callFunction(<?= $request->get('CKEditorFuncNum') ?>, 'http://dynart.net/images/logo2.png')" class="insert"><i class="fa fa-check-circle"></i>Use the selected</a>
-        <div id="breadcrumb" class="path">
-            <a href="#">Home</a> /
-            <a href="#">Folder 1</a> /
-            Folder 3
-        </div>
-        <div class="buttons">
+        <a id="file_use_button"><i class="fa fa-check-circle"></i>Use selected</a>
+        <div class="buttons buttons-file">
             <input type="file" id="upload_file"> 
             <a id="file_delete_button" class="disabled" title="Delete"><i class="fa fa-trash"></i></a>
             <a id="file_rename_button" class="disabled" title="Rename"><i class="fa fa-pencil-alt"></i></a>
             <a id="file_upload_button" class="disabled" style="width:auto;"><i class="fa fa-upload"></i> Upload</a>
             <div class="clear"></div>        
+        </div>
+        <div id="breadcrumb" class="path">
+            <a href="#">Home</a> /
+            <a href="#">Folder 1</a> /
+            Folder 3
         </div>
         <div id="files" class="items"></div>
     </main>
@@ -50,7 +50,9 @@
             newFolderRequestUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
             renameRequestUrl: '<?= $router->getUrl('mediabrowser/rename') ?>',
             deleteRequestUrl: '<?= $router->getUrl('mediabrowser/delete') ?>',
-            uploadRequestUrl: '<?= $router->getUrl('mediabrowser/upload') ?>'
+            uploadRequestUrl: '<?= $router->getUrl('mediabrowser/upload') ?>',
+            mediaRequestUrl: '<?= $router->getUrl('media/get') ?>',
+            ckEditorFuncNum: '<?= $request->get('CKEditorFuncNum') ?>'
         });
         MediaBrowser.pushFolder(<?= json_encode($folder) ?>);
         MediaBrowser.clickFolder(<?= $folder['id'] ?>);
