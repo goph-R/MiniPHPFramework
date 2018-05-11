@@ -5,6 +5,8 @@ $im = InstanceManager::getInstance();
 $im->add('confirmScript', 'ConfirmScript');
 $im->add('adminMenu', 'AdminMenu');
 
+$router = $im->get('router');
+
 $view = $im->get('view');
 $view->addPath('admin', 'components/admin/templates');
 $view->addPath(':core/formError', 'components/admin/templates/formError');
@@ -22,9 +24,5 @@ $router->add('mediabrowser/delete', 'MediaBrowserController', 'delete');
 $router->add('mediabrowser/upload', 'MediaBrowserController', 'upload');
 $view->addPath('browser', 'components/admin/mediaBrowser/templates');
 
-
 // add settings
 $router->add('admin/settings', 'AdminSettingsController', 'index');
-
-$confirmScript = $im->get('confirmScript');
-$confirmScript->add();
