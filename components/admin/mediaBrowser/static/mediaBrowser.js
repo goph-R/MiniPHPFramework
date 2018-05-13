@@ -64,6 +64,7 @@ var MediaBrowser = {
         this.uploadRequestUrl = options.uploadRequestUrl || '';
         this.mediaRequestUrl = options.mediaRequestUrl || '';
         this.ckEditorFuncNum = options.ckEditorFuncNum || '';
+        this.inputId = options.inputId || '';
         this.folderAddButton.addEventListener('click', this.newFolder.bind(this));
         this.folderRenameButton.addEventListener('click', this.renameFolder.bind(this));
         this.folderDeleteButton.addEventListener('click', this.deleteFolder.bind(this));
@@ -504,8 +505,9 @@ var MediaBrowser = {
             var ckFunc = window.opener.CKEDITOR.tools.callFunction;
             ckFunc(this.ckEditorFuncNum, this.mediaRequestUrl + '/' + this.selectedFile.id);
             window.close();
-        } else {
-            
+        } else if (this.inputId) {
+            window.opener.MediaInput.setValue(this.inputId, this.selectedFile);
+            window.close();
         }
     },
     

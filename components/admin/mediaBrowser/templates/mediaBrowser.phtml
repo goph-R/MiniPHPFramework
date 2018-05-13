@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="vendor/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" media="all">
     <link rel="stylesheet" type="text/css" href="components/admin/static/reset.css" media="all">
-    <link rel="stylesheet" type="text/css" href="components/admin/mediaBrowser/static/browser.css" media="all">
+    <link rel="stylesheet" type="text/css" href="components/admin/mediaBrowser/static/mediaBrowser.css" media="all">
 </head>
 <body class="wrapper">
     <div id="upload_progress">
@@ -36,7 +36,7 @@
         <div id="files" class="items"></div>
     </main>
     
-    <script type="text/javascript" src="components/admin/mediaBrowser/static/browser.js"></script>
+    <script type="text/javascript" src="components/admin/mediaBrowser/static/mediaBrowser.js"></script>
     <script type="text/javascript">
         MediaBrowser.init({
             locale: '<?= $request->get('locale') ?>',
@@ -48,7 +48,8 @@
             deleteRequestUrl: '<?= $router->getUrl('mediabrowser/delete') ?>',
             uploadRequestUrl: '<?= $router->getUrl('mediabrowser/upload') ?>',
             mediaRequestUrl: '<?= $router->getUrl('media/get') ?>',
-            ckEditorFuncNum: '<?= $request->get('CKEditorFuncNum') ?>'
+            ckEditorFuncNum: '<?= $request->get('CKEditorFuncNum') ?>',
+            inputId: '<?= $request->get('input_id') ?>'
         });
         MediaBrowser.pushFolder(<?= json_encode($folder) ?>);
         MediaBrowser.clickFolder(<?= $folder['id'] ?>);

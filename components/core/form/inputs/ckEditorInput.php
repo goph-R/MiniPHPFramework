@@ -8,7 +8,6 @@ class CkEditorInput extends Input {
         parent::__construct($name, $defaultValue);
         $this->options = $options;
         $this->view->addScript('vendor/ckeditor/ckeditor.js');
-        
     }
     
     public function fetch() {

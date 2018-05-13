@@ -72,6 +72,14 @@ class Form {
         $input->setForm($this);
     }
 
+    public function removeInput($name) {
+        $this->checkInputExistance($name);
+        unset($this->inputs[$name]);
+        if (isset($this->validators[$name])) {
+            unset($this->validators[$name]);
+        }
+    }
+
     public function getValues() {
         $result = [];
         foreach ($this->inputs as $input) {

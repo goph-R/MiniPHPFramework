@@ -22,7 +22,7 @@ $router->add('mediabrowser/newfolder', 'MediaBrowserController', 'createFolder')
 $router->add('mediabrowser/rename', 'MediaBrowserController', 'rename');
 $router->add('mediabrowser/delete', 'MediaBrowserController', 'delete');
 $router->add('mediabrowser/upload', 'MediaBrowserController', 'upload');
-$view->addPath('browser', 'components/admin/mediaBrowser/templates');
+$view->addPath('mediaBrowser', 'components/admin/mediaBrowser/templates');
 
 // add settings
 $router->add('admin/settings', 'AdminSettingsController', 'index');

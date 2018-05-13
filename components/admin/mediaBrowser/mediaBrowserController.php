@@ -23,7 +23,7 @@ class MediaBrowserController extends Controller {
             throw new RuntimeException("Can't find the default folder: $defaultFolderId");
         }        
         $this->view->set('folder', $folder->getAttributes());
-        $this->respondView(':browser/browser');
+        $this->respondView(':mediaBrowser/mediaBrowser');
     }
     
     public function folders() {

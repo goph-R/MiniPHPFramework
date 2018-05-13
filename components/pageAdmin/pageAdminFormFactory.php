@@ -14,13 +14,11 @@ class PageAdminFormFactory extends AdminFormFactory {
     }
     
     public function createForm(Record $record) {
-        
         $ckOptions = [
             'filebrowserBrowseUrl' => $this->router->getUrl('mediabrowser'),
             'filebrowserWindowWidth' => 1024,
             'filebrowserWindowHeight' => 600,
         ];
-        
         $form = new Form();
         $form->addInput(['pageAdmin', 'title'], new TextInput('title', $record->get('title')));
         $form->addInput(['pageAdmin', 'content'], new CkEditorInput('content', $record->get('content'), $ckOptions));
