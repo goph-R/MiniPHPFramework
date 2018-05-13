@@ -88,6 +88,7 @@ abstract class AdminController extends Controller {
             $record->save();
             return $this->redirect($this->indexRoute, $params);
         }
+        $this->confirmScript->add();
         $this->view->set([
             'params'     => $params,
             'form'       => $form,
@@ -112,6 +113,7 @@ abstract class AdminController extends Controller {
             $record->save();
             return $this->redirect($this->indexRoute, $params);
         }
+        $this->confirmScript->add();
         $this->view->set([
             'params'     => $params,
             'form'       => $form,

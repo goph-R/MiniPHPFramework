@@ -22,6 +22,7 @@ class AdminSettingsController extends Controller {
         $im = InstanceManager::getInstance();
         $this->userService = $im->get('userService');
         $this->formFactory = $im->get('userFormFactory');
+        $this->confirmScript = $im->get('confirmScript');
         $this->view->set('adminMenu', $im->get('adminMenu'));
     }
 
@@ -41,6 +42,7 @@ class AdminSettingsController extends Controller {
         $form->setValue('old_password', '');
         $form->setValue('password', '');
         $form->setValue('password_again', '');
+        $this->confirmScript->add();
         $this->view->set('form', $form);
         return $this->respondLayout(':admin/layout', ':admin/settings');
     }
