@@ -24,4 +24,17 @@ class PostService {
         ]);
     }
 
+    public function formatDate($time) {
+        return date('Y-m-d H:i', $time);
+    }
+
+    public function findActiveById($id) {
+        return $this->table->find(null, [
+            'where' => [
+                ['id', '=', $id],
+                ['active', '=', true]
+            ]
+        ]);
+    }
+
 }
