@@ -1,7 +1,11 @@
 <?php
 
 class MediaService {
-    
+
+    const DEFAULT_THUMB_QUALITY = 80;
+    const DEFAULT_THUMB_MAXIMUM_SIZE = 600;
+    const DEFAULT_THUMB_SIZE = 90;
+
     const TYPE_FOLDER = 1;
     const TYPE_FILE = 2;
     
@@ -11,6 +15,17 @@ class MediaService {
         'image/jpeg'  => 'jpeg',
         'image/pjpeg' => 'jpeg',
         'image/gif'   => 'gif'
+    ];
+
+    private static $mimeByExtension = [
+        'jpg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png'  => 'image/png',
+        'gif'  => 'image/gif',
+        'html' => 'text/html',
+        'mp4'  => 'video/mp4',
+        'mp3'  => 'audio/mpeg',
+        'ogg'  => 'audio/ogg'
     ];
     
     /**
@@ -27,10 +42,12 @@ class MediaService {
      * @var Uploader
      */
     private $uploader;
-    
-    private $mediaPath;
+
+    private $uploadDir;
     private $thumbQuality;
-    
+    private $maxThumbSize;
+    private $defaultThumbSize;
+
     public function __construct() {
         $im = InstanceManager::getInstance();
         $config = $im->get('config');
@@ -38,9 +55,22 @@ class MediaService {
         $this->user = $im->get('user');
         $this->uploader = $im->get('uploader');
         $this->table = $tableFactory->createMedia();
-        $defaultPath = $config->get('application.path').'media/';
-        $this->mediaPath = $config->get('media.path', $defaultPath);
-        $this->thumbQuality = $config->get('media.thumb_quality', 80);
+        $this->uploadDir = $this->uploader->getDirectoryPath();
+        $this->thumbQuality = $config->get('media.thumb_quality', self::DEFAULT_THUMB_QUALITY);
+        $this->maxThumbSize = $config->get('media.maximum_thumb_size', self::DEFAULT_THUMB_MAXIMUM_SIZE);
+        $this->defaultThumbSize = $config->get('media.default_thumb_size', self::DEFAULT_THUMB_SIZE);
+    }
+
+    public function getDefaultThumbSize() {
+        return $this->defaultThumbSize;
+    }
+
+    public function getMimeByExtension($extension) {
+        $extension = mb_strtolower($extension);
+        if (isset(self::$mimeByExtension[$extension])) {
+            return self::$mimeByExtension[$extension];
+        }
+        return 'text/plain';
     }
     
     /**
@@ -104,7 +134,7 @@ class MediaService {
     
     /**
      * @param int
-     * @return Record[]
+     * @return Record
      */    
     public function findById($id) {
         return $this->table->findOne(null, [
@@ -117,12 +147,12 @@ class MediaService {
     public function getFilePath($hash) {        
         $firstDir = mb_substr($hash, 0, 2).'/';
         $secondDir = mb_substr($hash, 2, 2).'/';
-        return $this->mediaPath.$firstDir.$secondDir.$hash;
+        return $this->uploadDir.$firstDir.$secondDir.$hash;
     }
     
     private function createThumbPath($hash, $width, $height) {
         $parts = ['thumbs', $width.'x'.$height, mb_substr($hash, 0, 2), mb_substr($hash, 2, 2)];
-        $path = $this->mediaPath;
+        $path = $this->uploadDir;
         foreach ($parts as $part) {
             $path .= $part.'/';
             if (!file_exists($path)) {
@@ -139,7 +169,13 @@ class MediaService {
      * @param int
      * @return string
      */
-    public function createThumbnail($media, $width, $height) {
+    public function createThumbnail(Record $media, $width, $height) {
+        if ($width > $this->maxThumbSize || $width < 1) {
+            $width = $this->defaultThumbSize;
+        }
+        if ($height > $this->maxThumbSize || $height < 1) {
+            $height = $this->defaultThumbSize;
+        }
         $hash = $media->get('hash');
         $filePath = $this->getFilePath($hash);
         $thumbPath = $this->createThumbPath($hash, $width, $height);
@@ -237,7 +273,7 @@ class MediaService {
     }
     
     public function upload($inputName, $parentId) {
-        $hash = md5(time());
+        $hash = md5(microtime(true).$this->user->get('id').date('YmdHis')); // TODO: make better unique hash
         $targetPath = $this->getFilePath($hash);
         $this->uploader->upload($inputName, $targetPath);
         $fullName = $this->getNameAndExtension($this->uploader->getBaseName($inputName));

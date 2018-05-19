@@ -85,7 +85,7 @@ abstract class Controller {
         $this->app->sendInternalServerError();
     }
     
-    public function respondCachableFile($content, $size, $mime='text/plain', $expDelta=self::OneYearInSeconds) {
+    public function respondCacheableFile($content, $size, $mime='text/plain', $expDelta=self::OneYearInSeconds) {
         $expTime = gmdate('D, d M Y H:i:s', time() + $expDelta).' GMT';
         $this->response->setHeaders([            
             'Content-Type'   => $mime,
@@ -104,9 +104,11 @@ abstract class Controller {
     public function redirectToUrl($url) {
         $this->response->setHeader('Location', $url);
         $this->response->setContent('');
+        /*
         $this->response->send();
         $this->app->finish();
         exit();
+        */
     }
 
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="vendor/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" media="all">
-    <link rel="stylesheet" type="text/css" href="components/admin/static/reset.css" media="all">
-    <link rel="stylesheet" type="text/css" href="components/admin/mediaBrowser/static/mediaBrowser.css" media="all">
+    <link rel="stylesheet" type="text/css" href="<?= $router->getBaseUrl() ?>vendor/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="<?= $router->getBaseUrl() ?>components/admin/static/reset.css" media="all">
+    <link rel="stylesheet" type="text/css" href="<?= $router->getBaseUrl() ?>components/admin/mediaBrowser/static/mediaBrowser.css" media="all">
 </head>
 <body class="wrapper">
     <div id="upload_progress">
@@ -36,20 +36,21 @@
         <div id="files" class="items"></div>
     </main>
     
-    <script type="text/javascript" src="components/admin/mediaBrowser/static/mediaBrowser.js"></script>
+    <script type="text/javascript" src="<?= $router->getBaseUrl() ?>components/admin/mediaBrowser/static/mediaBrowser.js"></script>
     <script type="text/javascript">
         MediaBrowser.init({
             locale: '<?= $request->get('locale') ?>',
             foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>',
             filesRequestUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
-            thumbnailRequestUrl: '<?= $router->getUrl('media/thumbnail') ?>',            
+            thumbnailRequestUrl: '<?= $router->getUrl('media/thumbnail/{id}', ['width' => $thumbnailSize, 'height' => $thumbnailSize]) ?>',
             newFolderRequestUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
             renameRequestUrl: '<?= $router->getUrl('mediabrowser/rename') ?>',
             deleteRequestUrl: '<?= $router->getUrl('mediabrowser/delete') ?>',
             uploadRequestUrl: '<?= $router->getUrl('mediabrowser/upload') ?>',
             mediaRequestUrl: '<?= $router->getUrl('media/get') ?>',
             ckEditorFuncNum: '<?= $request->get('CKEditorFuncNum') ?>',
-            inputId: '<?= $request->get('input_id') ?>'
+            inputId: '<?= $request->get('input_id') ?>',
+            maximumFileSize: <?= $maximumFileSize ?>
         });
         MediaBrowser.pushFolder(<?= json_encode($folder) ?>);
         MediaBrowser.clickFolder(<?= $folder['id'] ?>);

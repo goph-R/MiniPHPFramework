@@ -212,8 +212,9 @@ h1 {
     font-weight: bold;
     color: #555;
 }
-.form-row input[type="text"], input[type="password"] {
+.form-row input[type="text"], .form-row input[type="password"] {
     min-width: 400px;
+    padding: 7px;
 }
 .form-error {
     color: #d14638;

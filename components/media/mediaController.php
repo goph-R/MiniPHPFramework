@@ -1,7 +1,7 @@
 <?php
 
 class MediaController extends Controller {
-    
+
     /**
      * @var MediaService
      */
@@ -17,33 +17,30 @@ class MediaController extends Controller {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
+        $defaultThumbSize = $this->mediaService->getDefaultThumbSize();
         $id = $this->request->get('id');
-        $width = $this->request->get('width', 90);
-        $height = $this->request->get('height', 90);
-        if ($width > 1000 || $width < 10) {
-            $width = 90;
-        }
-        if ($height > 1000 || $height < 10) {
-            $height = 90;
-        }
+        $width = $this->request->get('width', $defaultThumbSize);
+        $height = $this->request->get('height', $defaultThumbSize);
         $media = $this->mediaService->findById($id);
-        if (!$media) {
+        if ($this->isNotExist($media)) {
             return $this->respond404(); // TODO: image not found picture
-        } else {
-            $path = $this->mediaService->createThumbnail($media, $width, $height);
         }
-        $this->respondCachableFile(file_get_contents($path), filesize($path), 'image/jpeg');
+        $path = $this->mediaService->createThumbnail($media, $width, $height);
+        $this->respondCacheableFile(file_get_contents($path), filesize($path), 'image/jpeg');
     }
     
     public function get() {
         $id = $this->request->get('id');
         $media = $this->mediaService->findById($id);
-        if (!$media || $media->get('deleted') || !$media->get('hash')) {
+        if ($this->isNotExist($media)) {
             return $this->respond404();
-        } else {
-            
         }
         $path = $this->mediaService->getFilePath($media->get('hash'));
-        $this->respondCachableFile(file_get_contents($path), filesize($path));
+        $mime = $this->mediaService->getMimeByExtension($media->get('extension'));
+        $this->respondCacheableFile(file_get_contents($path), filesize($path), $mime);
+    }
+
+    private function isNotExist(Record $media) {
+        return !$media || $media->get('deleted') || !$media->get('hash');
     }
 }
