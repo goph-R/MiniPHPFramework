@@ -11,3 +11,6 @@ $router->add('post/:id', 'PostController', 'view');
 
 $view = $im->get('view');
 $view->addPath('post', 'components/post/templates');
+
+$translation = $im->get('translation');
+$translation->add('post', 'components/post/translations');

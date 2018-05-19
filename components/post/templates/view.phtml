@@ -1,0 +1,11 @@
+<div class="post">
+    <h1><?= $this->escape($post->get('title')); ?></h1>
+    <div class="post-date"><?= $postService->formatDate($post->get('created_on')); ?></div>
+    <div class="post-lead">
+        <?= $this->escape($post->get('lead')); ?>
+    </div>
+    <div class="post-content">
+        <?= $post->get('content') ?>
+    </div>
+    <a href="<?= $router->getUrl('posts') ?>"><?= $translation->get('post', 'back') ?></a>
+</div>

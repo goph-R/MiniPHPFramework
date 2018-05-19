@@ -14,6 +14,20 @@ class PostController extends Controller {
     }
 
     public function index() {
+        $locale = $this->request->get('locale');
+        $count = $this->postService->findActiveCountByLocale($locale);
+        $pager = new Pager('posts', [
+            'page' => $this->request->get('page', 0),
+            'step' => $this->request->get('step', 10)
+        ]);
+        $pager->setCount($count);
+        $limit = [$pager->getPage() * $pager->getStep(), $pager->getStep()];
+        $posts = $this->postService->findActiveByLocale($locale, $limit);
+        $this->view->set([
+            'pager'       => $pager,
+            'posts'       => $posts,
+            'postService' => $this->postService
+        ]);
         $this->respondLayout(':core/layout', ':post/index');
     }
 
@@ -23,6 +37,10 @@ class PostController extends Controller {
         if (!$post) {
             return $this->respond404();
         }
+        $this->view->set([
+            'post'        => $post,
+            'postService' => $this->postService
+        ]);
         $this->respondLayout(':core/layout', ':post/view');
     }
 
