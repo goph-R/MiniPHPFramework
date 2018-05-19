@@ -568,6 +568,7 @@ var MediaBrowser = {
         var ext = '';
         var selected = f.id === this.getSelectedFileId();
         var imgSrc = this.thumbnailRequestUrl.replace('{id}', f.id);
+        imgSrc = imgSrc.replace('%7Bid%7D', f.id);
         if (f.extension) {
             ext = f.extension.toLowerCase();
             name += '.' + f.extension;
