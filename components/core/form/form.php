@@ -80,6 +80,11 @@ class Form {
         }
     }
 
+    public function getInput($name) {
+        $this->checkInputExistance($name);
+        return $this->inputs[$name];
+    }
+
     public function getValues() {
         $result = [];
         foreach ($this->inputs as $input) {
