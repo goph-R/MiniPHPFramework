@@ -56,14 +56,14 @@ var MediaBrowser = {
     
     init: function(options) {
         this.locale = options.locale || 'en';
-        this.foldersRequestUrl = options.foldersRequestUrl || '';
-        this.filesRequestUrl = options.filesRequestUrl || '';
-        this.thumbnailRequestUrl = options.thumbnailRequestUrl || '';
-        this.newFolderRequestUrl = options.newFolderRequestUrl || '';
-        this.renameRequestUrl = options.renameRequestUrl || '';
-        this.deleteRequestUrl = options.deleteRequestUrl || '';
-        this.uploadRequestUrl = options.uploadRequestUrl || '';
-        this.mediaRequestUrl = options.mediaRequestUrl || '';
+        this.foldersUrl = options.foldersUrl || '';
+        this.filesUrl = options.filesUrl || '';
+        this.thumbnailUrl = options.thumbnailUrl || '';
+        this.newFolderUrl = options.newFolderUrl || '';
+        this.renameUrl = options.renameUrl || '';
+        this.deleteUrl = options.deleteUrl || '';
+        this.uploadUrl = options.uploadUrl || '';
+        this.mediaUrl = options.mediaUrl || '';
         this.ckEditorFuncNum = options.ckEditorFuncNum || '';
         this.inputId = options.inputId || '';
         this.maximumFileSize = options.maximumFileSize || this.maximumFileSize;
@@ -231,7 +231,7 @@ var MediaBrowser = {
     
     requestFolders: function(id) {
         this.ajaxRequest({
-            url: this.foldersRequestUrl + '/' + id,
+            url: this.foldersUrl + '/' + id,
             success: function(xhr) {
                 var folders = JSON.parse(xhr.responseText);
                 for (var i = 0; i < folders.length; i++) {
@@ -245,7 +245,7 @@ var MediaBrowser = {
     
     requestFiles: function(id) {
         this.ajaxRequest({
-            url: this.filesRequestUrl + '/' + id,
+            url: this.filesUrl + '/' + id,
             success: function(xhr) {
                 MediaBrowser.selectedFile = null;
                 MediaBrowser.files = JSON.parse(xhr.responseText);
@@ -323,7 +323,7 @@ var MediaBrowser = {
             return;
         }
         this.ajaxRequest({
-            url: this.newFolderRequestUrl,
+            url: this.newFolderUrl,
             data: {
                 'name': name,
                 'parent_id': parentId
@@ -362,7 +362,7 @@ var MediaBrowser = {
             return;
         }
         this.ajaxRequest({
-            url: this.renameRequestUrl,
+            url: this.renameUrl,
             data: {
                 'name': name,
                 'parent_id': folder.parent_id,
@@ -390,7 +390,7 @@ var MediaBrowser = {
             return;
         }
         this.ajaxRequest({
-            url: this.deleteRequestUrl,
+            url: this.deleteUrl,
             data: {'id': folder.id},
             success: function(xhr) {
                 MediaBrowser.removeFolder(folder);
@@ -429,7 +429,7 @@ var MediaBrowser = {
             return;
         }
         this.ajaxRequest({
-            url: this.renameRequestUrl,
+            url: this.renameUrl,
             data: {
                 'name': name,
                 'id': file.id
@@ -457,7 +457,7 @@ var MediaBrowser = {
             return;
         }
         this.ajaxRequest({
-            url: this.deleteRequestUrl,
+            url: this.deleteUrl,
             data: {'id': file.id},
             success: function(xhr) {
                 MediaBrowser.removeFile(file);
@@ -487,7 +487,7 @@ var MediaBrowser = {
         progressBarLine.style.width = '0px';                
         fd.append('file', file);
         fd.append('parent_id', this.selectedFolder.id);
-        xhr.open('POST', this.uploadRequestUrl, true);        
+        xhr.open('POST', this.uploadUrl, true);        
         xhr.upload.onprogress = function(event) {
             if (event.lengthComputable) {
                 var percentComplete = (event.loaded / event.total) * 100;
@@ -514,7 +514,7 @@ var MediaBrowser = {
     useButtonClicked: function(event) {        
         if (this.ckEditorFuncNum) {            
             var ckFunc = window.opener.CKEDITOR.tools.callFunction;
-            ckFunc(this.ckEditorFuncNum, this.mediaRequestUrl + '/' + this.selectedFile.id);
+            ckFunc(this.ckEditorFuncNum, this.mediaUrl + '/' + this.selectedFile.id);
             window.close();
         } else if (this.inputId) {
             window.opener.MediaInput.setValue(this.inputId, this.selectedFile);
@@ -567,7 +567,7 @@ var MediaBrowser = {
         var icon = 'fa-file';
         var ext = '';
         var selected = f.id === this.getSelectedFileId();
-        var imgSrc = this.thumbnailRequestUrl.replace('{id}', f.id);
+        var imgSrc = this.thumbnailUrl.replace('{id}', f.id);
         imgSrc = imgSrc.replace('%7Bid%7D', f.id);
         if (f.extension) {
             ext = f.extension.toLowerCase();

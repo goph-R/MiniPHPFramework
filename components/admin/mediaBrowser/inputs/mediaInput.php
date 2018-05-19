@@ -35,11 +35,6 @@ class MediaInput extends Input {
         $result .= ' value="'.$this->view->escape($this->getValue()).'"';
         $result .= '>';
         $result .= '<span id="'.$id.'_display"></span>';
-        /*
-        $result .= '<button type="button" id="'.$id.'_button" class="default-button">';
-        $result .= '<i class="fa fa-plus"></i>Select';
-        $result .= '</button>';
-        */
         $result .= '</div>';
 
         // JavaScript

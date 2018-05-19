@@ -36,18 +36,18 @@
         <div id="files" class="items"></div>
     </main>
     
-    <script type="text/javascript" src="<?= $router->getBaseUrl() ?>components/admin/mediaBrowser/static/mediaBrowser.js"></script>
+    <script type="text/javascript" src="<?= $router->getBaseUrl() ?>components/admin/mediaBrowser/static/mediaBrowser.js?<?= filemtime('components/admin/mediaBrowser/static/mediaBrowser.js') ?>"></script>
     <script type="text/javascript">
         MediaBrowser.init({
             locale: '<?= $request->get('locale') ?>',
-            foldersRequestUrl: '<?= $router->getUrl('mediabrowser/folders') ?>',
-            filesRequestUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
-            thumbnailRequestUrl: '<?= $router->getUrl('media/thumbnail/{id}', ['width' => $thumbnailSize, 'height' => $thumbnailSize]) ?>',
-            newFolderRequestUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
-            renameRequestUrl: '<?= $router->getUrl('mediabrowser/rename') ?>',
-            deleteRequestUrl: '<?= $router->getUrl('mediabrowser/delete') ?>',
-            uploadRequestUrl: '<?= $router->getUrl('mediabrowser/upload') ?>',
-            mediaRequestUrl: '<?= $router->getUrl('media/get') ?>',
+            foldersUrl: '<?= $router->getUrl('mediabrowser/folders') ?>',
+            filesUrl: '<?= $router->getUrl('mediabrowser/files') ?>',
+            thumbnailUrl: '<?= $router->getUrl('media/thumbnail/{id}', ['width' => $thumbnailSize, 'height' => $thumbnailSize]) ?>',
+            newFolderUrl: '<?= $router->getUrl('mediabrowser/newfolder') ?>',
+            renameUrl: '<?= $router->getUrl('mediabrowser/rename') ?>',
+            deleteUrl: '<?= $router->getUrl('mediabrowser/delete') ?>',
+            uploadUrl: '<?= $router->getUrl('mediabrowser/upload') ?>',
+            mediaUrl: '<?= $router->getUrl('media/get') ?>',
             ckEditorFuncNum: '<?= $request->get('CKEditorFuncNum') ?>',
             inputId: '<?= $request->get('input_id') ?>',
             maximumFileSize: <?= $maximumFileSize ?>

@@ -17,7 +17,9 @@ class CkEditorInput extends Input {
         $result .= $this->getClassHtml();        
         $result .= '>'.$this->getValue().'</textarea>';
         $options = [
-            'language' => $this->request->get('locale')
+            'language' => $this->request->get('locale'),
+            'width' => 980,
+            'height' => 400
         ];
         $optionsStr = json_encode(array_merge($options, $this->options));
         $this->view->addScriptContent("CKEDITOR.replace('".htmlspecialchars($this->getId())."', ".$optionsStr.");");
