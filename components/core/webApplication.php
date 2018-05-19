@@ -36,13 +36,13 @@ class WebApplication {
         $im->add('request', new Request());
         $im->add('uploader', new Uploader());
         $im->add('response', new Response());
+        $im->add('translation', new Translation());
+        $im->get('translation')->add('core', 'components/core/translations');
         $im->add('router', new Router());
         $im->add('view', new View());
         $im->get('view')->addPath('core', 'components/core/templates');
         $im->add('user', new User());
         $im->add('mailer', new Mailer());
-        $im->add('translation', new Translation());
-        $im->get('translation')->add('core', 'components/core/translations');
         $app = new WebApplication();
         $im->add('app', $app);
         $im->initComponents($components);

@@ -5,6 +5,7 @@ var MediaBrowser = {
     selectedFile: null,
     openedFolders: [],
     selectedFolder: null,
+    maximumFileSize: 2*1024*1024,
     
     locale: 'en',
     
@@ -65,6 +66,7 @@ var MediaBrowser = {
         this.mediaRequestUrl = options.mediaRequestUrl || '';
         this.ckEditorFuncNum = options.ckEditorFuncNum || '';
         this.inputId = options.inputId || '';
+        this.maximumFileSize = options.maximumFileSize || this.maximumFileSize;
         this.folderAddButton.addEventListener('click', this.newFolder.bind(this));
         this.folderRenameButton.addEventListener('click', this.renameFolder.bind(this));
         this.folderDeleteButton.addEventListener('click', this.deleteFolder.bind(this));
@@ -478,6 +480,10 @@ var MediaBrowser = {
         var file = this.fileInput.files[0];
         var fd = new FormData();
         var xhr = new XMLHttpRequest();
+        if (file.size > this.maximumFileSize) {
+            var maxMB = Math.round(this.maximumFileSize / 1024 / 1024);
+            return alert('File size bigger than ' + maxMB + 'MB.');
+        }
         progressBarLine.style.width = '0px';                
         fd.append('file', file);
         fd.append('parent_id', this.selectedFolder.id);
@@ -487,10 +493,15 @@ var MediaBrowser = {
                 var percentComplete = (event.loaded / event.total) * 100;
                 progressBarLine.style.width = percentComplete + '%';
             }
-        };        
+        };
         xhr.onload = function() {
             if (this.status === 200) {
-                MediaBrowser.requestFiles(MediaBrowser.selectedFolder.id);
+                var json = JSON.parse(this.responseText);
+                if (json === 'ok') {
+                    MediaBrowser.requestFiles(MediaBrowser.selectedFolder.id);
+                } else {
+                    alert('Upload error: ' + json.error);
+                }
             } else {
                 alert('Upload error (Status: ' + this.status + ')');
             }
@@ -556,7 +567,7 @@ var MediaBrowser = {
         var icon = 'fa-file';
         var ext = '';
         var selected = f.id === this.getSelectedFileId();
-        var imgSrc = this.thumbnailRequestUrl + '/' + f.id;
+        var imgSrc = this.thumbnailRequestUrl.replace('{id}', f.id);
         if (f.extension) {
             ext = f.extension.toLowerCase();
             name += '.' + f.extension;

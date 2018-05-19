@@ -1,23 +1,34 @@
 <?php
 
 class Uploader {
-    
+
+    const DEFAULT_MAXIMUM_SIZE = 2097152; // 2MB
+    const DEFAULT_PATH = 'media/';
+
     /**
      * @var Request
      */
     private $request;
     
     private $maxSize;
-    private $mediaPath;
+    private $dirPath;
     
     
     public function __construct() {
         $im = InstanceManager::getInstance();
         $config = $im->get('config');
         $this->request = $im->get('request');
-        $this->maxSize = $config->get('upload.maximum_size', 2097152); // default: 2MB
-        $defaultPath = $config->get('application.path', '').'media/';
-        $this->mediaPath = $config->get('media.path', $defaultPath);
+        $this->maxSize = $config->get('upload.maximum_size', self::DEFAULT_MAXIMUM_SIZE); // default: 2MB
+        $defaultPath = $config->get('application.path', '').self::DEFAULT_PATH;
+        $this->dirPath = $config->get('media.path', $defaultPath);
+    }
+
+    public function getMaximumSize() {
+        return $this->maxSize;
+    }
+
+    public function getDirectoryPath() {
+        return $this->dirPath;
     }
     
     public function getBaseName($inputName) {
@@ -57,8 +68,8 @@ class Uploader {
     
     private function createDirectories($destPath) {
         $destDir = dirname($destPath);
-        $currentDir = $this->mediaPath.'/';
-        $baseDir = str_replace($this->mediaPath, '', $destDir);
+        $currentDir = $this->dirPath.'/';
+        $baseDir = str_replace($this->dirPath, '', $destDir);
         $dirs = explode('/', $baseDir);        
         foreach ($dirs as $dir) {
             $currentDir .= $dir.'/';

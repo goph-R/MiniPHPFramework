@@ -1,7 +1,10 @@
 <?php
 
 class MediaBrowserController extends Controller {
-        
+
+    const DEFAULT_FOLDER_ID = 1;
+    const THUMBNAIL_SIZE = 90;
+
     /**
      * @var MediaService
      */
@@ -11,24 +14,28 @@ class MediaBrowserController extends Controller {
         parent::__construct();
         $im = InstanceManager::getInstance();
         $this->mediaService = $im->get('mediaService');
+        ini_set('display_errors', 'Off'); // don't show errors in ajax responses
     }
     
     public function index() {
         if (!$this->user->hasPermission('admin')) {
             return $this->redirect();
         }
-        $defaultFolderId = $this->config->get('mediabrowser.default_folder_id', 1);
-        $folder = $this->mediaService->findFolderById($defaultFolderId);
+        $folderId = $this->config->get('mediabrowser.default_folder_id', self::DEFAULT_FOLDER_ID);
+        $maximumFileSize = $this->config->get('upload.maximum_size', Uploader::DEFAULT_MAXIMUM_SIZE);
+        $folder = $this->mediaService->findFolderById($folderId);
         if (!$folder) {
-            throw new RuntimeException("Can't find the default folder: $defaultFolderId");
+            throw new RuntimeException("Can't find the folder: $folderId");
         }        
         $this->view->set('folder', $folder->getAttributes());
+        $this->view->set('maximumFileSize', $maximumFileSize);
+        $this->view->set('thumbnailSize', self::THUMBNAIL_SIZE);
         $this->respondView(':mediaBrowser/mediaBrowser');
     }
     
     public function folders() {
         if (!$this->user->hasPermission('admin')) {
-            return $this->redirect();
+            return;
         }
         $parentId = $this->request->get('id');
         $result = [];
@@ -41,7 +48,7 @@ class MediaBrowserController extends Controller {
     
     public function files() {
         if (!$this->user->hasPermission('admin')) {
-            return $this->redirect();
+            return;
         }
         $parentId = $this->request->get('id');
         $result = [];
@@ -88,7 +95,7 @@ class MediaBrowserController extends Controller {
 
     public function delete() {
         if (!$this->user->hasPermission('admin')) {
-            return false;
+            return;
         }
         $id = $this->request->get('id');
         $this->mediaService->delete($id);
@@ -96,7 +103,7 @@ class MediaBrowserController extends Controller {
     
     public function upload() {
         if (!$this->user->hasPermission('admin')) {
-            return false;
+            return;
         }
         $parentId = $this->request->get('parent_id');
         try {
