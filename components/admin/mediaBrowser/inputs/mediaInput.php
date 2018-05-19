@@ -40,9 +40,9 @@ class MediaInput extends Input {
         // JavaScript
         $options = $this->options;
         $options['mediaBrowserUrl'] = $this->router->getUrl('mediabrowser');
-        $options['mediaThumbnailUrl'] = $this->router->getUrl('media/thumbnail');
+        $options['thumbnailUrl'] = $this->router->getUrl('media/thumbnail/{id}');
         $jsonOptions = json_encode($options);
-        $this->view->addScriptContent("MediaInput.init('$id', $jsonOptions);\n");
+        $this->view->addScriptContent("MediaInput.init('$id', $jsonOptions);");
         $jsonFile = 'null';
         if ($this->getValue()) {
             $record = $this->mediaService->findById($this->getValue());
