@@ -38,15 +38,16 @@ class Form {
      */
     protected $postValidators = [];
     protected $errors = [];
-    protected $name = 'form';
+    protected $name = '';
 
     protected $action;
 
-    public function __construct() {
+    public function __construct($name = 'form') {
         $im = InstanceManager::getInstance();
         $this->request = $im->get('request');
         $this->view = $im->get('view');
         $this->translation = $im->get('translation');
+        $this->name = $name;
     }
 
     public function getName() {

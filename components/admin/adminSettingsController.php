@@ -23,6 +23,7 @@ class AdminSettingsController extends Controller {
         $this->userService = $im->get('userService');
         $this->formFactory = $im->get('userFormFactory');
         $this->confirmScript = $im->get('confirmScript');
+        $this->view->addPath(':core/formError', 'components/admin/templates/formError');
         $this->view->set('adminMenu', $im->get('adminMenu'));
     }
 

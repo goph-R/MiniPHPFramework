@@ -16,7 +16,7 @@ class UserFormFactory {
      * @return Form
      */
     public function createLoginForm() {
-        $form = new Form();
+        $form = new Form('login');
         $form->addInput('Email', new TextInput('email'));
         $form->addInput(['user', 'password'], new PasswordInput('password'));
         $form->addInput('', new CheckboxInput('remember', '1', ['user', 'remember_me']));
@@ -27,7 +27,7 @@ class UserFormFactory {
      * @return Form
      */
     public function createRegisterForm() {
-        $form = new Form();
+        $form = new Form('register');
         $form->addInput('Email', new TextInput('email'));
         $form->addValidator('email', new EmailValidator());
         $form->addValidator('email', new EmailExistsValidator());
@@ -52,7 +52,7 @@ class UserFormFactory {
                 $emailDesc = $this->translation->get('user', 'waits_for_activation', ['email' => $record->get('new_email')]);
             }
         }
-        $form = new Form();
+        $form = new Form('settings');
         $form->addInput('Email', new TextInput('email', $record->get('email')), $emailDesc);
         $form->addValidator('email', new EmailValidator());
         $form->addValidator('email', new EmailExistsExceptValidator($record));
@@ -72,7 +72,7 @@ class UserFormFactory {
      * @return Form
      */
     public function createNewPasswordForm() {
-        $form = new Form();
+        $form = new Form('new_password');
         $form->addInput(['user', 'password'], new PasswordInput('password'));
         $form->addInput(['user', 'password_again'], new PasswordInput('password_again'));
         $form->addValidator('password', new PasswordValidator());
@@ -84,7 +84,7 @@ class UserFormFactory {
      * @return Form
      */
     public function createForgotForm() {
-        $form = new Form();
+        $form = new Form('forgot');
         $form->addInput('Email', new TextInput('email'));
         $form->addValidator('email', new EmailValidator());
         $form->addValidator('email', new EmailExistsValidator(true));

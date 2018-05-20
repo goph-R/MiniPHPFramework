@@ -6,7 +6,7 @@
     </div>
 <?php endif ?>
 <?php foreach ($form->getInputs() as $input): ?>
-    <div class="form-row">
+    <div class="form-row" id="form_row_<?= $input->getId() ?>">
         <?= $view->fetch(':core/formLabel', ['form' => $form, 'input' => $input]) ?>
         <?= $view->fetch(':core/formInput', ['input' => $input]) ?>
     </div>

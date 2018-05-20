@@ -30,6 +30,7 @@ abstract class AdminController extends Controller {
         $im = InstanceManager::getInstance();
         $this->confirmScript = $im->get('confirmScript');
         $this->formFactory = $this->createFormFactory();
+        $this->view->addPath(':core/formError', 'components/admin/templates/formError');
         $this->view->set('adminMenu', $im->get('adminMenu'));
     }
 
