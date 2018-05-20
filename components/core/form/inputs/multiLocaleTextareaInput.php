@@ -13,17 +13,22 @@ class MultiLocaleTextareaInput extends Input {
      * @var TextareaInput[]
      */
     private $inputs = [];
+
+    private $locale;
     
     public function __construct($name, $defaultValue=[]) {
         parent::__construct($name, $defaultValue);
         $im = InstanceManager::getInstance();
+        $request = $im->get('request');
+        $this->locale = $request->get('locale');
         $this->translation = $im->get('translation');
+        $router = $im->get('router');
         foreach ($this->translation->getAllLocales() as $locale) {
             $this->inputs[$locale] = new TextareaInput($name.'['.$locale.']', $defaultValue[$locale]);
         }
         if (!self::$scriptAdded) {
             $allLocales = json_encode($this->translation->getAllLocales());
-            $this->view->addScript('components/core/static/multiLocaleTextareaInput.js');
+            $this->view->addScript($router->getBaseUrl().'components/core/static/multiLocaleTextareaInput.js');
             $this->view->addScriptContent('MultiLocaleTextareaInput.init('.$allLocales.');');
             self::$scriptAdded = true;
         }
@@ -46,7 +51,8 @@ class MultiLocaleTextareaInput extends Input {
         $tclass = 'multi-locale-textarea-input-tab';
         $result = '<ul class="'.$tclass.'s">';
         foreach ($this->inputs as $locale => $input) {
-            $attrs = ' class="'.$tclass.'" data-locale="'.$locale.'" data-name="'.$this->getName().'"';
+            $aclass = $this->locale == $locale ? ' '.$tclass.'-active' : '';
+            $attrs = ' class="'.$tclass.$aclass.'" data-locale="'.$locale.'" data-name="'.$this->getName().'"';
             $result .= '<li'.$attrs.'>'.$locale.'</li>';
         }
         $result .= '</ul>';

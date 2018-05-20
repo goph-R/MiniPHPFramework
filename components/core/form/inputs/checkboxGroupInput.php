@@ -15,6 +15,9 @@ class CheckboxGroupInput extends Input {
 
     public function setValue($value) {
         parent::setValue($value);
+        if (!is_array($value)) {
+            $value = [];
+        }
         $this->checks = [];
         foreach ($this->defaultValue as $defaultValue) {
             if (in_array($defaultValue, $value)) {
