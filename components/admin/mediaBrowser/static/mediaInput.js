@@ -5,7 +5,7 @@ var MediaInput = {
     init: function(id, options) {
         var mediaBrowserUrl = options.mediaBrowserUrl || '';
         var span = document.getElementById(id + '_display');
-        this.mediaThumbnailUrl = options.mediaThumbnailUrl || '';
+        this.thumbnailUrl = options.thumbnailUrl || '';
         span.addEventListener('click', function() {
             var ps = mediaBrowserUrl.indexOf('?') === -1 ? '?' : '&';
             var url = mediaBrowserUrl + ps + 'input_id=' + id;
@@ -30,7 +30,9 @@ var MediaInput = {
         }
         input.setAttribute('value', fileId);
         if (isImage) {
-            span.style.backgroundImage = "url('" + this.mediaThumbnailUrl + "/" + file.id + "')";
+            var imgSrc = this.thumbnailUrl.replace('{id}', file.id);
+            imgSrc = imgSrc.replace('%7Bid%7D', file.id);
+            span.style.backgroundImage = "url('" + imgSrc + "')";
             span.style.width = '90px';
             span.style.height = '90px';
             span.innerHTML = '';

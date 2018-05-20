@@ -1,0 +1,21 @@
+<h1><?= $translation->get('post', 'posts') ?></h1>
+<div class="post-list">
+    <?php if ($posts): ?>
+        <?= $this->fetch(':core/pager') ?>
+        <?php foreach ($posts as $post): ?>
+            <div class="post-item">
+                <a href="<?= $router->getUrl('post/'.$post->get('id')) ?>">
+                    <h3 class="post-title"><?= $this->escape($post->get('title')); ?></h3>
+                    <div class="post-date"><?= $postService->formatDate($post->get('created_on')); ?></div>
+                    <div class="post-lead">
+                        <?= $this->escape($post->get('lead')); ?>
+                    </div>
+                    <span><?= $translation->get('post', 'more') ?></span>
+                </a>
+            </div>
+        <?php endforeach ?>
+        <?= $this->fetch(':core/pager') ?>
+    <?php else: ?>
+        <p><?= $translation->get('post', 'no_results') ?></p>
+    <?php endif; ?>
+</div>
