@@ -1,4 +1,4 @@
-<div class="form-input">
+<div class="form-input" id="form_input_<?= $input->getId() ?>">
     <?php if ($input->hasError()): ?>
         <?= $view->fetch(':core/formError', ['error' => $input->getError()]) ?>
     <?php endif ?>
