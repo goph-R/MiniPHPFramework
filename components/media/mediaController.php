@@ -14,9 +14,6 @@ class MediaController extends Controller {
     }
         
     public function thumbnail() {
-        if (!$this->user->hasPermission('admin')) {
-            return $this->redirect();
-        }
         $defaultThumbSize = $this->mediaService->getDefaultThumbSize();
         $id = $this->request->get('id');
         $width = $this->request->get('width', $defaultThumbSize);

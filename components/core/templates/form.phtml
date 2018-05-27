@@ -1,13 +1,4 @@
-<?php if ($form->hasErrors()): ?>
-    <div class="form-errors">
-        <?php foreach ($form->getErrors() as $error): ?>
-            <?= $view->fetch(':core/formError', ['error' => $error]) ?>
-        <?php endforeach ?>
-    </div>
-<?php endif ?>
+<?= $view->fetch(':core/formErrors', ['form' => $form]) ?>
 <?php foreach ($form->getInputs() as $input): ?>
-    <div class="form-row" id="form_row_<?= $input->getId() ?>">
-        <?= $view->fetch(':core/formLabel', ['form' => $form, 'input' => $input]) ?>
-        <?= $view->fetch(':core/formInput', ['input' => $input]) ?>
-    </div>
+    <?= $form->fetchRow($input->getName()) ?>
 <?php endforeach ?>

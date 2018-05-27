@@ -15,12 +15,23 @@ class SelectInput extends Input {
         $result .= ' name="'.$this->getName().'"';
         $result .= $this->getClassHtml();
         $result .= '>';
-        foreach ($this->options as $optionValue => $optionText) {
-            $selected = $optionValue == $this->getValue() ? ' selected="selected"' : '';
-            $value = $this->view->escape($optionValue);
-            $result .= '<option value="'.$value.'"'.$selected.'>'.$optionText.'</option>';
-        }
+        $result .= $this->fetchRecursive($this->options, null);
         $result .= '</select>';
+        return $result;
+    }
+
+    private function fetchRecursive($options, $groupName) {
+        $result = $groupName ? '<optgroup label="'.$this->view->escape($groupName).'">' : '';
+        foreach ($options as $optionValue => $optionText) {
+            if (!is_array($optionText)) {
+                $selected = $optionValue == $this->getValue() ? ' selected="selected"' : '';
+                $value = $this->view->escape($optionValue);
+                $result .= '<option value="'.$value.'"'.$selected.'>'.$optionText.'</option>';
+            } else {
+                $result .= $this->fetchRecursive($optionText['options'], $optionText['label']);
+            }
+        }
+        $result .= $groupName ? '</optgroup>' : '';
         return $result;
     }
 

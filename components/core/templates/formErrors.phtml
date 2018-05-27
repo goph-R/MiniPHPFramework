@@ -1,0 +1,7 @@
+<?php if ($form->hasErrors()): ?>
+    <div class="form-errors">
+        <?php foreach ($form->getErrors() as $error): ?>
+            <?= $view->fetch(':core/formError', ['error' => $error]) ?>
+        <?php endforeach ?>
+    </div>
+<?php endif ?>

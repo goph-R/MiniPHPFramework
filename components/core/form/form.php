@@ -216,7 +216,7 @@ class Form {
         return $result;
     }
 
-    public function fetch($path = ':core/form') {
+    public function fetchHead() {
         foreach ($this->inputs as $input) {
             foreach ($input->getStyles() as $style => $media) {
                 $this->view->addStyle($style, $media);
@@ -225,6 +225,30 @@ class Form {
                 $this->view->addScript($script);
             }
         }
+    }
+
+    public function fetchLabel($name) {
+        return $this->view->fetch(':core/formLabel', [
+            'form'  => $this,
+            'input' => $this->getInput($name)
+        ]);
+    }
+
+    public function fetchInput($name) {
+        return $this->view->fetch(':core/formInput', [
+            'input' => $this->getInput($name)
+        ]);
+    }
+
+    public function fetchRow($name) {
+        return $this->view->fetch(':core/formRow', [
+            'form'  => $this,
+            'input' => $this->getInput($name)
+        ]);
+    }
+
+    public function fetch($path = ':core/form') {
+        $this->fetchHead();
         $this->view->set('form', $this);
         return $this->view->fetch($path);
     }
