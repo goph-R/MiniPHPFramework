@@ -20,6 +20,7 @@ class MultiLocaleTextareaInput extends Input {
         parent::__construct($name, $defaultValue);
         $im = InstanceManager::getInstance();
         $request = $im->get('request');
+        $this->trimValue = false;
         $this->locale = $request->get('locale');
         $this->translation = $im->get('translation');
         $router = $im->get('router');
@@ -44,7 +45,8 @@ class MultiLocaleTextareaInput extends Input {
     public function setValue($value) {
         foreach ($this->inputs as $locale => $input) {
             $input->setValue($value[$locale]);
-        }        
+        }
+        $this->value = $value;
     }
     
     public function fetch() {
@@ -57,9 +59,10 @@ class MultiLocaleTextareaInput extends Input {
         }
         $result .= '</ul>';
         $cclass = 'multi-locale-textarea-input-container';
-        foreach ($this->inputs as $locale => $input) {            
+        foreach ($this->inputs as $locale => $input) {
+            $display = $this->locale == $locale ? 'block' : 'none';
             $attrs = ' class="'.$cclass.'" data-locale="'.$locale.'" data-name="'.$this->getName().'"';
-            $result .= '<div'.$attrs.' style="display: none">';
+            $result .= '<div'.$attrs.' style="display: '.$display.'">';
             $result .= $input->fetch();
             $result .= '</div>';
         }

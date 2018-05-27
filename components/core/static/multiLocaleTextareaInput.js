@@ -26,16 +26,11 @@ var MultiLocaleTextareaInput = {
     
     init: function(allLocale) {
         var tabs = document.querySelectorAll('.multi-locale-textarea-input-tab');
-        var containers = document.querySelectorAll('.multi-locale-textarea-input-container');
         var i, node;
         this.allLocale = allLocale;
         for (i = 0; i < tabs.length; i++) {
             node = tabs[i];
             node.addEventListener('click', this.tabClick);
-        }
-        for (i = 0; i < containers.length; i++) {
-            node = containers[i];
-            node.style.display = i === 0 ? 'block' : 'none';            
         }
     }
 

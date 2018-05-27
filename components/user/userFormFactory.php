@@ -61,6 +61,7 @@ class UserFormFactory {
         $form->setRequired('old_password', false);
         $form->addInput(['user', 'new_password'], new PasswordInput('password'));
         $form->addValidator('password', new PasswordValidator());
+        $form->addValidator('password', new SameValidator($form, 'password_again'));
         $form->setRequired('password', false);
         $form->addInput(['user', 'new_password_again'], new PasswordInput('password_again'));
         $form->addValidator('password_again', new SameValidator($form, 'password'));
